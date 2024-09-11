@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <!-- Change color of StatusBar on most mobile devices -->
+        <meta name="theme-color" content="#222222" />
+        <!-- Appicon -->
+        <link rel="icon" type="image/png" href="../img/appicon.png" />
+        <title>Lets Watch!</title>
+
+        <!-- JS -->
+        <script type="module" src="../js/shared.js" crossorigin="anonymous"></script>
+        <!-- Prevent "favicon.ico" error -->
+        <link rel="shortcut icon" href="#" />
+        <!-- Shared Import -->
+        <link rel="stylesheet" href="../css/shared.css" />
+        <!-- Custom Import -->
+        <link rel="stylesheet" href="../css/detail.css" />
+    </head>
+    <body>
+        <!-- #region Header -->
+        <nav>
+            <ul>
+                <li>
+                    <a href="../html/about.html" class="info-icon">
+                        <img src="../img/info-icon.svg" alt="Info Icon" />
+                    </a>
+                </li>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../html/login.html"></a></li>
+                <!-- Search -->
+                <li class="search-container">
+                    <input type="text" placeholder="Search.." name="search" />
+                    <button type="submit">
+                        <img src="../img/search.png" alt="Search" />
+                    </button>
+                </li>
+            </ul>
+        </nav>
+        <!-- #endregion -->
+
+        <!-- #region Body -->
+        <main>
+            <div class="main-container">
+                <!-- Episode Title -->
+                <div class="text-white main-title episode-title"></div>
+                <!-- Anime Title -->
+                <div class="text-white main-title anime-title"></div>
+                <!-- Episode Picker -->
+                <div class="episodes">
+                    <div class="card">
+                        <div class="card-item">
+                            <h3 class="loading-message">Loading Episodes ...</h3>
+                            <!-- Will be generated using JS -->
+                        </div>
+                    </div>
+                </div>
+                <!-- Player -->
+                <div class="player" id="player">
+                    <video-js id="videoplayer" class="video-js" controls preload="auto" autoplay>
+                        <!-- Will be generated using JS -->
+                    </video-js>
+                </div>
+            </div>
+        </main>
+        <!-- #endregion -->
+
+        <!-- AniList JS -->
+        <script type="module" src="../js/util/anilist.js" crossorigin="anonymous"></script>
+        <!-- Util JS -->
+        <script type="module" src="../js/util/main.js" crossorigin="anonymous"></script>
+        <script type="module" src="../js/util/video.js" crossorigin="anonymous"></script>
+        <!-- JS -->
+        <script type="module" src="../js/firebase/database.js" crossorigin="anonymous"></script>
+        <script type="module" src="../js/detail.js" crossorigin="anonymous"></script>
+
+        <!-- Video -->
+        <link href="https://vjs.zencdn.net/8.16.1/video-js.css" rel="stylesheet" />
+        <script src="https://vjs.zencdn.net/8.16.1/video.min.js"></script>
+        <!-- VideoJS Resolution Switcher -->
+        <script src="https://cdn.jsdelivr.net/npm/videojs-hls-quality-selector@2.0.0/dist/videojs-hls-quality-selector.min.js"></script>
+    </body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <!-- Change color of StatusBar on most mobile devices -->
+        <meta name="theme-color" content="#222222" />
+        <!-- Appicon -->
+        <link rel="icon" type="image/png" href="../img/appicon.png" />
+        <title>Lets Watch!</title>
+
+        <!-- JS -->
+        <script type="module" src="../js/shared.js" crossorigin="anonymous"></script>
+        <!-- Prevent "favicon.ico" error -->
+        <link rel="shortcut icon" href="#" />
+        <!-- Shared Import -->
+        <link rel="stylesheet" href="../css/shared.css" />
+        <!-- Custom Import -->
+        <link rel="stylesheet" href="../css/search.css" />
+    </head>
+    <body>
+        <!-- #region Header -->
+        <nav>
+            <ul>
+                <li>
+                    <a href="../html/about.html" class="info-icon">
+                        <img src="../img/info-icon.svg" alt="Info Icon" />
+                    </a>
+                </li>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../html/login.html"></a></li>
+                <!-- Search -->
+                <li class="search-container">
+                    <input type="text" placeholder="Search.." name="search" />
+                    <button type="submit">
+                        <img src="../img/search.png" alt="Search" />
+                    </button>
+                </li>
+            </ul>
+        </nav>
+        <!-- #endregion -->
+
+        <!-- #region Body -->
+        <main>
+            <div class="top-main-container">
+                <!-- Title -->
+                <h1 class="text-white section-title"></h1>
+                <!-- Buttons -->
+                <div class="button-main-container">
+                    <a class="previous">&#8249;</a>
+                    <a class="next">&#8250;</a>
+                </div>
+            </div>
+            <!-- main-container -->
+            <div class="main-container">
+                <!-- Will be generated using JS -->
+            </div>
+        </main>
+        <!-- #endregion -->
+
+        <!-- Util JS -->
+        <script type="module" src="../js/util/main.js" crossorigin="anonymous"></script>
+        <!-- JS -->
+        <script type="module" src="../js/search.js" crossorigin="anonymous"></script>
+    </body>
+</html>

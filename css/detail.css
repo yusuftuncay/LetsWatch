@@ -1,0 +1,449 @@
+/* #region Main */
+main {
+    display: flex;
+    min-height: 88vh;
+}
+.main-container {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: max-content max-content max-content;
+    align-content: center;
+}
+/* #endregion */
+
+/* #region Cards */
+.card {
+    align-items: center;
+    background-color: #222;
+    border: 10px solid #222;
+    border-radius: 24px;
+    box-shadow: 0 0 10px 1px #222;
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    height: max-content;
+    max-height: 562px;
+    width: min-content;
+    min-width: 240px;
+    overflow-y: auto;
+    text-align: center;
+}
+.card-item {
+    display: grid;
+    gap: 5px;
+    grid-template-columns: repeat(5, 1fr);
+    padding: 10px;
+    width: -webkit-fill-available;
+}
+.card-item a {
+    margin: 5px;
+    padding: 5px;
+}
+.card-item a:hover,
+.card-item a:focus {
+    background-color: #111;
+    border-radius: 20px;
+    box-shadow: 0 0 5px 5px #111;
+    cursor: pointer;
+}
+/* Currently Watching Styles */
+.card-item .currently-watching {
+    background-color: rgba(100, 240, 100, 0.12) !important;
+    box-shadow: 0 0 5px 5px rgba(100, 240, 100, 0.12) !important;
+    border-radius: 20px;
+}
+/* Watched Styles */
+.card-item .watched {
+    opacity: 0.2;
+}
+/* Filler Styles */
+.card-item .filler {
+    background-color: rgba(240, 100, 100, 0.12);
+    box-shadow: 0 0 5px 5px rgba(240, 100, 100, 0.12);
+    border-radius: 20px;
+}
+/* #endregion */
+
+/* #region Video Player */
+.player {
+    align-items: center;
+    background-color: #222;
+    border: 10px solid #222;
+    border-radius: 24px;
+    box-shadow: 0 0 10px 1px #222;
+    display: flex;
+    flex-direction: column;
+    height: 562px;
+    text-align: center;
+    width: 1000px;
+}
+#videoplayer {
+    height: 100%;
+    width: 100%;
+}
+.video-js {
+    outline: none;
+    z-index: 999;
+}
+.video-js .vjs-modal-dialog,
+.player #videoplayer,
+.player #videoplayer_html5_api {
+    border-radius: 20px;
+}
+.video-js .vjs-control-bar {
+    background-color: #222 !important;
+    border-radius: 0 0 12px 12px;
+}
+.video-js .quality-dropdown,
+.video-js .sub-or-dub-dropdown,
+.video-js .server-dropdown,
+.video-js .download-button {
+    align-items: center;
+    display: flex;
+    margin: 10px 8px;
+}
+.video-js .quality-dropdown-select,
+.video-js .sub-or-dub-dropdown-select,
+.video-js .server-dropdown-select {
+    background-color: #444;
+    border-radius: 8px;
+    color: white;
+    padding: 1px 4px;
+}
+/* Big Play Button */
+.video-js .vjs-big-play-button {
+    display: none !important;
+}
+/* Current Time */
+.video-js .vjs-current-time {
+    display: block !important;
+}
+/* Caption Styles */
+.video-js .vjs-text-track-cue {
+    /* Subtitle cue style */
+    font-family: ForoSans !important;
+    inset: auto 0px 0px !important;
+    height: auto !important;
+}
+.video-js .vjs-text-track-cue div {
+    background-color: rgba(0, 0, 0, 0) !important;
+    font-family: ForoSans !important;
+}
+/* Hide the captions settings */
+.video-js .vjs-subs-caps-button {
+    display: none;
+}
+.video-js .vjs-texttrack-settings {
+    display: none;
+}
+/* HLS Quality Selector */
+.video-js .vjs-menu-content {
+    background-color: #333 !important;
+    border-radius: 15px 15px 0 0 !important;
+    box-shadow: 0 0 10px 1px #222 !important;
+    padding: 8px !important;
+}
+.video-js .vjs-menu-content li {
+    border-radius: 10px !important;
+    margin: 2px 0 !important;
+}
+.video-js .vjs-menu-content li:hover {
+    background-color: #222 !important;
+    box-shadow: 0 0 10px 1px #222 !important;
+    color: white !important;
+}
+.video-js .vjs-menu-title {
+    display: none !important;
+}
+.video-js .vjs-selected {
+    background-color: #111 !important;
+    box-shadow: 0 0 10px 1px #111 !important;
+    color: white !important;
+}
+/* Volume Slider styles */
+.video-js .vjs-volume-vertical {
+    background-color: #252525 !important;
+    border-radius: 20px 20px 0 0;
+}
+.video-js .vjs-volume-bar.vjs-slider-vertical {
+    border-radius: 5px;
+    width: 0.4em;
+}
+.video-js .vjs-volume-control.vjs-control.vjs-volume-vertical {
+    /* Show volume bar on top of everything when hovered */
+    z-index: 999 !important;
+}
+.video-js .vjs-progress-control .vjs-mouse-display {
+    /* Show the time tooltip on top of everything when hovered */
+    z-index: 999 !important;
+}
+/* Video Player Controls styles */
+.video-js video:focus:focus-visible {
+    outline: 0 !important;
+}
+/* Download Button */
+.video-js .download-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.video-js .download-button img {
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+}
+/* #endregion */
+
+/* #region Titles */
+.main-title {
+    align-items: flex-end;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    font-size: x-large;
+}
+/* #endregion */
+
+/* #region Episodes Styles */
+.episodes {
+    order: 1;
+}
+/* #endregion */
+
+/* #region Next Airing Episode Info */
+.next-airing {
+    display: flex;
+    align-items: flex-start;
+    max-height: 0;
+    opacity: 0;
+    transition: max-height 1s cubic-bezier(0.65, 0.05, 0.35, 1);
+}
+
+/* Loaded */
+.next-airing.loaded {
+    max-height: 150px;
+    opacity: 1;
+}
+.next-airing .card {
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 auto;
+    padding: 10px 0;
+    border-radius: 24px;
+    width: 240px;
+    background-color: #222;
+    box-shadow: 0 0 10px 1px #222;
+    font-size: medium;
+    gap: 15px;
+    opacity: 0;
+}
+/* Animation for opacity */
+@keyframes fade {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+.next-airing.loaded .card {
+    animation: fade 0.5s ease 0.5s forwards;
+}
+/* Time Info */
+.next-airing .card .time-info {
+    opacity: 0.4;
+}
+/* #endregion */
+
+/* #region Seasons */
+.seasons .card {
+    max-height: 300px;
+    min-width: fit-content !important;
+}
+/* Card Styles */
+.seasons .card-item {
+    grid-template-columns: repeat(1, 1fr);
+    margin: 0 10px;
+}
+.seasons .card-item a:hover {
+    background-color: #111;
+    box-shadow: 0 0 5px 5px #111;
+}
+/* #endregion */
+
+/* #region Next Episode/Skip Intro/Skip Outro Buttons */
+/* Next Episode */
+.video-js .next-episode {
+    background-color: #610000;
+    color: #fff;
+    cursor: pointer;
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 0 20px 8px #222;
+    opacity: 0.9;
+    bottom: 50px;
+    right: 20px;
+    font-size: 1.2em;
+    padding: 8px 15px;
+    position: absolute !important;
+    transition: box-shadow 0.1s ease-in-out;
+}
+.video-js .next-episode:hover {
+    box-shadow: 0 0 20px 8px #610000;
+}
+/* Skip Intro */
+.video-js .skip-intro-button {
+    background-color: #009500;
+    color: white;
+    cursor: pointer;
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 0 20px 8px #222;
+    opacity: 0.9;
+    bottom: 50px;
+    left: 20px;
+    font-size: 1.2em;
+    padding: 8px 15px;
+    position: absolute !important;
+    transition: box-shadow 0.1s ease-in-out;
+}
+.video-js .skip-intro-button:hover {
+    box-shadow: 0 0 20px 8px #009500;
+}
+/* Skip Outro */
+.video-js .skip-outro-button {
+    background-color: #610000;
+    color: #fff;
+    cursor: pointer;
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 0 20px 8px #222;
+    opacity: 0.9;
+    bottom: 100px;
+    right: 20px;
+    font-size: 1.2em;
+    padding: 8px 15px;
+    position: absolute !important;
+    transition: box-shadow 0.1s ease-in-out;
+}
+.video-js .skip-outro-button:hover {
+    box-shadow: 0 0 20px 8px #610000;
+}
+/* #endregion */
+
+/* #region Helper */
+.underline {
+    text-decoration: underline;
+}
+.padding-10-px {
+    padding: 10px;
+}
+/* #endregion */
+
+/* #region Scrollbar Styles */
+::-webkit-scrollbar {
+    background-color: #222;
+}
+/* #endregion */
+
+/* #region Loading Message */
+.loading-message {
+    align-items: center;
+    border-radius: 12px;
+    color: #fff;
+    display: flex;
+    font-size: 1rem;
+    grid-column: 1 / -1;
+    justify-content: center;
+    padding: 10px;
+    margin: 0;
+}
+/* #endregion */
+
+/* #region Media Queries */
+/* min-width */
+@media (min-width: 1501px) {
+    .episodes {
+        order: 0;
+    }
+    .seasons {
+        order: 0;
+    }
+}
+/* max-width */
+@media (max-width: 1500px) {
+    .main-container {
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        padding: 2vh 0 0 0;
+    }
+    .card {
+        height: auto;
+    }
+    .main-title {
+        margin: 0;
+    }
+    /* Seasons */
+    .seasons {
+        order: 1;
+    }
+    .seasons .card {
+        min-width: 240px !important;
+    }
+    /* Hide episode title */
+    .episode-title {
+        display: none;
+    }
+}
+@media (max-width: 1200px) {
+    .player {
+        height: 450px !important;
+        width: 800px !important;
+    }
+}
+@media (max-width: 1000px) {
+    .player {
+        height: 338px !important;
+        width: 600px !important;
+    }
+}
+@media (max-width: 800px) {
+    .player {
+        height: 225px !important;
+        width: 400px !important;
+    }
+    /* Hide Time and Seekbar on small screens */
+    .vjs-current-time.vjs-time-control.vjs-control {
+        display: none !important;
+        /* visibility: hidden !important; */
+    }
+    .vjs-remaining-time.vjs-time-control.vjs-control {
+        display: none !important;
+        /* visibility: hidden !important; */
+    }
+    .vjs-progress-control.vjs-control {
+        display: none !important;
+        /* visibility: hidden !important; */
+    }
+    /* Move certain content to the right */
+    .video-js .server-dropdown {
+        margin-left: auto;
+    }
+    /* Caption Track Styles */
+    .video-js .vjs-text-track-cue {
+        font-size: 1.2em !important;
+    }
+    .video-js .vjs-text-track-cue div {
+        font-size: 1.2em !important;
+    }
+}
+@media (max-width: 480px) {
+    .player {
+        height: 170px !important;
+        width: 300px !important;
+    }
+}
+/* #endregion */

@@ -1,0 +1,210 @@
+/* #region Font Import and Body */
+html {
+    font-family: ForoSans;
+    font-size: medium;
+    margin: 0;
+    padding: 0;
+}
+/* Body background and layout */
+body {
+    background: #666;
+    background-attachment: fixed;
+    background-size: 500% auto;
+    max-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+/* @keyframes gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+} */
+main {
+    margin: 0 auto;
+    padding: 70px 0 20px 0;
+    text-shadow: 0 0 12px black;
+    width: min-content;
+}
+/* #endregion */
+
+/* #region Font */
+@font-face {
+    font-family: ForoSans;
+    src: url(../font/ForoSans85.otf) format("opentype");
+}
+/* Font size */
+a,
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-size: medium;
+    font-weight: 100;
+}
+/* #endregion */
+
+/* #region Navbar Styles */
+nav {
+    box-shadow: 0 0 10px 8px #222;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+}
+/* Navbar list styling */
+nav ul {
+    align-items: center;
+    background-color: #222;
+    display: flex;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+/* Align last child to the right */
+nav li:last-child {
+    margin-left: auto;
+}
+/* Navbar link styling */
+nav li a {
+    color: white;
+    display: flex;
+    padding: 14px 16px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 10px;
+    font-size: large;
+}
+nav li a:hover {
+    background-color: #111;
+    box-shadow: 0 0 10px 8px #111;
+}
+/* Searchbar styling */
+nav .search-container {
+    align-items: center;
+    display: flex;
+    height: 50px;
+}
+nav .search-container input {
+    border: 0;
+    border-radius: 20px;
+    box-shadow: 0 0 10px 1px #444;
+    padding: 6px 12px;
+}
+nav .search-container button {
+    cursor: pointer;
+    height: 24px;
+    margin: 0 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+nav .search-container img {
+    height: 22px;
+    width: 22px;
+}
+/* Info Icon */
+nav .info-icon img {
+    height: 24px;
+}
+nav #info-icon img {
+    height: 24px;
+}
+/* #endregion */
+
+/* #region Scrollbar Styles */
+::-webkit-scrollbar {
+    background-color: #666;
+    height: 10px;
+    width: 15px;
+}
+::-webkit-scrollbar-track {
+    border-radius: 7px;
+}
+::-webkit-scrollbar-thumb {
+    background-color: #555;
+    border-radius: 7px;
+}
+/* Hide Vertical Scrollbar */
+html::-webkit-scrollbar {
+    display: none;
+}
+html {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+/* #endregion */
+
+/* #region Preset Classes */
+a {
+    text-decoration: none;
+}
+.text-white {
+    color: white;
+}
+.main-title {
+    font-size: xx-large;
+    margin: 20px auto;
+}
+.section-title {
+    font-size: x-large;
+    margin: 8px auto;
+}
+.card-title {
+    margin: 0;
+}
+/* #endregion */
+
+/* #region Loading Styles */
+.loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Ensure it covers everything */
+    pointer-events: none; /* Prevent clicks from going through */
+    text-shadow: 0 0 12px black;
+    text-align: center;
+    font-size: xx-large !important;
+    margin: 30px;
+}
+/* #endregion */
+
+/* #region Media Queries */
+@media (max-width: 1200px) {
+    a,
+    p,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-size: small;
+    }
+    /* Specific font size */
+    nav li a {
+        font-size: medium;
+    }
+    .main-title {
+        font-size: x-large;
+    }
+    nav {
+        font-size: medium;
+    }
+}
+@media (max-width: 600px) {
+    nav .search-container input {
+        width: 70px;
+    }
+    nav li a {
+        padding: 14px 12px;
+    }
+}
+/* #endregion */

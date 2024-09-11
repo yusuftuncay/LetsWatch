@@ -1,0 +1,121 @@
+/* #region Container Styles */
+main {
+    min-width: 280px;
+}
+/* Container for the main content */
+.main-container {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(4, 1fr);
+}
+.top-main-container {
+    align-items: center;
+    display: flex;
+}
+.top-main-container h1 {
+    margin: 10px auto 20px 10px;
+}
+/* #endregion */
+
+/* #region Smooth Transition */
+main {
+    opacity: 1;
+    transition: opacity 0.25s linear;
+}
+main.show {
+    opacity: 0;
+}
+/* #endregion */
+
+/* #region Card Styles */
+.card {
+    background-color: #222;
+    border: 10px solid #222;
+    border-radius: 24px;
+    box-shadow: 0 0 10px 1px #222;
+    display: flex;
+    flex-direction: column;
+    height: 300px;
+    text-align: center;
+    width: 200px;
+}
+.card img {
+    border-radius: 12px;
+    height: 200px;
+    object-fit: cover;
+    width: 200px;
+}
+.card .card-title {
+    align-items: center;
+    color: white;
+    display: flex;
+    height: 100px;
+    justify-content: center;
+    margin: 10px;
+}
+.card:hover {
+    background-color: #111;
+    border-color: #111;
+    box-shadow: 0 0 10px 8px #111;
+}
+/* #endregion */
+
+/* #region Buttons */
+.button-main-container {
+    display: none;
+    justify-content: space-between;
+    width: 100px;
+    margin: 10px;
+}
+.button-main-container a {
+    display: inline-block;
+    padding: 8px 16px;
+    text-decoration: none;
+}
+.button-main-container a:hover {
+    background-color: #333;
+}
+.button-main-container .next,
+.button-main-container .previous {
+    background-color: #222;
+    border-radius: 50%;
+    box-shadow: 0 0 5px 2px #222;
+    color: white;
+    cursor: pointer;
+}
+/* When buttons are disabled */
+.button-main-container a.disabled {
+    cursor: default;
+    opacity: 0.6;
+    pointer-events: none;
+}
+/* #endregion */
+
+/* #region Extra Styles */
+.card-title.start {
+    align-items: flex-start !important;
+    overflow: hidden !important;
+}
+/* #endregion */
+
+/* #region Media Queries */
+@media (max-width: 1200px) {
+    .main-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+@media (max-width: 800px) {
+    .main-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .card {
+        height: 240px;
+        width: 140px;
+    }
+    .card img {
+        height: 140px;
+        object-fit: cover;
+        width: 140px;
+    }
+}
+/* #endregion */
