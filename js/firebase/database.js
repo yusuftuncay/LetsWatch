@@ -18,7 +18,7 @@ async function uploadData() {
         // Temporary object to store data that should be kept
         const keepData = {};
         // Collect specific items from localStorage for preservation
-        ["recently-watched", "volume"].forEach((key) => {
+        ["recently-watched", "volume", "quality"].forEach((key) => {
             if (localStorage.getItem(key)) {
                 keepData[key] = localStorage.getItem(key);
             }

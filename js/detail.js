@@ -206,6 +206,10 @@ async function handleEpisodeClick(player, episode) {
 
     // Proceed when the metadata of the video is loaded
     player.one("loadedmetadata", () => {
+        // Load the preferred quality
+        loadPreferredQuality();
+        // Function to add event listener to quality items
+        addEventListenerToQualityItem();
         // Resume episode from the last watched position
         resumeEpisodeProgress(player, animeData.anime.info.id);
         // Save the episode in the recently watched list
@@ -228,7 +232,7 @@ async function handleEpisodeClick(player, episode) {
         updateEpisodeList();
     });
 
-    // Setup
+    // Setup AniList update
     setupAniListUpdate(player);
 
     // Setup Buttons
@@ -369,6 +373,50 @@ function setupSubtitles(player, episode) {
             }
         }
     }
+}
+//#endregion
+
+//#region Quality Helpers
+// Function to add event listeners to quality items
+function addEventListenerToQualityItem() {
+    // Get all quality items
+    const qualities = document.querySelectorAll(".vjs-quality-selector .vjs-menu-item");
+
+    // Add event listener to each quality item
+    qualities.forEach((item) => {
+        item.removeEventListener("click", handleQualityChange);
+        item.addEventListener("click", handleQualityChange);
+    });
+}
+
+// Function to handle quality change
+function handleQualityChange(event) {
+    // Get the selected quality
+    const selectedQuality = event.currentTarget.querySelector(".vjs-menu-item-text").textContent.trim().toLowerCase();
+
+    // Set the selected quality
+    localStorage.setItem("quality", selectedQuality);
+}
+
+// Function to load the preferred quality from local storage
+function loadPreferredQuality() {
+    // Retrieve the preferred quality from local storage
+    const validQualities = ["1080p", "720p", "480p", "360p", "auto"];
+    const storedQuality = localStorage.getItem("quality");
+    const preferredQuality = validQualities.includes(storedQuality) ? storedQuality : "auto";
+
+    // Get all quality items
+    const qualities = document.querySelectorAll(".vjs-quality-selector .vjs-menu-item");
+
+    // Iterate through qualities to find and simulate a click on the correct one
+    qualities.forEach((item) => {
+        const qualityText = item.querySelector(".vjs-menu-item-text").textContent.trim().toLowerCase();
+
+        // Simulate click if the quality matches the preferred one
+        if (qualityText === preferredQuality) {
+            item.click();
+        }
+    });
 }
 //#endregion
 

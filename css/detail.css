@@ -147,6 +147,7 @@ main {
 .video-js .vjs-menu-content li {
     border-radius: 10px !important;
     margin: 2px 0 !important;
+    text-transform: unset !important;
 }
 .video-js .vjs-menu-content li:hover {
     background-color: #222 !important;

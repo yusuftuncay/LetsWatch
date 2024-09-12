@@ -7,7 +7,7 @@ export function setupVideoPlayer() {
     // Set up the video player with configuration
     const player = videojs("videoplayer", {
         plugins: {
-            hlsQualitySelector: {},
+            hlsQualitySelector: { displayCurrentQuality: true },
         },
         controlBar: {
             volumePanel: { inline: false },
