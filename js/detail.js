@@ -210,22 +210,27 @@ async function handleEpisodeClick(player, episode) {
         loadPreferredQuality();
         // Function to add event listener to quality items
         addEventListenerToQualityItem();
-        // Resume episode from the last watched position
-        resumeEpisodeProgress(player, animeData.anime.info.id);
-        // Save the episode in the recently watched list
-        saveEpisodeInRecentlyWatched({
-            animeId: getAnimeIDUsingURL(),
-            animeTitle: animeData.anime.info.name,
-            episodeTitle: episode.title,
-            episodeImage: animeData.anime.info.poster,
-            episodeNumber: episode.number,
-            episodeTotal: animeData.anime.info.stats.episodes.sub,
-            episodeId: episode.episodeId,
-            episodeDuration: Math.floor(player.duration()),
-            subOrDub: subOrDubSelectElement.value,
+        // Check authentication state
+        onAuthStateChanged(auth, (user) => {
+            if (!user) return;
+
+            // Resume episode from the last watched position
+            resumeEpisodeProgress(player, animeData.anime.info.id);
+            // Save the episode in the recently watched list
+            saveEpisodeInRecentlyWatched({
+                animeId: getAnimeIDUsingURL(),
+                animeTitle: animeData.anime.info.name,
+                episodeTitle: episode.title,
+                episodeImage: animeData.anime.info.poster,
+                episodeNumber: episode.number,
+                episodeTotal: animeData.anime.info.stats.episodes.sub,
+                episodeId: episode.episodeId,
+                episodeDuration: Math.floor(player.duration()),
+                subOrDub: subOrDubSelectElement.value,
+            });
+            // Save the episode progress
+            saveEpisodeProgress(player, episode.episodeId);
         });
-        // Save the episode progress
-        saveEpisodeProgress(player, episode.episodeId);
         // Setup subtitles
         setupSubtitles(player, episodeData);
         // Update the episodes list
