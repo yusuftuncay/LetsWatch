@@ -361,7 +361,7 @@ function setupSubtitles(player, episode) {
     }
 
     // Only select English Subtitles
-    const englishTrack = episode.tracks.find((track) => track.kind == "captions" && track.label == "English");
+    const englishTrack = episode.tracks.find((track) => track.kind === "captions" && track.label === "English");
     if (englishTrack) {
         // Add the new track
         player.addRemoteTextTrack(
@@ -378,7 +378,7 @@ function setupSubtitles(player, episode) {
         for (var i = 0; i < tracks.length; i++) {
             var track = tracks[i];
             // Find the English captions track and mark it as "showing"
-            if (track.kind == "captions" && track.language == "en") {
+            if (track.kind === "captions" && track.language === "en") {
                 track.mode = "showing";
             }
         }
