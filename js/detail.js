@@ -211,9 +211,6 @@ async function handleEpisodeClick(player, episode) {
         // Load the preferred quality
         loadPreferredQuality();
 
-        // Adjust tolerance for video buffering issues
-        player.tech_.hls.targetDurationTolerance = 1.5;
-
         // Check authentication state
         onAuthStateChanged(auth, (user) => {
             if (!user) return;
