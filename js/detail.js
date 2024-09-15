@@ -206,10 +206,13 @@ async function handleEpisodeClick(player, episode) {
 
     // Proceed when the metadata of the video is loaded
     player.one("loadedmetadata", () => {
+        // Add event listener to quality items
+        addEventListenerToQualityItem();
         // Load the preferred quality
         loadPreferredQuality();
-        // Function to add event listener to quality items
-        addEventListenerToQualityItem();
+        // Reload the video player
+        player.load();
+
         // Check authentication state
         onAuthStateChanged(auth, (user) => {
             if (!user) return;
@@ -231,8 +234,10 @@ async function handleEpisodeClick(player, episode) {
             // Save the episode progress
             saveEpisodeProgress(player, episode.episodeId);
         });
+
         // Setup subtitles
         setupSubtitles(player, episodeData);
+
         // Update the episodes list
         updateEpisodeList();
     });
@@ -356,7 +361,7 @@ function setupSubtitles(player, episode) {
     }
 
     // Only select English Subtitles
-    const englishTrack = episode.tracks.find((track) => track.kind === "captions" && track.label === "English");
+    const englishTrack = episode.tracks.find((track) => track.kind == "captions" && track.label == "English");
     if (englishTrack) {
         // Add the new track
         player.addRemoteTextTrack(
@@ -373,7 +378,7 @@ function setupSubtitles(player, episode) {
         for (var i = 0; i < tracks.length; i++) {
             var track = tracks[i];
             // Find the English captions track and mark it as "showing"
-            if (track.kind === "captions" && track.language === "en") {
+            if (track.kind == "captions" && track.language == "en") {
                 track.mode = "showing";
             }
         }
@@ -397,7 +402,7 @@ function addEventListenerToQualityItem() {
 // Function to handle quality change
 function handleQualityChange(event) {
     // Get the selected quality
-    const selectedQuality = event.currentTarget.querySelector(".vjs-menu-item-text").textContent.trim().toLowerCase();
+    const selectedQuality = event.currentTarget.querySelector(".vjs-menu-item-text").textContent.trim();
 
     // Set the selected quality
     localStorage.setItem("quality", selectedQuality);
@@ -406,22 +411,17 @@ function handleQualityChange(event) {
 // Function to load the preferred quality from local storage
 function loadPreferredQuality() {
     // Retrieve the preferred quality from local storage
-    const validQualities = ["1080p", "720p", "480p", "360p", "auto"];
+    const validQualities = ["1080p", "720p", "480p", "360p", "Auto"];
     const storedQuality = localStorage.getItem("quality");
-    const preferredQuality = validQualities.includes(storedQuality) ? storedQuality : "auto";
+    const preferredQuality = validQualities.includes(storedQuality) ? storedQuality : "";
 
-    // Get all quality items
-    const qualities = document.querySelectorAll(".vjs-quality-selector .vjs-menu-item");
+    // Search for the preferred quality directly in the menu items
+    const preferredItem = Array.from(document.querySelectorAll(".vjs-menu-item .vjs-menu-item-text")).find((item) => item.textContent.trim() == preferredQuality);
 
-    // Iterate through qualities to find and simulate a click on the correct one
-    qualities.forEach((item) => {
-        const qualityText = item.querySelector(".vjs-menu-item-text").textContent.trim().toLowerCase();
-
-        // Simulate click if the quality matches the preferred one
-        if (qualityText === preferredQuality) {
-            item.click();
-        }
-    });
+    // Click the preferred quality item if found
+    if (preferredItem) {
+        preferredItem.closest(".vjs-menu-item").click();
+    }
 }
 //#endregion
 
