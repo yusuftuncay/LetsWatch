@@ -24,6 +24,9 @@ async function uploadData() {
             }
         });
 
+        // Ensure keepData is not empty before proceeding
+        if (Object.keys(keepData).length === 0) return;
+
         // Check if there are changes by comparing current data with previous data
         if (JSON.stringify(keepData) !== JSON.stringify(previousLocalStorageData)) {
             const userRef = doc(db, "users", user.email);
@@ -72,11 +75,16 @@ async function downloadUserData() {
                 Object.entries(docSnap.data()).forEach(([key, value]) => localStorage.setItem(key, value));
                 // Update the previousLocalStorageData variable
                 previousLocalStorageData = docSnap.data();
-                // Mark data as initialized
-                isDataInitialized = true;
-                // Log
+                // Log successful data download
                 console.log(`${new Date().toLocaleTimeString([], { hour12: false })} - Successfully downloaded user data from Firestore`);
+            } else {
+                // No data exists for this user, initialize empty previousLocalStorageData
+                previousLocalStorageData = {};
+                console.log(`${new Date().toLocaleTimeString([], { hour12: false })} - No existing user data found, initializing`);
             }
+
+            // Mark data as initialized regardless of whether data existed or not
+            isDataInitialized = true;
         } catch (error) {
             console.error(error.message);
         }
