@@ -138,29 +138,47 @@ main {
     display: none;
 }
 /* HLS Quality Selector */
-.video-js .vjs-menu-content {
+.video-js .vjs-quality-selector {
+    font-family: ForoSans !important;
+    width: 6em !important;
+}
+.video-js .vjs-quality-selector .vjs-menu-content {
     background-color: #333 !important;
     border-radius: 15px 15px 0 0 !important;
     box-shadow: 0 0 10px 1px #222 !important;
     padding: 8px !important;
 }
-.video-js .vjs-menu-content li {
+.video-js .vjs-quality-selector .vjs-menu-content li {
     border-radius: 10px !important;
     margin: 2px 0 !important;
     text-transform: unset !important;
 }
-.video-js .vjs-menu-content li:hover {
+.video-js .vjs-quality-selector .vjs-menu-content li:hover {
     background-color: #222 !important;
     box-shadow: 0 0 10px 1px #222 !important;
     color: white !important;
 }
-.video-js .vjs-menu-title {
+.video-js .vjs-quality-selector .vjs-menu-title {
     display: none !important;
 }
-.video-js .vjs-selected {
+.video-js .vjs-quality-selector .vjs-selected {
     background-color: #111 !important;
     box-shadow: 0 0 10px 1px #111 !important;
     color: white !important;
+}
+.video-js .vjs-quality-selector .vjs-icon-placeholder {
+    /* Fixes */
+    font-size: small !important;
+}
+.video-js .vjs-quality-selector .vjs-menu-item-text {
+    /* Fixes */
+    font-family: ForoSans !important;
+}
+.video-js .vjs-quality-selector .vjs-menu {
+    /* Fixes */
+    left: -2.25em !important;
+    top: 52% !important;
+    z-index: 1000 !important;
 }
 /* Volume Slider styles */
 .video-js .vjs-volume-vertical {
@@ -430,7 +448,7 @@ main {
         /* visibility: hidden !important; */
     }
     /* Move certain content to the right */
-    .video-js .server-dropdown {
+    .video-js .vjs-quality-selector {
         margin-left: auto;
     }
     /* Caption Track Styles */
