@@ -179,6 +179,7 @@ main {
     left: -2.25em !important;
     top: 52% !important;
     z-index: 1000 !important;
+    overflow: visible !important;
 }
 /* Volume Slider styles */
 .video-js .vjs-volume-vertical {
