@@ -240,12 +240,17 @@ async function handleEpisodeClick(player, episode) {
         updateEpisodeList();
     });
 
-    // Setup subtitles again when video stalls
+    // Setup subtitles on certain player events
     player.on("stalled", () => {
         setupSubtitles(player, episodeData);
     });
-    // Setup subtitles again when video is waiting
     player.on("waiting", () => {
+        setupSubtitles(player, episodeData);
+    });
+    player.on("seeking", function () {
+        setupSubtitles(player, episodeData);
+    });
+    player.on("seeked", function () {
         setupSubtitles(player, episodeData);
     });
 
