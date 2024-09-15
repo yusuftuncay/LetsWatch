@@ -210,8 +210,9 @@ async function handleEpisodeClick(player, episode) {
         addEventListenerToQualityItem();
         // Load the preferred quality
         loadPreferredQuality();
-        // Reload the video player
-        player.load();
+
+        // Adjust tolerance for video buffering issues
+        player.tech_.hls.targetDurationTolerance = 1.5;
 
         // Check authentication state
         onAuthStateChanged(auth, (user) => {
@@ -240,6 +241,15 @@ async function handleEpisodeClick(player, episode) {
 
         // Update the episodes list
         updateEpisodeList();
+    });
+
+    // Setup subtitles again when video stalls
+    player.on("stalled", () => {
+        setupSubtitles(player, episodeData);
+    });
+    // Setup subtitles again when video is waiting
+    player.on("waiting", () => {
+        setupSubtitles(player, episodeData);
     });
 
     // Setup AniList update
