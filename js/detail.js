@@ -241,16 +241,13 @@ async function handleEpisodeClick(player, episode) {
     });
 
     // Setup subtitles on certain player events
-    player.on("stalled", () => {
-        setupSubtitles(player, episodeData);
-    });
     player.on("waiting", () => {
         setupSubtitles(player, episodeData);
     });
-    player.on("seeking", function () {
+    player.on("seeked", () => {
         setupSubtitles(player, episodeData);
     });
-    player.on("seeked", function () {
+    player.on("pause", () => {
         setupSubtitles(player, episodeData);
     });
 
