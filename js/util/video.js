@@ -14,9 +14,6 @@ export function setupVideoPlayer() {
         },
     });
 
-    // Setup HLS quality selector
-    player.hlsQualitySelector();
-
     // Add event listeners for video end events
     player.on("ended", () => playNextEpisode(player));
 
