@@ -255,7 +255,7 @@ function createScheduleCard(link, title, seconds, episodeNumber) {
 // Function to repeatedly call displayRecentlyWatched with an interval
 function tryDisplayRecentlyWatched() {
     const maxDuration = 5000; // 5 seconds in milliseconds
-    const intervalDuration = 1000; // 1 second in milliseconds
+    const intervalDuration = 100; // 1 second in milliseconds
     const startTime = Date.now();
 
     const interval = setInterval(() => {
