@@ -117,7 +117,7 @@ main.show {
 }
 /* #region Loaded */
 .recently-watched,
-.text-white.main-title.loaded {
+.text-white.recently-watched-title {
     display: flex;
     align-items: flex-start;
     max-height: 0;
@@ -126,9 +126,8 @@ main.show {
 }
 /* Loaded */
 .recently-watched.loaded,
-.text-white.main-title.loaded {
+.text-white.recently-watched-title.loaded {
     max-height: 326px;
-    opacity: 1;
 }
 /* Animation for opacity */
 @keyframes fade {
@@ -140,8 +139,8 @@ main.show {
     }
 }
 .recently-watched.loaded,
-.text-white.main-title.loaded {
-    animation: fade 0.5s ease 0.5s forwards;
+.text-white.recently-watched-title.loaded {
+    animation: fade 0.7s ease 0.7s forwards;
 }
 /* #endregion */
 /* #endregion */

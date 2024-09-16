@@ -430,7 +430,7 @@ function loadPreferredQuality() {
     // Retrieve the preferred quality from local storage
     const validQualities = ["1080p", "720p", "480p", "360p", "Auto"];
     const storedQuality = localStorage.getItem("quality");
-    const preferredQuality = validQualities.includes(storedQuality) ? storedQuality : "";
+    const preferredQuality = validQualities.includes(storedQuality) ? storedQuality : "1080p";
 
     // Search for the preferred quality directly in the menu items
     const preferredItem = Array.from(document.querySelectorAll(".vjs-menu-item .vjs-menu-item-text")).find((item) => item.textContent.trim() == preferredQuality);

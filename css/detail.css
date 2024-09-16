@@ -176,7 +176,8 @@ main {
     top: 52% !important;
     z-index: 1000 !important;
     overflow: visible !important;
-    transform: translateY(0) !important; /* Ensures correct positioning in Safari */
+    visibility: visible !important;
+    transform: translateY(0) !important;
 }
 /* Volume Slider styles */
 .video-js .vjs-volume-vertical {

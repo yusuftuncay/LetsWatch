@@ -295,7 +295,7 @@ function displayRecentlyWatched(recentlyWatchedData) {
 
     // Create a title
     const sectionTitle = document.createElement("h1");
-    sectionTitle.classList.add("text-white", "main-title");
+    sectionTitle.classList.add("text-white", "main-title", "recently-watched-title");
     sectionTitle.textContent = "Recently Watched";
 
     // Loop through each recently watched item
