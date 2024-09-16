@@ -146,9 +146,12 @@ main {
     border-radius: 15px !important;
     box-shadow: 0 0 10px 1px #222 !important;
     padding: 8px !important;
+    display: block !important;
+    height: auto !important;
     width: 80% !important;
 }
 .video-js .vjs-quality-selector .vjs-menu-content li {
+    display: block !important;
     border-radius: 10px !important;
     margin: 2px 0 !important;
     text-transform: unset !important;
@@ -158,13 +161,16 @@ main {
     box-shadow: 0 0 10px 1px #222 !important;
     color: white !important;
 }
-.video-js .vjs-quality-selector .vjs-menu-title {
+.video-js .vjs-quality-selector li.vjs-menu-title {
     display: none !important;
 }
 .video-js .vjs-quality-selector .vjs-selected {
     background-color: #111 !important;
     box-shadow: 0 0 10px 1px #111 !important;
     color: white !important;
+}
+.video-js .vjs-quality-selector .vjs-menu-item {
+    display: block !important;
 }
 .video-js .vjs-quality-selector .vjs-menu-item-text {
     /* Fixes */
