@@ -403,13 +403,21 @@ function addEventListenerToQualityItem() {
 
     // Add event listener to each quality item
     qualities.forEach((item) => {
+        // Remove any existing listeners
         item.removeEventListener("click", handleQualityChange);
+        item.removeEventListener("touchend", handleQualityChange);
+
+        // Add new listeners for both click and touchend
         item.addEventListener("click", handleQualityChange);
+        item.addEventListener("touchend", handleQualityChange);
     });
 }
 
 // Function to handle quality change
 function handleQualityChange(event) {
+    // Prevent the default touch behavior
+    event.preventDefault();
+
     // Get the selected quality
     const selectedQuality = event.currentTarget.querySelector(".vjs-menu-item-text").textContent.trim();
 

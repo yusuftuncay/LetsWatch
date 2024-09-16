@@ -115,6 +115,35 @@ main.show {
     background-color: #800000;
     box-shadow: 0 0 20px 4px black;
 }
+/* #region Loaded */
+.recently-watched,
+.text-white.main-title.loaded {
+    display: flex;
+    align-items: flex-start;
+    max-height: 0;
+    opacity: 0;
+    transition: max-height 1s cubic-bezier(0.65, 0.05, 0.35, 1);
+}
+/* Loaded */
+.recently-watched.loaded,
+.text-white.main-title.loaded {
+    max-height: 326px;
+    opacity: 1;
+}
+/* Animation for opacity */
+@keyframes fade {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+.recently-watched.loaded,
+.text-white.main-title.loaded {
+    animation: fade 0.5s ease 0.5s forwards;
+}
+/* #endregion */
 /* #endregion */
 
 /* #region Schedule */

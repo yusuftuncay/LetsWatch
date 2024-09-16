@@ -6,14 +6,12 @@ import { getFirebase } from "./init.js";
 
 // Variable to store the previous data in localStorage
 let previousLocalStorageData = {};
-// Flag to indicate that initial data has been downloaded
-let isDataInitialized = false;
 
 // Function to upload localStorage items to Firestore
 async function uploadData() {
     onAuthStateChanged(auth, async (user) => {
-        // Prevent upload if data isn't initialized
-        if (!user || !isDataInitialized) return;
+        // Prevent upload if user is not authenticated
+        if (!user) return;
 
         // Temporary object to store data that should be kept
         const keepData = {};
@@ -77,14 +75,7 @@ async function downloadUserData() {
                 previousLocalStorageData = docSnap.data();
                 // Log successful data download
                 console.log(`${new Date().toLocaleTimeString([], { hour12: false })} - Successfully downloaded user data from Firestore`);
-            } else {
-                // No data exists for this user, initialize empty previousLocalStorageData
-                previousLocalStorageData = {};
-                console.log(`${new Date().toLocaleTimeString([], { hour12: false })} - No existing user data found, initializing`);
             }
-
-            // Mark data as initialized regardless of whether data existed or not
-            isDataInitialized = true;
         } catch (error) {
             console.error(error.message);
         }

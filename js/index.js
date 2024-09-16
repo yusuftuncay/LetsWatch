@@ -252,13 +252,29 @@ function createScheduleCard(link, title, seconds, episodeNumber) {
 //#endregion
 
 //#region Recently Watched
-function displayRecentlyWatched() {
-    // Retrieve the recently watched data from local storage
-    let recentlyWatchedData = JSON.parse(localStorage.getItem("recently-watched")) || [];
+// Function to repeatedly call displayRecentlyWatched with an interval
+function tryDisplayRecentlyWatched() {
+    const maxDuration = 5000; // 5 seconds in milliseconds
+    const intervalDuration = 1000; // 1 second in milliseconds
+    const startTime = Date.now();
 
-    // Return if there are no recently watched items
-    if (recentlyWatchedData.length == 0) return;
+    const interval = setInterval(() => {
+        let recentlyWatchedData = JSON.parse(localStorage.getItem("recently-watched")) || [];
 
+        // If there's data, display it and clear the interval
+        if (recentlyWatchedData.length > 0) {
+            displayRecentlyWatched(recentlyWatchedData);
+            // Stop the interval once data is available
+            clearInterval(interval);
+        } else if (Date.now() - startTime > maxDuration) {
+            // Stop the interval if maxDuration is reached
+            clearInterval(interval);
+        }
+    }, intervalDuration); // Repeat every second
+}
+
+// Function to display the recently watched section
+function displayRecentlyWatched(recentlyWatchedData) {
     // Create a container
     const mainSection = document.querySelector("main");
     const watchedContainer = document.createElement("div");
@@ -358,6 +374,12 @@ function displayRecentlyWatched() {
     // Insert the recently watched section before other content in the main section
     mainSection.insertBefore(watchedContainer, mainSection.firstChild);
     mainSection.insertBefore(sectionTitle, mainSection.firstChild);
+
+    // Add animation class
+    setTimeout(() => {
+        watchedContainer.classList.add("loaded");
+        sectionTitle.classList.add("loaded");
+    }, 10);
 }
 //#endregion
 
@@ -395,10 +417,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // generateCards(animeData.topAiringAnimes, "Top Airing");
 
     // Display the recently watched section
-    onAuthStateChanged(auth, (user) => {
-        if (!user) return;
-        displayRecentlyWatched();
-    });
+    tryDisplayRecentlyWatched();
 
     // Check for title overflow
     checkTitleOverflow();
