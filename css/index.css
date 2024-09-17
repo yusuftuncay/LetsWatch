@@ -122,12 +122,18 @@ main.show {
     align-items: flex-start;
     max-height: 0;
     opacity: 0;
-    transition: max-height 1s cubic-bezier(0.65, 0.05, 0.35, 1);
+    padding: 0;
+    margin: 0;
+    transition: max-height 1s cubic-bezier(0.65, 0.05, 0.35, 1), padding 1s cubic-bezier(0.65, 0.05, 0.35, 1), margin 1s cubic-bezier(0.65, 0.05, 0.35, 1);
 }
 /* Loaded */
-.recently-watched.loaded,
+.recently-watched.loaded {
+    max-height: 326px;
+    padding: 18px; /* Padding for recently-watched */
+}
 .text-white.recently-watched-title.loaded {
     max-height: 326px;
+    margin: 15px 22px;
 }
 /* Animation for opacity */
 @keyframes fade {
