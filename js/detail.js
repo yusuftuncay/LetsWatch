@@ -1004,9 +1004,8 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // Fetch anime and episodes data
     animeDataAniwatch = await fetchAnimeDataFromAniwatch();
+    animeDataConsumet = await fetchAnimeDataFromConsumet(animeDataAniwatch);
     animeEpisodes = await fetchEpisodesData();
-    // Start fetching animeDataConsumet without waiting
-    const animeDataConsumetPromise = fetchAnimeDataFromConsumet(animeDataAniwatch);
 
     // Get the video player instance
     const player = setupVideoPlayer();
@@ -1024,10 +1023,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // Extra Cards
     setupSeasonsCard();
-    // Handle animeDataConsumet when it is available
-    animeDataConsumetPromise.then(() => {
-        return setupNextAiringEpisodeCard();
-    });
+    await setupNextAiringEpisodeCard();
 
     // Trigger a resize event to adjust the UI components
     window.dispatchEvent(new Event("resize"));
