@@ -5,14 +5,20 @@ import { playNextEpisode } from "../detail.js";
 //#region VideoPlayer Setup
 export function setupVideoPlayer() {
     // Set up the video player with configuration
-    const player = videojs("videoplayer", {
-        plugins: {
-            hlsQualitySelector: { displayCurrentQuality: true },
-        },
+    const playerConfig = {
         controlBar: {
             volumePanel: { inline: false },
         },
-    });
+    };
+
+    // Add the HLS Quality Selector plugin if not Safari
+    if (!isSafari()) {
+        playerConfig.plugins = {
+            hlsQualitySelector: { displayCurrentQuality: true },
+        };
+    }
+
+    const player = videojs("videoplayer", playerConfig);
 
     // Add event listeners for video end events
     player.on("ended", () => playNextEpisode(player));
