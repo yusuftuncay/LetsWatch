@@ -2,7 +2,6 @@
 import {
     fetchDataWithAlert,
     fetchDataWithRedBackgroundColor,
-    fetchAnimeData,
     fetchEpisodesData,
     getAnimeIDUsingURL,
     setEpisodeNumber,
@@ -11,6 +10,8 @@ import {
     getAnilistId,
     resizeTriggered,
     getTotalAvailableEpisodes,
+    fetchAnimeDataFromAniwatch,
+    fetchAnimeDataFromConsumet,
 } from "./util/main.js";
 import { updateAniListMediaEntry } from "./util/anilist.js";
 import { setupVideoPlayer, setVolume, isSafari } from "./util/video.js";
@@ -22,7 +23,8 @@ import { getFirebase } from "./firebase/init.js";
 //#endregion
 
 //#region Objects
-let animeData = {};
+let animeDataAniwatch = {};
+let animeDataConsumet = {};
 let animeEpisodes = {};
 //#endregion
 
@@ -57,7 +59,7 @@ function generateEpisodeList(player) {
         cardItemDiv.innerHTML = "";
 
         // Show error if no data is available
-        if (animeData.anime.moreInfo.status == "Not yet aired") {
+        if (animeDataAniwatch.anime.moreInfo.status == "Not yet aired") {
             const episodesElement = document.querySelector(".episodes");
             episodesElement.innerHTML = `<h3 class="card text-white padding-10-px" style="background-color:rgba(0, 255, 0, 0.32)">This anime has not yet aired</h3>`;
             return;
@@ -216,15 +218,15 @@ async function handleEpisodeClick(player, episode) {
             if (!user) return;
 
             // Resume episode from the last watched position
-            resumeEpisodeProgress(player, animeData.anime.info.id);
+            resumeEpisodeProgress(player, animeDataAniwatch.anime.info.id);
             // Save the episode in the recently watched list
             saveEpisodeInRecentlyWatched({
                 animeId: getAnimeIDUsingURL(),
-                animeTitle: animeData.anime.info.name,
+                animeTitle: animeDataAniwatch.anime.info.name,
                 episodeTitle: episode.title,
-                episodeImage: animeData.anime.info.poster,
+                episodeImage: animeDataAniwatch.anime.info.poster,
                 episodeNumber: episode.number,
-                episodeTotal: animeData.anime.info.stats.episodes.sub,
+                episodeTotal: animeDataConsumet.totalEpisodes,
                 episodeId: episode.episodeId,
                 episodeDuration: Math.floor(player.duration()),
                 subOrDub: subOrDubSelectElement.value,
@@ -465,12 +467,12 @@ function setupSeasonsCard() {
     cardContent.classList.add("card-item");
 
     // Check if seasons data is available
-    if (animeData.seasons.length > 0) {
+    if (animeDataAniwatch.seasons.length > 0) {
         // Set the card title
         cardTitle.textContent = "Seasons";
 
         // Loop through the seasons and create a link for each
-        animeData.seasons.forEach((season) => {
+        animeDataAniwatch.seasons.forEach((season) => {
             const seasonLink = document.createElement("a");
             seasonLink.href = `../html/detail.html?id=${season.id}`;
             seasonLink.textContent = season.name;
@@ -488,7 +490,7 @@ function setupSeasonsCard() {
         cardTitle.textContent = "Related";
 
         // Loop through the related anime and create a link for each
-        animeData.relatedAnimes.forEach((related) => {
+        animeDataAniwatch.relatedAnimes.forEach((related) => {
             const relatedLink = document.createElement("a");
             relatedLink.href = `../html/detail.html?id=${related.id}`;
             relatedLink.textContent = related.name;
@@ -512,19 +514,16 @@ function setupSeasonsCard() {
 
 // Function to setup the next airing episode information
 async function setupNextAiringEpisodeCard() {
-    // Fetch the next airing episode data
-    const data = await fetchDataWithAlert(`https://consumet.tuncay.be/meta/anilist/data/${getAnilistId(animeData)}`);
-
     // Check if the next airing episode data is available
-    if (!data.nextAiringEpisode) return;
+    if (!animeDataConsumet.nextAiringEpisode) return;
 
     // Create a div element for the section title
     let div = document.createElement("div");
     div.classList.add("next-airing");
 
     // Get the time until airing in seconds
-    let timeUntilAiring = data.nextAiringEpisode.timeUntilAiring;
-    let episode = data.nextAiringEpisode.episode;
+    let timeUntilAiring = animeDataConsumet.nextAiringEpisode.timeUntilAiring;
+    let episode = animeDataConsumet.nextAiringEpisode.episode;
 
     // Create a div element for the airing time with appropriate classes
     let airingTimeDiv = document.createElement("div");
@@ -854,7 +853,7 @@ function setupAniListUpdate(player) {
             onAuthStateChanged(auth, async (user) => {
                 if (user.email.includes("yusuf@tuncay.be"))
                     // Parameters: AniList ID, Episode Number, Total Episodes
-                    await updateAniListMediaEntry(getAnilistId(animeData), getEpisodeNumber(), getTotalEpisodes(animeData));
+                    await updateAniListMediaEntry(getAnilistId(animeDataAniwatch), getEpisodeNumber(), getTotalEpisodes(animeDataAniwatch));
             });
         }
     }
@@ -945,7 +944,7 @@ function setupNextEpisodeHandler(player) {
     // Monitor playback to show the next episode button at the right time
     function handleTimeUpdate() {
         // Check if the current episode is the last one
-        if (getTotalEpisodes(animeData) == getEpisodeNumber() || getTotalAvailableEpisodes(animeData) == getEpisodeNumber()) {
+        if (getTotalEpisodes(animeDataAniwatch) == getEpisodeNumber() || getTotalAvailableEpisodes(animeDataAniwatch) == getEpisodeNumber()) {
             nextEpisodeBtn.style.display = "none";
             return;
         }
@@ -1004,14 +1003,16 @@ document.addEventListener("DOMContentLoaded", async function () {
     auth = firebase.auth;
 
     // Fetch anime and episodes data
-    animeData = await fetchAnimeData();
+    animeDataAniwatch = await fetchAnimeDataFromAniwatch();
     animeEpisodes = await fetchEpisodesData();
+    // Start fetching animeDataConsumet without waiting
+    const animeDataConsumetPromise = fetchAnimeDataFromConsumet(animeDataAniwatch);
 
     // Get the video player instance
     const player = setupVideoPlayer();
 
     // Display the anime title
-    document.querySelector(".anime-title").textContent = animeData?.anime.info.name;
+    document.querySelector(".anime-title").textContent = animeDataAniwatch?.anime.info.name;
 
     // Generate the Cards
     generateEpisodeList(player);
@@ -1023,7 +1024,10 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // Extra Cards
     setupSeasonsCard();
-    await setupNextAiringEpisodeCard();
+    // Handle animeDataConsumet when it is available
+    animeDataConsumetPromise.then(() => {
+        return setupNextAiringEpisodeCard();
+    });
 
     // Trigger a resize event to adjust the UI components
     window.dispatchEvent(new Event("resize"));

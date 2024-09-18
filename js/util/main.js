@@ -44,13 +44,22 @@ export async function fetchDataWithoutRedBackgroundColor(url) {
 //#endregion
 
 //#region Fetch Anime/Episodes Data
-// Function to fetch anime data
-export async function fetchAnimeData() {
+// Function to fetch anime data from aniwatch api
+export async function fetchAnimeDataFromAniwatch() {
     // Get anime id from the URL
     const animeId = getAnimeIDUsingURL();
 
     // Fetch anime data
     return await fetchDataWithRedBackgroundColor(`https://aniwatch.tuncay.be/anime/info?id=${animeId}`);
+}
+
+// Function to fetch anime data from consumet api
+export async function fetchAnimeDataFromConsumet(animeDataAniwatch) {
+    // Get anime id from the URL
+    const anilistId = getAnilistId(animeDataAniwatch);
+
+    // Fetch anime data
+    return await fetchDataWithRedBackgroundColor(`https://consumet.tuncay.be/meta/anilist/data/${anilistId}`);
 }
 
 // Function to fetch episodes data
@@ -109,8 +118,8 @@ export function getEpisodeNumber() {
 }
 
 // Function to retrieve the total available episodes
-export function getTotalEpisodes(animeData) {
-    return animeData.totalEpisodes;
+export function getTotalEpisodes(animeDataAniwatch) {
+    return animeDataAniwatch.totalEpisodes;
 }
 // Function to retrieve the total number of episodes
 export function getTotalAvailableEpisodes() {
@@ -118,8 +127,8 @@ export function getTotalAvailableEpisodes() {
 }
 
 // Function to retrieve the anilistId
-export function getAnilistId(animeData) {
-    return animeData.anime.info.anilistId;
+export function getAnilistId(animeDataAniwatch) {
+    return animeDataAniwatch.anime.info.anilistId;
 }
 //#endregion
 
