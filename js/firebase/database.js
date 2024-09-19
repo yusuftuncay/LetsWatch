@@ -4,40 +4,43 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.0.0/fir
 import { getFirebase } from "./init.js";
 //#endregion
 
-// Variable to store the previous data in localStorage
-let previousLocalStorageData = {};
+// Firebase variable
+let lastDownloadedData = {};
+// Flag to track download status
+let isDownloadComplete = false;
 
 // Function to upload localStorage items to Firestore
 async function uploadData() {
+    // Check if the download is complete
+    if (!isDownloadComplete) return;
+
     onAuthStateChanged(auth, async (user) => {
-        // Prevent upload if user is not authenticated
         if (!user) return;
 
-        // Temporary object to store data that should be kept
         const keepData = {};
         // Collect specific items from localStorage for preservation
         ["recently-watched", "volume", "quality"].forEach((key) => {
-            if (localStorage.getItem(key)) {
-                keepData[key] = localStorage.getItem(key);
+            const value = localStorage.getItem(key);
+            if (value && value.trim()) {
+                keepData[key] = value;
             }
         });
 
-        // Ensure keepData is not empty before proceeding
-        if (Object.keys(keepData).length === 0) return;
+        // If the data is the same, do nothing
+        if (keepData["recently-watched"] === lastDownloadedData["recently-watched"]) return;
 
-        // Check if there are changes by comparing current data with previous data
-        if (JSON.stringify(keepData) !== JSON.stringify(previousLocalStorageData)) {
+        try {
+            // Reference the user data
             const userRef = doc(db, "users", user.email);
-
-            // Attempt to upload the new local storage data to Firestore
-            try {
-                await setDoc(userRef, keepData);
-                console.log(`${new Date().toLocaleTimeString([], { hour12: false })} - Successfully uploaded user data to Firestore`);
-                // Update the previous data with the current data
-                previousLocalStorageData = { ...keepData };
-            } catch (error) {
-                console.error(error.message);
-            }
+            // Upload the user data to Firestore
+            await setDoc(userRef, keepData);
+            // Update the local variable with the new data
+            lastDownloadedData = { ...keepData };
+            // Log successful data upload
+            console.log(`${new Date().toLocaleTimeString([], { hour12: false })} - Successfully uploaded user data to Firestore`);
+        } catch (error) {
+            console.error(error.message);
+            return;
         }
     });
 }
@@ -65,16 +68,18 @@ async function downloadUserData() {
         // Reference to the user data in Firestore
         const userRef = doc(db, "users", user.email);
 
-        // Attempt to retrieve the user data from Firestore
         try {
+            // Fetch the user data from Firestore
             const docSnap = await getDoc(userRef);
             if (docSnap.exists()) {
+                // Store the user data in a variable
+                lastDownloadedData = docSnap.data();
                 // Populate localStorage with the user data
                 Object.entries(docSnap.data()).forEach(([key, value]) => localStorage.setItem(key, value));
-                // Update the previousLocalStorageData variable
-                previousLocalStorageData = docSnap.data();
                 // Log successful data download
                 console.log(`${new Date().toLocaleTimeString([], { hour12: false })} - Successfully downloaded user data from Firestore`);
+                // Mark the download as complete
+                isDownloadComplete = true;
             }
         } catch (error) {
             console.error(error.message);
