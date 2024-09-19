@@ -212,6 +212,8 @@ async function handleEpisodeClick(player, episode) {
         addEventListenerToQualityItem();
         // Load the preferred quality
         loadPreferredQuality();
+        // Reload the video player
+        player.load();
 
         // Check authentication state
         onAuthStateChanged(auth, (user) => {
@@ -240,17 +242,6 @@ async function handleEpisodeClick(player, episode) {
 
         // Update the episodes list
         updateEpisodeList();
-    });
-
-    // Setup subtitles on certain player events
-    player.on("waiting", () => {
-        setupSubtitles(player, episodeData);
-    });
-    player.on("seeked", () => {
-        setupSubtitles(player, episodeData);
-    });
-    player.on("pause", () => {
-        setupSubtitles(player, episodeData);
     });
 
     // Setup AniList update
@@ -375,7 +366,7 @@ function setupSubtitles(player, episode) {
     const englishTrack = episode.tracks.find((track) => track.kind === "captions" && track.label === "English");
     if (englishTrack) {
         // Add the new track
-        player.addRemoteTextTrack(
+        const addedTrack = player.addRemoteTextTrack(
             {
                 kind: englishTrack.kind,
                 label: "English",
@@ -383,16 +374,10 @@ function setupSubtitles(player, episode) {
                 src: englishTrack.file,
             },
             false
-        );
+        ).track;
 
-        // Set the default caption style
-        for (var i = 0; i < tracks.length; i++) {
-            var track = tracks[i];
-            // Find the English captions track and mark it as "showing"
-            if (track.kind === "captions" && track.language === "en") {
-                track.mode = "showing";
-            }
-        }
+        // Set the added track to "showing"
+        addedTrack.mode = "showing";
     }
 }
 //#endregion
