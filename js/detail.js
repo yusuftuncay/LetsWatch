@@ -14,7 +14,7 @@ import {
     fetchAnimeDataFromConsumet,
 } from "./util/main.js";
 import { updateAniListMediaEntry } from "./util/anilist.js";
-import { setupVideoPlayer, setVolume, isSafari } from "./util/video.js";
+import { setupVideoPlayer, setVolume, addEventListenerToQualityItem, loadPreferredQuality, isSafari } from "./util/video.js";
 //#endregion
 
 //#region Firebase
@@ -393,53 +393,6 @@ function setupSubtitles(player, episode) {
                 track.mode = "showing";
             }
         }
-    }
-}
-//#endregion
-
-//#region Quality Helpers
-// Function to add event listeners to quality items
-function addEventListenerToQualityItem() {
-    // Get all quality items
-    const qualities = document.querySelectorAll(".vjs-quality-selector .vjs-menu-item");
-
-    // Add event listener to each quality item
-    qualities.forEach((item) => {
-        // Remove any existing listeners
-        item.removeEventListener("click", handleQualityChange);
-        item.removeEventListener("touchend", handleQualityChange);
-
-        // Add new listeners for both click and touchend
-        item.addEventListener("click", handleQualityChange);
-        item.addEventListener("touchend", handleQualityChange);
-    });
-}
-
-// Function to handle quality change
-function handleQualityChange(event) {
-    // Prevent the default touch behavior
-    event.preventDefault();
-
-    // Get the selected quality
-    const selectedQuality = event.currentTarget.querySelector(".vjs-menu-item-text").textContent.trim();
-
-    // Set the selected quality
-    localStorage.setItem("quality", selectedQuality);
-}
-
-// Function to load the preferred quality from local storage
-function loadPreferredQuality() {
-    // Retrieve the preferred quality from local storage
-    const validQualities = ["1080p", "720p", "480p", "360p", "Auto"];
-    const storedQuality = localStorage.getItem("quality");
-    const preferredQuality = validQualities.includes(storedQuality) ? storedQuality : "1080p";
-
-    // Search for the preferred quality directly in the menu items
-    const preferredItem = Array.from(document.querySelectorAll(".vjs-menu-item .vjs-menu-item-text")).find((item) => item.textContent.trim() == preferredQuality);
-
-    // Click the preferred quality item if found
-    if (preferredItem) {
-        preferredItem.closest(".vjs-menu-item").click();
     }
 }
 //#endregion
