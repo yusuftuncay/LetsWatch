@@ -131,8 +131,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         window.location.href.startsWith("https://letswatch.site/?version=") || window.location.href.startsWith("https://letswatch.site/index.html?version=") ? 500 : 5000;
     // Upload data every 5 seconds
     setInterval(uploadData, interval);
-
     // Backup data every 5 minutes
     setInterval(backupData, 300000);
-    await backupData();
 });
