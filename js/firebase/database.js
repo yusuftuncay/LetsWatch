@@ -132,6 +132,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Upload data every 5 seconds
     setInterval(uploadData, interval);
 
-    // Backup data every 2 minutes
-    setInterval(backupData, 120000);
+    // Backup data every 10 minutes
+    setInterval(backupData, 600000);
 });
