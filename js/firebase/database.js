@@ -30,7 +30,7 @@ async function uploadData() {
         if (keepData["recently-watched"] === lastDownloadedData["recently-watched"]) return;
 
         try {
-            // Reference the user data
+            // Reference the user data using the user's email
             const userRef = doc(db, "users", user.email);
             // Upload the user data to Firestore
             await setDoc(userRef, keepData);
@@ -41,6 +41,34 @@ async function uploadData() {
         } catch (error) {
             console.error(error.message);
             return;
+        }
+    });
+}
+
+// Function to back up user data to the "backup" collection
+async function backupData() {
+    onAuthStateChanged(auth, async (user) => {
+        if (!user) return;
+
+        const backupData = {};
+        // Collect specific items from localStorage for backup
+        ["recently-watched", "volume", "quality"].forEach((key) => {
+            const value = localStorage.getItem(key);
+            if (value && value.trim()) {
+                backupData[key] = value;
+            }
+        });
+
+        // If there is no recently-watched data, do nothing
+        if (!backupData["recently-watched"]) return;
+
+        try {
+            // Reference the backup data using the user's email
+            const backupRef = doc(db, "backup", user.email);
+            // Upload only the recently-watched data as an object
+            await setDoc(backupRef, { "recently-watched": backupData["recently-watched"] });
+        } catch (error) {
+            console.error(error.message);
         }
     });
 }
@@ -97,10 +125,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     db = firebase.db;
     // Download user data
     await downloadUserData();
-});
 
-// Check for changes every minute or every X amount of seconds based on if the user is on the homepage
-//(because it has to be updated almost instantly when the user deletes an item from the recently-watched list)
-const checkInterval =
-    window.location.href.startsWith("https://letswatch.site/?version=") || window.location.href.startsWith("https://letswatch.site/index.html?version=") ? 500 : 5000;
-setInterval(uploadData, checkInterval);
+    // 0.5 seconds for the home page, 5 seconds for other pages
+    const interval =
+        window.location.href.startsWith("https://letswatch.site/?version=") || window.location.href.startsWith("https://letswatch.site/index.html?version=") ? 500 : 5000;
+    // Upload data every 5 seconds
+    setInterval(uploadData, interval);
+
+    // Backup data every 5 minutes
+    setInterval(backupData, 300000);
+    await backupData();
+});
