@@ -1,6 +1,7 @@
 //#region Firebase
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
 import { getFirebase } from "./firebase/init.js";
+//#endregion
 
 //#region Search Function
 function search() {
@@ -41,17 +42,10 @@ function initNavbar() {
 
         // Check if the user is logged in with a verified email
         if (user && user.emailVerified && loginButton) {
-            // Update the navbar link to show "Logout" if the user is logged in
-            loginButton.textContent = "Logout";
-            // Add event listener for logout
-            loginButton.addEventListener("click", () => {
-                // Sign out user
-                auth.signOut();
-                // Clear localStorage
-                localStorage.clear();
-                // Redirect to the login page
-                window.location.href = "../html/login.html";
-            });
+            // Update the navbar link to show "Account" if the user is logged in
+            loginButton.textContent = "Account";
+            // Go to the account page
+            loginButton.href = "../html/account.html";
         } else if (loginButton) {
             // Show "Login" if the user is not logged in
             loginButton.textContent = "Login";

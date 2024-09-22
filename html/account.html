@@ -11,6 +11,7 @@
 
         <!-- JS -->
         <script type="module" src="../js/shared.js" crossorigin="anonymous"></script>
+        <script type="module" src="../js/account.js" crossorigin="anonymous"></script>
         <!-- Prevent "favicon.ico" error -->
         <link rel="shortcut icon" href="#" />
         <!-- Shared Import -->
@@ -43,20 +44,29 @@
         <!-- #region Body -->
         <main>
             <section id="account-container">
-                <form class="account-form login-form">
-                    <!-- Login -->
-                    <h3 class="text-white">Login</h3>
+                <form class="account-form email-update-form">
+                    <!-- Email -->
+                    <h3 class="text-white">Email</h3>
                     <input type="email" id="email" placeholder="Email" required />
-                    <input type="password" id="password" placeholder="Password" required />
+                    <input type="password" id="current-password" placeholder="Current Password" required />
                     <!-- Button -->
-                    <button type="submit">Login</button>
-                    <!-- Helpers -->
-                    <div>
-                        <p class="text-white">Don't have an account? <a href="../html/signup.html">Sign up</a></p>
-                        <p class="text-white">Forgot your password? <a href="#" id="reset-password-link">Reset</a></p>
-                    </div>
+                    <button type="submit">Update Email</button>
+                </form>
+                <form class="account-form password-update-form">
+                    <!-- Password -->
+                    <h3 class="text-white">Password</h3>
+                    <input type="password" id="password" placeholder="Password" required />
+                    <input type="password" id="password-repeat" placeholder="Repeat Password" required />
+                    <!-- Button -->
+                    <button type="submit">Update Password</button>
                 </form>
             </section>
+            <form class="account-form">
+                <!-- Backup -->
+                <!-- <button class="backup">Backup Data</button> -->
+                <!-- Log out -->
+                <button class="logout">Log out</button>
+            </form>
         </main>
         <!-- #endregion -->
 

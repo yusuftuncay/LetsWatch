@@ -3,7 +3,6 @@ import { fetchDataWithoutRedBackgroundColor, checkTitleOverflow } from "./util/m
 //#endregion
 
 //#region Firebase
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
 import { getFirebase } from "./firebase/init.js";
 //#endregion
 
