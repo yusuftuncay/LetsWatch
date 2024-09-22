@@ -8,6 +8,8 @@ import { getFirebase } from "./init.js";
 let lastDownloadedData = {};
 // Flag to track download status
 let isDownloadComplete = false;
+// Store last backup date (as YYYY-MM-DD)
+let lastBackupDate = localStorage.getItem("last-backup-date") || "";
 
 // Function to upload localStorage items to Firestore
 async function uploadData() {
@@ -67,6 +69,12 @@ async function backupData() {
             const backupRef = doc(db, "backup", user.email);
             // Upload only the recently-watched data as an object
             await setDoc(backupRef, { "recently-watched": backupData["recently-watched"] });
+            // Update last backup date in localStorage
+            const today = new Date().toISOString().split("T")[0]; // Get YYYY-MM-DD
+            lastBackupDate = today;
+            localStorage.setItem("last-backup-date", lastBackupDate);
+            // Log successful backup
+            console.log(`${new Date().toLocaleTimeString([], { hour12: false })} - Backup successful`);
         } catch (error) {
             console.error(error.message);
         }
@@ -132,6 +140,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Upload data every 5 seconds
     setInterval(uploadData, interval);
 
-    // Backup data every 10 minutes
-    setInterval(backupData, 600000);
+    // Backup data after 10 minutes, but only once per day and when the user is on the detail page
+    setInterval(() => {
+        // Get today's date as YYYY-MM-DD
+        const today = new Date().toISOString().split("T")[0];
+        // Perform backup if it's the next day
+        if (today !== lastBackupDate && window.location.href.startsWith("https://letswatch.site/html/detail")) {
+            backupData();
+        }
+    }, 600000); // Check after 10 minutes
 });
