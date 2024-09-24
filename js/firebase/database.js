@@ -65,14 +65,17 @@ async function backupData() {
         if (!backupData["recently-watched"]) return;
 
         try {
-            // Reference the backup data using the user's email
-            const backupRef = doc(db, "backup", user.email);
-            // Upload only the recently-watched data as an object
-            await setDoc(backupRef, { "recently-watched": backupData["recently-watched"] });
             // Update last backup date in localStorage
             const today = new Date().toISOString().split("T")[0]; // Get YYYY-MM-DD
             lastBackupDate = today;
             localStorage.setItem("last-backup-date", lastBackupDate);
+            // Reference the backup data using the user's email
+            const backupRef = doc(db, "backup", user.email);
+            // Upload both the recently-watched data and last-backup-date
+            await setDoc(backupRef, {
+                "recently-watched": backupData["recently-watched"],
+                "last-backup-date": lastBackupDate,
+            });
             // Log successful backup
             console.log(`${new Date().toLocaleTimeString([], { hour12: false })} - Backup successful`);
         } catch (error) {
