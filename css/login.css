@@ -5,14 +5,14 @@ body {
     justify-content: center;
 }
 main {
-    margin: 180px auto 0 auto;
+    margin-top: 140px;
     padding: 0;
+    /* height: 80vh; */
     text-shadow: 0 0 14px black;
     width: 350px;
     display: flex;
-    justify-content: center;
-    align-items: center;
     flex-direction: column;
+    align-items: center;
 }
 /* #endregion */
 
@@ -104,9 +104,9 @@ main {
 /* #endregion */
 
 /* #region Media Queries */
-@media (max-width: 1200px) {
+@media (max-width: 600px) {
     #account-container {
-        width: 80%;
+        width: 90%;
     }
 }
 /* #endregion */
