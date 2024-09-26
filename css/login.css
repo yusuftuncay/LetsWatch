@@ -100,13 +100,18 @@ main {
     margin: 20px 0;
     gap: 20px;
 }
-.account-buttons-container .logout,
-.account-buttons-container .delete {
+.account-buttons-container .logout {
     background-color: darkred;
 }
 .account-buttons-container .backup {
     background-color: darkgreen;
     width: 160px;
+}
+.account-buttons-container .delete {
+    display: flex;
+    align-items: center;
+    color: white;
+    cursor: pointer;
 }
 .account-buttons-container button {
     border: none;
