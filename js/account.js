@@ -7,6 +7,7 @@ import {
     EmailAuthProvider,
 } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
 import { getFirebase } from "./firebase/init.js";
+import { doc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
 //#endregion
 
 //#region Update User Email
@@ -73,10 +74,38 @@ async function updateUserPassword(newPassword, newPasswordRepeat, currentPasswor
 }
 //#endregion
 
+//#region Delete User
+async function deleteUser() {
+    // Alert
+    var confirmation = confirm("Are you sure you want to delete your account? All data will be lost permanently");
+    if (!confirmation) return;
+
+    // Get the current user
+    const user = auth.currentUser;
+
+    // Check if the user exists
+    if (!user) return;
+
+    try {
+        // Delete the user's document
+        await deleteDoc(doc(db, "users", user.email));
+
+        // Delete user from Firebase Authentication
+        await user.delete();
+
+        // Redirect to login page
+        window.location.href = "../html/login.html";
+    } catch (error) {
+        alert(error.message);
+    }
+}
+//#endregion
+
 //#region "DOMContentLoaded" event handler
 document.addEventListener("DOMContentLoaded", async () => {
     // Fetch Firebase
     const firebase = await getFirebase();
+    db = firebase.db;
     auth = firebase.auth;
 
     // Email update form
@@ -94,7 +123,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     const passwordForm = document.querySelector(".password-update-form");
     if (passwordForm) {
         passwordForm.addEventListener("submit", (event) => {
+            // Prevent the form from submitting
             event.preventDefault();
+
+            // Get the values from the form
             const newPassword = document.getElementById("password").value;
             const newPasswordRepeat = document.getElementById("password-repeat").value;
             const currentPassword = document.getElementById("current-password").value;
@@ -102,10 +134,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    // Navbar login/logout button
+    // Logout button
     const logoutButton = document.querySelector(".logout");
     if (logoutButton) {
-        logoutButton.addEventListener("click", () => {
+        logoutButton.addEventListener("click", (event) => {
+            // Prevent the form from submitting
+            event.preventDefault();
+
+            // Sign out the user
             firebaseSignOut(auth)
                 .then(() => {
                     localStorage.clear();
@@ -114,6 +150,18 @@ document.addEventListener("DOMContentLoaded", async () => {
                 .catch((error) => {
                     alert(error.message);
                 });
+        });
+    }
+
+    // Delete account button
+    const deleteButton = document.querySelector(".delete");
+    if (deleteButton) {
+        deleteButton.addEventListener("click", (event) => {
+            // Prevent the form from submitting
+            event.preventDefault();
+
+            // Delete the user
+            deleteUser();
         });
     }
 });

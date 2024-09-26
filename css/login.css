@@ -84,7 +84,7 @@ main {
 }
 /* #endregion */
 
-/* #region Account Page Styles */
+/* #region Account Update Page Styles */
 .email-update-form a,
 .password-update-form a {
     margin-left: 0;
@@ -94,12 +94,32 @@ main {
 .password-update-form a:hover {
     cursor: pointer;
 }
-.account-form .logout {
+/* Account Buttons */
+.account-buttons-container {
+    display: flex;
+    margin: 20px 0;
+    gap: 20px;
+}
+.account-buttons-container .logout,
+.account-buttons-container .delete {
     background-color: darkred;
 }
-.account-form .backup {
+.account-buttons-container .backup {
     background-color: darkgreen;
     width: 160px;
+}
+.account-buttons-container button {
+    border: none;
+    border-radius: 18px;
+    box-shadow: 0 0 20px 0 #333;
+    color: white;
+    cursor: pointer;
+    font: inherit;
+    padding: 15px;
+    transition: background-color 0.3s ease;
+}
+.account-buttons-container button:hover {
+    background-color: #444;
 }
 /* #endregion */
 

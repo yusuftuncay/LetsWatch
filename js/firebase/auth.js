@@ -1,6 +1,5 @@
 //#region Firebase
 import {
-    getAuth,
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
     signOut as firebaseSignOut,
@@ -23,11 +22,11 @@ function register(email, password) {
                     window.location.href = "../html/login.html";
                 })
                 .catch((error) => {
-                    alert(`Error sending verification email: ${error.message}`);
+                    alert(error.message);
                 });
         })
         .catch((error) => {
-            alert(`Registration failed: ${error.message}`);
+            alert(error.message);
         });
 }
 //#endregion
@@ -45,7 +44,7 @@ function signIn(email, password) {
             }
         })
         .catch((error) => {
-            alert(`Sign in failed: ${error.message}`);
+            alert(error.message);
         });
 }
 //#endregion
@@ -65,7 +64,7 @@ function signOut() {
             }
         })
         .catch((error) => {
-            alert(`Sign out failed: ${error.message}`);
+            alert(error.message);
         });
 }
 //#endregion
@@ -77,7 +76,7 @@ function sendPasswordReset(email) {
             alert("Password reset email sent");
         })
         .catch((error) => {
-            alert(`Error sending password reset email: ${error.message}`);
+            alert(error.message);
         });
 }
 //#endregion

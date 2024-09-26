@@ -47,25 +47,27 @@
                 <form class="account-form email-update-form">
                     <!-- Email -->
                     <h3 class="text-white">Email</h3>
-                    <input type="email" id="email" placeholder="Email" required />
-                    <input type="password" id="current-password" placeholder="Current Password" required />
+                    <input type="email" id="email" placeholder="Email" autocomplete="new-email" required />
+                    <input type="password" id="current-password" placeholder="Current Password" autocomplete="new-password" required />
                     <!-- Button -->
                     <button type="submit">Update Email</button>
                 </form>
                 <form class="account-form password-update-form">
                     <!-- Password -->
                     <h3 class="text-white">Password</h3>
-                    <input type="password" id="password" placeholder="Password" required />
-                    <input type="password" id="password-repeat" placeholder="Repeat Password" required />
+                    <input type="password" id="password" placeholder="Password" autocomplete="new-password" required />
+                    <input type="password" id="password-repeat" placeholder="Repeat Password" autocomplete="new-password" required />
                     <!-- Button -->
                     <button type="submit">Update Password</button>
                 </form>
             </section>
-            <form class="account-form">
+            <form class="account-buttons-container">
                 <!-- Backup -->
                 <!-- <button class="backup">Backup Data</button> -->
                 <!-- Log out -->
-                <button class="logout">Log out</button>
+                <button class="logout">Log Out</button>
+                <!-- Delete Account -->
+                <button class="delete">Delete Account</button>
             </form>
         </main>
         <!-- #endregion -->
