@@ -1,10 +1,9 @@
-//#region Firebase
+// Firebase
 import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
 import { getFirebase } from "./init.js";
-//#endregion
 
-// Firebase variable
+// Last downloaded user data
 let lastDownloadedData = {};
 // Flag to track download status
 let isDownloadComplete = false;
@@ -126,17 +125,17 @@ async function downloadUserData() {
     });
 }
 
+// Clear localStorage
+clearLocalStorage();
+// Fetch Firebase
+const firebase = await getFirebase();
+auth = firebase.auth;
+db = firebase.db;
+// Download user data
+await downloadUserData();
+
 // "DOMContentLoaded" event handler
 document.addEventListener("DOMContentLoaded", async () => {
-    // Clear localStorage
-    clearLocalStorage();
-    // Fetch Firebase
-    const firebase = await getFirebase();
-    auth = firebase.auth;
-    db = firebase.db;
-    // Download user data
-    await downloadUserData();
-
     // 0.5 seconds for the home page, 5 seconds for other pages
     const interval =
         window.location.href.startsWith("https://letswatch.site/?version=") || window.location.href.startsWith("https://letswatch.site/index.html?version=") ? 500 : 5000;

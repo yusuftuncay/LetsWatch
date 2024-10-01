@@ -942,7 +942,6 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // Fetch anime and episodes data
     animeDataAniwatch = await fetchAnimeDataFromAniwatch();
-    animeDataConsumet = await fetchAnimeDataFromConsumet(animeDataAniwatch);
     animeEpisodes = await fetchEpisodesData();
 
     // Get the video player instance
@@ -959,8 +958,11 @@ document.addEventListener("DOMContentLoaded", async function () {
     setupSubOrDubDropdown(player);
     setVolume(player);
 
-    // Extra Cards
+    // Setup season card
     setupSeasonsCard();
+
+    // Fetch the anime data from Consumet and setup the next airing episode card
+    animeDataConsumet = await fetchAnimeDataFromConsumet(animeDataAniwatch);
     await setupNextAiringEpisodeCard();
 
     // Trigger a resize event to adjust the UI components

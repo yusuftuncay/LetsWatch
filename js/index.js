@@ -251,29 +251,14 @@ function createScheduleCard(link, title, seconds, episodeNumber) {
 //#endregion
 
 //#region Recently Watched
-// Function to repeatedly call displayRecentlyWatched with an interval
-function tryDisplayRecentlyWatched() {
-    const maxDuration = 5000; // 5 seconds in milliseconds
-    const intervalDuration = 100; // 1 second in milliseconds
-    const startTime = Date.now();
-
-    const interval = setInterval(() => {
-        let recentlyWatchedData = JSON.parse(localStorage.getItem("recently-watched")) || [];
-
-        // If there's data, display it and clear the interval
-        if (recentlyWatchedData.length > 0) {
-            displayRecentlyWatched(recentlyWatchedData);
-            // Stop the interval once data is available
-            clearInterval(interval);
-        } else if (Date.now() - startTime > maxDuration) {
-            // Stop the interval if maxDuration is reached
-            clearInterval(interval);
-        }
-    }, intervalDuration); // Repeat every second
-}
-
 // Function to display the recently watched section
-function displayRecentlyWatched(recentlyWatchedData) {
+function displayRecentlyWatched() {
+    // Fetch recently watched data from local storage
+    let recentlyWatchedData = JSON.parse(localStorage.getItem("recently-watched")) || [];
+
+    // Return if there is no data
+    if (recentlyWatchedData.length == 0) return;
+
     // Create a container
     const mainSection = document.querySelector("main");
     const watchedContainer = document.createElement("div");
@@ -294,7 +279,7 @@ function displayRecentlyWatched(recentlyWatchedData) {
 
     // Create a title
     const sectionTitle = document.createElement("h1");
-    sectionTitle.classList.add("text-white", "main-title", "recently-watched-title");
+    sectionTitle.classList.add("text-white", "main-title");
     sectionTitle.textContent = "Recently Watched";
 
     // Loop through each recently watched item
@@ -398,8 +383,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     loadingElement.textContent = "Loading ...";
     document.querySelector("body").appendChild(loadingElement);
 
-    // Add a class
+    // Add show class
     loadingElement.classList.add("show");
+
+    // Display the recently watched section
+    setTimeout(() => {
+        displayRecentlyWatched();
+    }, 500);
 
     // Generate "Schedule" section
     // await generateSchedule();
@@ -408,15 +398,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const animeData = await fetchDataWithoutRedBackgroundColor("https://aniwatch.tuncay.be/anime/home");
 
     // Generate cards for different sections
-    // generateCards(animeData.spotlightAnimes, "Spotlight");
-    // generateCards(animeData.trendingAnimes, "Trending");
     generateCards(animeData.latestEpisodeAnimes, "Recent Episodes");
     generateCards(animeData.topUpcomingAnimes, "Upcoming Anime");
-    // generateCards(animeData.top10Animes.today, "Top 10");
-    // generateCards(animeData.topAiringAnimes, "Top Airing");
-
-    // Display the recently watched section
-    tryDisplayRecentlyWatched();
 
     // Check for title overflow
     checkTitleOverflow();
