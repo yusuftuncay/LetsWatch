@@ -389,7 +389,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Display the recently watched section
     setTimeout(() => {
         displayRecentlyWatched();
-    }, 500);
+    }, 1000);
 
     // Generate "Schedule" section
     // await generateSchedule();
