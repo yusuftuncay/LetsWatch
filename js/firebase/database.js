@@ -38,7 +38,7 @@ async function uploadData() {
             // Update the local variable with the new data
             lastDownloadedData = { ...keepData };
             // Log successful data upload
-            console.log(`99:99:99 - Successfully uploaded user data to Firestore`);
+            console.log(`Successfully uploaded user data to Firestore`);
         } catch (error) {
             console.error(error.message);
             return;
