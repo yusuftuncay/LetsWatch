@@ -889,7 +889,7 @@ function setupNextEpisodeHandler(player) {
 
         // Show the next episode button when the current episode is almost finished
         let percentage = (player.currentTime() / player.duration()) * 100;
-        nextEpisodeBtn.style.display = percentage >= 92 && percentage <= 100 ? "block" : "none";
+        nextEpisodeBtn.style.display = percentage >= 88 && percentage <= 100 ? "block" : "none";
     }
 
     // Add event listener to show the next episode button
