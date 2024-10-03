@@ -65,7 +65,7 @@ async function backupData() {
 
         try {
             // Update last backup date in localStorage
-            const today = new Date().toISOString().slice(11, 16) + " [" + new Date().toLocaleDateString([]) + "]"; // Get HH:MM [DD/MM/YYYY]
+            const today = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) + " [" + new Date().toLocaleDateString([]) + "]"; // HH:MM [MM/DD/YYYY]
             lastBackupDate = today;
             localStorage.setItem("last-backup-date", lastBackupDate);
             // Reference the backup data using the user's email
@@ -101,7 +101,7 @@ function clearLocalStorage() {
 // Function to fetch user data from Firestore and populate localStorage with it
 async function downloadUserData() {
     onAuthStateChanged(auth, async (user) => {
-        if (!user) return;
+        if (!user || isDownloadComplete) return;
 
         // Reference to the user data in Firestore
         const userRef = doc(db, "users", user.email);
