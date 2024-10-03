@@ -65,7 +65,7 @@ async function backupData() {
 
         try {
             // Update last backup date in localStorage
-            const today = new Date().toISOString().slice(11, 16) + " [" + new Date().toLocaleDateString("en-GB") + "]"; // Get HH:MM [DD/MM/YYYY]
+            const today = new Date().toISOString().slice(11, 16) + " [" + new Date().toLocaleDateString([]) + "]"; // Get HH:MM [DD/MM/YYYY]
             lastBackupDate = today;
             localStorage.setItem("last-backup-date", lastBackupDate);
             // Reference the backup data using the user's email
@@ -142,7 +142,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Set the interval to call uploadData
     setInterval(uploadData, interval);
 
-    // Backup data after 10 minutes, but only once per day and when the user is on the detail page
+    // Backup data after 5 minutes, but only once per day and when the user is on the detail page
     setTimeout(() => {
         // Get today's date as YYYY-MM-DD
         const today = new Date().toISOString().split("T")[0];
@@ -150,5 +150,5 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (today !== lastBackupDate && window.location.href.startsWith("https://letswatch.site/html/detail")) {
             backupData();
         }
-    }, 600000);
+    }, 300000);
 });
