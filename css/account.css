@@ -105,13 +105,9 @@ main {
 }
 .account-buttons-container .backup {
     background-color: darkgreen;
-    width: 160px;
 }
 .account-buttons-container .delete {
-    display: flex;
-    align-items: center;
-    color: white;
-    cursor: pointer;
+    background-color: darkred;
 }
 .account-buttons-container button {
     border: none;

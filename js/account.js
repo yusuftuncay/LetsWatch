@@ -77,8 +77,12 @@ async function updateUserPassword(newPassword, newPasswordRepeat, currentPasswor
 //#region Delete User
 async function deleteUser() {
     // Alert
-    var confirmation = confirm("Are you sure you want to delete your account? All data will be lost permanently");
+    var confirmation = confirm("Are you sure you want to delete your account?");
     if (!confirmation) return;
+
+    // 2nd Alert
+    var confirmation2 = confirm("YOU ARE ABOUT TO DELETE YOUR ACCOUNT\n\nARE YOU SURE?");
+    if (!confirmation2) return;
 
     // Get the current user
     const user = auth.currentUser;
