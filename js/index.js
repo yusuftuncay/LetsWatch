@@ -251,14 +251,28 @@ function createScheduleCard(link, title, seconds, episodeNumber) {
 //#endregion
 
 //#region Recently Watched
+// Function to repeatedly call displayRecentlyWatched with an interval
+function tryDisplayRecentlyWatched() {
+    const maxDuration = 5000; // 5 seconds in milliseconds
+    const intervalDuration = 500; // 0.5 seconds in milliseconds
+    const startTime = Date.now();
+
+    const interval = setInterval(() => {
+        let recentlyWatchedData = JSON.parse(localStorage.getItem("recently-watched")) || [];
+
+        // If there's data, display it and clear the interval
+        if (recentlyWatchedData.length > 0) {
+            displayRecentlyWatched(recentlyWatchedData);
+            // Stop the interval once data is available
+            clearInterval(interval);
+        } else if (Date.now() - startTime > maxDuration) {
+            // Stop the interval if maxDuration is reached
+            clearInterval(interval);
+        }
+    }, intervalDuration);
+}
 // Function to display the recently watched section
-function displayRecentlyWatched() {
-    // Fetch recently watched data from local storage
-    let recentlyWatchedData = JSON.parse(localStorage.getItem("recently-watched")) || [];
-
-    // Return if there is no data
-    if (recentlyWatchedData.length == 0) return;
-
+function displayRecentlyWatched(recentlyWatchedData) {
     // Create a container
     const mainSection = document.querySelector("main");
     const watchedContainer = document.createElement("div");
@@ -279,7 +293,7 @@ function displayRecentlyWatched() {
 
     // Create a title
     const sectionTitle = document.createElement("h1");
-    sectionTitle.classList.add("text-white", "main-title");
+    sectionTitle.classList.add("text-white", "main-title", "recently-watched-title");
     sectionTitle.textContent = "Recently Watched";
 
     // Loop through each recently watched item
@@ -386,11 +400,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Add show class
     loadingElement.classList.add("show");
 
-    // Display the recently watched section
-    setTimeout(() => {
-        displayRecentlyWatched();
-    }, 1000);
-
     // Generate "Schedule" section
     // await generateSchedule();
 
@@ -400,6 +409,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Generate cards for different sections
     generateCards(animeData.latestEpisodeAnimes, "Recent Episodes");
     generateCards(animeData.topUpcomingAnimes, "Upcoming Anime");
+
+    // Recently watched section
+    tryDisplayRecentlyWatched();
 
     // Check for title overflow
     checkTitleOverflow();
