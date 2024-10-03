@@ -26,10 +26,10 @@ main.show {
     display: flex;
     flex-direction: column;
     width: 200px;
-    height: 300px;
+    height: 380px;
     background-color: #222;
     border: 10px solid #222;
-    border-radius: 24px;
+    border-radius: 30px;
     box-shadow: 0 0 10px 1px #222;
     text-align: center;
 }
@@ -40,9 +40,9 @@ main.show {
 }
 .card img {
     width: 200px;
-    height: 200px;
-    min-height: 200px;
-    border-radius: 12px;
+    height: 280px;
+    min-height: 280px;
+    border-radius: 20px;
     object-fit: cover;
 }
 .card .card-title,
@@ -64,6 +64,7 @@ main.show {
 /* #region Recently Watched & Latest Episodes (cards with episode number) */
 .recently-watched .card {
     position: relative; /* Prevents the delete button floating when scrolling*/
+    height: 280px;
 }
 .recently-watched .card a,
 .recent-episodes .card a {
@@ -84,7 +85,7 @@ main.show {
 .recently-watched .card img {
     max-height: 130px;
     min-height: 130px;
-    border-radius: 16px 16px 0 0;
+    border-radius: 20px 20px 0 0;
 }
 .recent-episodes .card img {
     max-height: 130px;

@@ -30,7 +30,7 @@ function generateCards(data, sectionTitleText) {
         if (existingCards[item.name]) return;
 
         // Create a card for the current item
-        const card = createCard("html/detail.html?id=" + item.id, item.name, item.poster, item.episodes.sub);
+        const card = createCard("html/detail.html?id=" + item.id, item.name, item.poster, item.episodes?.sub);
         // Append the card to the card container
         cardContainer.appendChild(card);
     });
@@ -407,8 +407,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     const animeData = await fetchDataWithoutRedBackgroundColor("https://aniwatch.tuncay.be/anime/home");
 
     // Generate cards for different sections
-    generateCards(animeData.latestEpisodeAnimes, "Recent Episodes");
-    generateCards(animeData.topUpcomingAnimes, "Upcoming Anime");
+    // generateCards(animeData.latestEpisodeAnimes, "Recent Episodes");
+    generateCards(animeData.trendingAnimes, "Trending");
+    generateCards(animeData.topUpcomingAnimes, "Upcoming");
 
     // Recently watched section
     tryDisplayRecentlyWatched();
