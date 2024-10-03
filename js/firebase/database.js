@@ -38,7 +38,7 @@ async function uploadData() {
             // Update the local variable with the new data
             lastDownloadedData = { ...keepData };
             // Log successful data upload
-            console.log(`${new Date().toLocaleTimeString([], { hour12: false })} - Successfully uploaded user data to Firestore`);
+            console.log(`99:99:99 - Successfully uploaded user data to Firestore`);
         } catch (error) {
             console.error(error.message);
             return;
@@ -65,7 +65,7 @@ async function backupData() {
 
         try {
             // Update last backup date in localStorage
-            const today = new Date().toISOString().split("T")[0]; // Get YYYY-MM-DD
+            const today = new Date().toISOString().slice(11, 16) + " " + new Date().toLocaleDateString("en-GB"); // Get HH:MM - DD/MM/YYYY
             lastBackupDate = today;
             localStorage.setItem("last-backup-date", lastBackupDate);
             // Reference the backup data using the user's email
@@ -125,21 +125,21 @@ async function downloadUserData() {
     });
 }
 
-// Clear localStorage
-clearLocalStorage();
-// Fetch Firebase
-const firebase = await getFirebase();
-auth = firebase.auth;
-db = firebase.db;
-// Download user data
-await downloadUserData();
-
 // "DOMContentLoaded" event handler
 document.addEventListener("DOMContentLoaded", async () => {
+    // Clear localStorage
+    clearLocalStorage();
+    // Fetch Firebase
+    const firebase = await getFirebase();
+    auth = firebase.auth;
+    db = firebase.db;
+    // Download user data
+    await downloadUserData();
+
     // 0.5 seconds for the home page, 5 seconds for other pages
     const interval =
         window.location.href.startsWith("https://letswatch.site/?version=") || window.location.href.startsWith("https://letswatch.site/index.html?version=") ? 500 : 5000;
-    // Upload data every 5 seconds
+    // Set the interval to call uploadData
     setInterval(uploadData, interval);
 
     // Backup data after 10 minutes, but only once per day and when the user is on the detail page
@@ -150,5 +150,5 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (today !== lastBackupDate && window.location.href.startsWith("https://letswatch.site/html/detail")) {
             backupData();
         }
-    }, 600000); // Check after 10 minutes
+    }, 600000);
 });

@@ -934,6 +934,49 @@ export function playNextEpisode(player) {
 }
 //#endregion
 
+//#region Event Listener Functions
+// Function to handle visibility change
+function handleVisibilityChange(player) {
+    // Check if the tab is hidden and pause the video player
+    if (document.hidden) {
+        player.pause();
+    }
+}
+// Function to handle keyboard controls
+function handleKeyboardControls(event, player) {
+    switch (event.code) {
+        case "Space":
+            // Toggle play/pause
+            if (player.paused()) player.play();
+            else player.pause();
+            event.preventDefault(); // Prevent scrolling
+            break;
+        case "ArrowRight":
+            // Seek forward 10 seconds
+            player.currentTime(player.currentTime() + 10);
+            event.preventDefault(); // Prevent scrolling
+            break;
+        case "ArrowLeft":
+            // Seek backward 10 seconds
+            player.currentTime(player.currentTime() - 10);
+            event.preventDefault(); // Prevent scrolling
+            break;
+        case "ArrowUp":
+            // Increase volume
+            player.volume(player.volume() + 0.1);
+            event.preventDefault(); // Prevent scrolling
+            break;
+        case "ArrowDown":
+            // Decrease volume
+            player.volume(player.volume() - 0.1);
+            event.preventDefault(); // Prevent scrolling
+            break;
+        default:
+            break;
+    }
+}
+//#endregion
+
 //#region DOMContentLoaded
 document.addEventListener("DOMContentLoaded", async function () {
     // Fetch Firebase
@@ -972,38 +1015,24 @@ document.addEventListener("DOMContentLoaded", async function () {
         resizeTriggered();
     });
 
-    // Event handler for keyboard controls
+    // Event listener for visibility change
+    document.addEventListener("visibilitychange", function () {
+        handleVisibilityChange(player);
+    });
+    // Event listener for keyboard controls
     document.addEventListener("keydown", function (event) {
-        switch (event.code) {
-            case "Space":
-                // Toggle play/pause
-                if (player.paused()) player.play();
-                else player.pause();
-                event.preventDefault(); // Prevent scrolling
-                break;
-            case "ArrowRight":
-                // Seek forward 10 seconds
-                player.currentTime(player.currentTime() + 10);
-                event.preventDefault(); // Prevent scrolling
-                break;
-            case "ArrowLeft":
-                // Seek backward 10 seconds
-                player.currentTime(player.currentTime() - 10);
-                event.preventDefault(); // Prevent scrolling
-                break;
-            case "ArrowUp":
-                // Increase volume
-                player.volume(player.volume() + 0.1);
-                event.preventDefault(); // Prevent scrolling
-                break;
-            case "ArrowDown":
-                // Decrease volume
-                player.volume(player.volume() - 0.1);
-                event.preventDefault(); // Prevent scrolling
-                break;
-            default:
-                break;
-        }
+        handleKeyboardControls(event, player);
+    });
+
+    // Event listener for beforeunload to handle cases like refreshing the page and page navigation
+    window.addEventListener("beforeunload", () => {
+        // Pause the video player
+        player.pause();
+    });
+    // Event listener for pagehide to handle cases like closing the tab or switching to another app
+    window.addEventListener("pagehide", () => {
+        // Pause the video player
+        player.pause();
     });
 });
 //#endregion
