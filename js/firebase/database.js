@@ -65,7 +65,7 @@ async function backupData() {
 
         try {
             // Update last backup date in localStorage
-            const today = new Date().toISOString().slice(11, 16) + " " + new Date().toLocaleDateString("en-GB"); // Get HH:MM - DD/MM/YYYY
+            const today = new Date().toISOString().slice(11, 16) + " [" + new Date().toLocaleDateString("en-GB") + "]"; // Get HH:MM [DD/MM/YYYY]
             lastBackupDate = today;
             localStorage.setItem("last-backup-date", lastBackupDate);
             // Reference the backup data using the user's email
