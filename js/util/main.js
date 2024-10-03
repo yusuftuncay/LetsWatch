@@ -136,7 +136,7 @@ export function getAnilistId(animeDataAniwatch) {
 export function resizeTriggered() {
     const pipElement = document.querySelector(".vjs-picture-in-picture-control.vjs-control.vjs-button");
     const volumeElement = document.querySelector(".vjs-volume-panel.vjs-control.vjs-volume-panel-vertical");
-    const fullscreenElement = document.querySelector(".vjs-fullscreen-control.vjs-control.vjs-button");
+    // const fullscreenElement = document.querySelector(".vjs-fullscreen-control.vjs-control.vjs-button");
 
     //
     if (pipElement && window.innerWidth < 800) {
@@ -145,9 +145,9 @@ export function resizeTriggered() {
     if (volumeElement && window.innerWidth < 800) {
         volumeElement.style.display = "none";
     }
-    if (fullscreenElement && window.innerWidth < 600) {
-        fullscreenElement.style.display = "none";
-    }
+    // if (fullscreenElement && window.innerWidth < 600) {
+    //     fullscreenElement.style.display = "none";
+    // }
 
     //
     if (pipElement && window.innerWidth > 800) {
@@ -156,8 +156,8 @@ export function resizeTriggered() {
     if (volumeElement && window.innerWidth > 800) {
         volumeElement.style.display = "inherit";
     }
-    if (fullscreenElement && window.innerWidth > 600) {
-        fullscreenElement.style.display = "inherit";
-    }
+    // if (fullscreenElement && window.innerWidth > 600) {
+    //     fullscreenElement.style.display = "inherit";
+    // }
 }
 //#endregion
