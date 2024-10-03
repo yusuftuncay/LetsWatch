@@ -143,7 +143,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     setInterval(uploadData, interval);
 
     // Backup data after 10 minutes, but only once per day and when the user is on the detail page
-    setInterval(() => {
+    setTimeout(() => {
         // Get today's date as YYYY-MM-DD
         const today = new Date().toISOString().split("T")[0];
         // Perform backup if it's the next day
