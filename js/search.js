@@ -64,27 +64,27 @@ async function generateCards(url) {
     document.querySelector(".button-main-container").style.display = "none";
 
     // Fetch data
-    const data = await fetchDataWithoutRedBackgroundColor(url);
+    const animeData = await fetchDataWithoutRedBackgroundColor(url);
 
     // Flag for hasNextPage
-    hasNextPage(data.hasNextPage);
+    hasNextPage(animeData.data.hasNextPage);
 
     // Loop through the results array and create a card for each item
-    data.animes.forEach((item) => {
+    animeData.data.animes.forEach((item) => {
         const card = createCard("../html/detail.html?id=" + item.id, item.name, item.poster);
         mainContainer.appendChild(card);
     });
 
     // Set total results count
     const h1Element = document.querySelector("main h1");
-    if (data.animes.length == 1) {
-        h1Element.textContent = data.animes.length + " Result";
+    if (animeData.data.animes.length == 1) {
+        h1Element.textContent = animeData.data.animes.length + " Result";
     } else {
-        h1Element.textContent = data.animes.length + " Results";
+        h1Element.textContent = animeData.data.animes.length + " Results";
     }
 
     // Show the .button-main-container
-    document.querySelector(".button-main-container").style.display = data.animes.length > 0 ? "flex" : "none";
+    document.querySelector(".button-main-container").style.display = animeData.data.animes.length > 0 ? "flex" : "none";
 
     // Check for title overflow
     checkTitleOverflow();
@@ -118,7 +118,7 @@ async function updatePageAndFetchData(increment) {
         if (currentPageNumber < 1) currentPageNumber = 1;
 
         // Generate new cards with the updated page number
-        await generateCards(`https://aniwatch.tuncay.be/anime/search?q=${searchQuery}&page=${currentPageNumber}&sort=most-watched`);
+        await generateCards(`https://aniwatch.tuncay.be/api/v2/hianime/search?q=${searchQuery}&page=${currentPageNumber}&sort=most-watched`);
     } catch (error) {
         console.error(error.message);
     }
@@ -150,7 +150,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     searchQuery = new URLSearchParams(window.location.search).get("query");
 
     // Generate cards based on the provided query
-    await generateCards(`https://aniwatch.tuncay.be/anime/search?q=${searchQuery}&page=${currentPageNumber}&sort=most-watched`);
+    await generateCards(`https://aniwatch.tuncay.be/api/v2/hianime/search?q=${searchQuery}&page=${currentPageNumber}&sort=most-watched`);
 });
 
 // Call this function on window resize to update content

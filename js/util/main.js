@@ -50,7 +50,7 @@ export async function fetchAnimeDataFromAniwatch() {
     const animeId = getAnimeIDUsingURL();
 
     // Fetch anime data
-    return await fetchDataWithRedBackgroundColor(`https://aniwatch.tuncay.be/anime/info?id=${animeId}`);
+    return await fetchDataWithRedBackgroundColor(`https://aniwatch.tuncay.be/api/v2/hianime/anime/${animeId}`);
 }
 
 // Function to fetch anime data from consumet api
@@ -68,7 +68,7 @@ export async function fetchEpisodesData() {
     const animeId = getAnimeIDUsingURL();
 
     // Fetch episodes data
-    return await fetchDataWithRedBackgroundColor(`https://aniwatch.tuncay.be/anime/episodes/${animeId}`);
+    return await fetchDataWithRedBackgroundColor(`https://aniwatch.tuncay.be/api/v2/hianime/anime/${animeId}/episodes`);
 }
 //#endregion
 
@@ -118,8 +118,8 @@ export function getEpisodeNumber() {
 }
 
 // Function to retrieve the total available episodes
-export function getTotalEpisodes(animeDataAniwatch) {
-    return animeDataAniwatch.totalEpisodes;
+export function getTotalEpisodes(animeData) {
+    return animeData.data.totalEpisodes;
 }
 // Function to retrieve the total number of episodes
 export function getTotalAvailableEpisodes() {
@@ -127,8 +127,8 @@ export function getTotalAvailableEpisodes() {
 }
 
 // Function to retrieve the anilistId
-export function getAnilistId(animeDataAniwatch) {
-    return animeDataAniwatch.anime.info.anilistId;
+export function getAnilistId(animeData) {
+    return animeData.data.anime.info.anilistId;
 }
 //#endregion
 

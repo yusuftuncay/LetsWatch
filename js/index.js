@@ -251,13 +251,14 @@ function createScheduleCard(link, title, seconds, episodeNumber) {
 //#endregion
 
 //#region Recently Watched
-// Function to repeatedly call displayRecentlyWatched with an interval
+// Function to try displaying the recently watched section
 function tryDisplayRecentlyWatched() {
-    const maxDuration = 5000; // 5 seconds in milliseconds
-    const intervalDuration = 500; // 0.5 seconds in milliseconds
+    const maxDuration = 5000; // 5 seconds
+    const intervalDuration = 500; // 0.5 seconds
     const startTime = Date.now();
 
     const interval = setInterval(() => {
+        // Get the recently watched data from local storage
         let recentlyWatchedData = JSON.parse(localStorage.getItem("recently-watched")) || [];
 
         // If there's data, display it and clear the interval
@@ -400,19 +401,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Add show class
     loadingElement.classList.add("show");
 
+    // Recently watched section
+    tryDisplayRecentlyWatched();
+
     // Generate "Schedule" section
     // await generateSchedule();
 
     // Fetch data from the API
-    const animeData = await fetchDataWithoutRedBackgroundColor("https://aniwatch.tuncay.be/anime/home");
+    const animeData = await fetchDataWithoutRedBackgroundColor("https://aniwatch.tuncay.be/api/v2/hianime/home");
 
     // Generate cards for different sections
-    // generateCards(animeData.latestEpisodeAnimes, "Recent Episodes");
-    generateCards(animeData.trendingAnimes, "Trending");
-    generateCards(animeData.topUpcomingAnimes, "Upcoming");
-
-    // Recently watched section
-    tryDisplayRecentlyWatched();
+    // generateCards(animeData.data.spotlightAnimes, "Spotlight");
+    generateCards(animeData.data.trendingAnimes, "Trending");
+    // generateCards(animeData.data.latestEpisodeAnimes, "Latest Episodes");
+    generateCards(animeData.data.topUpcomingAnimes, "Upcoming Anime");
+    // generateCards(animeData.data.top10Animes.today, "Top 10");
+    // generateCards(animeData.data.topAiringAnimes, "Top Airing");
+    // generateCards(animeData.data.latestCompletedAnimes, "Latest Completed");
 
     // Check for title overflow
     checkTitleOverflow();

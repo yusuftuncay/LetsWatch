@@ -59,15 +59,15 @@ function generateEpisodeList(player) {
         cardItemDiv.innerHTML = "";
 
         // Show error if no data is available
-        if (animeDataAniwatch.anime.moreInfo.status == "Not yet aired") {
+        if (animeDataAniwatch.data.anime.moreInfo.status == "Not yet aired") {
             const episodesElement = document.querySelector(".episodes");
             episodesElement.innerHTML = `<h3 class="card text-white padding-10-px" style="background-color:rgba(0, 255, 0, 0.32)">This anime has not yet aired</h3>`;
             return;
-        } else if (!animeEpisodes.episodes.length) {
+        } else if (!animeEpisodes.data.episodes.length) {
             const episodesElement = document.querySelector(".episodes");
             episodesElement.innerHTML = `<h3 class="card text-white padding-10-px" style="background-color:rgba(255, 0, 0, 0.32)">An error occurred while fetching data</h3>`;
             return;
-        } else if (animeEpisodes.totalEpisodes == 0) {
+        } else if (animeEpisodes.data.totalEpisodes == 0) {
             const episodesElement = document.querySelector(".episodes");
             episodesElement.innerHTML = `<h3 class="card text-white padding-10-px">No episodes available</h3>`;
             return;
@@ -90,7 +90,7 @@ function generateEpisodeList(player) {
         const fragment = document.createDocumentFragment();
 
         // Create a card for each episode
-        animeEpisodes.episodes.forEach((episode) => {
+        animeEpisodes.data.episodes.forEach((episode) => {
             const episodeLink = document.createElement("a");
             episodeLink.classList.add("link", "text-white");
             episodeLink.dataset.episodeId = episode.episodeId;
@@ -200,11 +200,11 @@ async function handleEpisodeClick(player, episode) {
 
     // Fetch the episode sources data for the selected episode, sub or dub value and server name
     const episodeData = await fetchDataWithRedBackgroundColor(
-        `https://aniwatch.tuncay.be/anime/episode-srcs?id=${episode.episodeId}&category=${subOrDubSelectElement.value}&server=${serverSelectElement.value}`
+        `https://aniwatch.tuncay.be/api/v2/hianime/episode/sources?animeEpisodeId=${episode.episodeId}&category=${subOrDubSelectElement.value}&server=${serverSelectElement.value}`
     );
 
     // Set the video source
-    player.src({ src: episodeData.sources[0].url, type: "application/x-mpegURL" });
+    player.src({ src: episodeData.data.sources[0].url, type: "application/x-mpegURL" });
 
     // Proceed when the metadata of the video is loaded
     player.one("loadedmetadata", () => {
@@ -220,13 +220,13 @@ async function handleEpisodeClick(player, episode) {
             if (!user) return;
 
             // Resume episode from the last watched position
-            resumeEpisodeProgress(player, animeDataAniwatch.anime.info.id);
+            resumeEpisodeProgress(player, animeDataAniwatch.data.anime.info.id);
             // Save the episode in the recently watched list
             saveEpisodeInRecentlyWatched({
                 animeId: getAnimeIDUsingURL(),
-                animeTitle: animeDataAniwatch.anime.info.name,
+                animeTitle: animeDataAniwatch.data.anime.info.name,
                 episodeTitle: episode.title,
-                episodeImage: animeDataAniwatch.anime.info.poster,
+                episodeImage: animeDataAniwatch.data.anime.info.poster,
                 episodeNumber: episode.number,
                 episodeTotal: animeDataConsumet.totalEpisodes,
                 episodeId: episode.episodeId,
@@ -238,7 +238,7 @@ async function handleEpisodeClick(player, episode) {
         });
 
         // Setup subtitles
-        setupSubtitles(player, episodeData);
+        setupSubtitles(player, episodeData.data);
 
         // Update the episodes list
         updateEpisodeList();
@@ -248,7 +248,7 @@ async function handleEpisodeClick(player, episode) {
     setupAniListUpdate(player);
 
     // Setup Buttons
-    setupSkipButtons(player, episodeData.intro, episodeData.outro);
+    setupSkipButtons(player, episodeData.data.intro, episodeData.data.outro);
     setupNextEpisodeHandler(player);
 }
 //#endregion
@@ -366,7 +366,7 @@ function setupSubtitles(player, episode) {
     const englishTrack = episode.tracks.find((track) => track.kind === "captions" && track.label === "English");
     if (englishTrack) {
         // Add the new track
-        const addedTrack = player.addRemoteTextTrack(
+        player.addRemoteTextTrack(
             {
                 kind: englishTrack.kind,
                 label: "English",
@@ -374,10 +374,16 @@ function setupSubtitles(player, episode) {
                 src: englishTrack.file,
             },
             false
-        ).track;
+        );
 
-        // Set the added track to "showing"
-        addedTrack.mode = "showing";
+        // Set the default caption style
+        for (var i = 0; i < tracks.length; i++) {
+            var track = tracks[i];
+            // Find the English captions track and mark it as "showing"
+            if (track.kind === "captions" && track.language === "en") {
+                track.mode = "showing";
+            }
+        }
     }
 }
 //#endregion
@@ -405,12 +411,12 @@ function setupSeasonsCard() {
     cardContent.classList.add("card-item");
 
     // Check if seasons data is available
-    if (animeDataAniwatch.seasons.length > 0) {
+    if (animeDataAniwatch.data.seasons.length > 0) {
         // Set the card title
         cardTitle.textContent = "Seasons";
 
         // Loop through the seasons and create a link for each
-        animeDataAniwatch.seasons.forEach((season) => {
+        animeDataAniwatch.data.seasons.forEach((season) => {
             const seasonLink = document.createElement("a");
             seasonLink.href = `../html/detail.html?id=${season.id}`;
             seasonLink.textContent = season.name;
@@ -428,7 +434,7 @@ function setupSeasonsCard() {
         cardTitle.textContent = "Related";
 
         // Loop through the related anime and create a link for each
-        animeDataAniwatch.relatedAnimes.forEach((related) => {
+        animeDataAniwatch.data.relatedAnimes.forEach((related) => {
             const relatedLink = document.createElement("a");
             relatedLink.href = `../html/detail.html?id=${related.id}`;
             relatedLink.textContent = related.name;
@@ -571,7 +577,7 @@ function setupSubOrDubDropdown(player) {
 // Function to get the available servers for the selected episode
 async function setupAvailableServersDropdown(player, episodeId) {
     // Fetch available servers
-    const servers = await fetchDataWithAlert(`https://aniwatch.tuncay.be/anime/servers?episodeId=${episodeId}`);
+    const servers = await fetchDataWithAlert(`https://aniwatch.tuncay.be/api/v2/hianime/episode/servers?animeEpisodeId=${episodeId}`);
 
     // Initialize variable to store the previous value of the selected server
     let previousValue = "";
@@ -585,7 +591,7 @@ async function setupAvailableServersDropdown(player, episodeId) {
     }
 
     // Return if no servers are available
-    if (!servers.sub && !servers.dub && !servers.raw) return;
+    if (!servers.data.sub && !servers.data.dub && !servers.data.raw) return;
 
     // Create select element
     const serverSelectElement = document.createElement("select");
@@ -596,27 +602,27 @@ async function setupAvailableServersDropdown(player, episodeId) {
     // Save the previous value of the selected sub or dub
     const previousSubOrDubValue = subOrDubSelectElement.value;
     // Set the default value based on the previous value based on the available servers
-    if (previousSubOrDubValue == "sub" && servers.sub.length > 0) {
+    if (previousSubOrDubValue == "sub" && servers.data.sub.length > 0) {
         subOrDubSelectElement.value = "sub";
-    } else if (previousSubOrDubValue == "dub" && servers.dub.length > 0) {
+    } else if (previousSubOrDubValue == "dub" && servers.data.dub.length > 0) {
         subOrDubSelectElement.value = "dub";
-    } else if (previousSubOrDubValue == "raw" && servers.raw.length > 0) {
+    } else if (previousSubOrDubValue == "raw" && servers.data.raw.length > 0) {
         subOrDubSelectElement.value = "raw";
     }
     // Set sub, dub then raw as the default value if the previous value is not available
-    else if (servers.sub.length > 0) {
+    else if (servers.data.sub.length > 0) {
         subOrDubSelectElement.value = "sub";
-    } else if (servers.dub.length > 0) {
+    } else if (servers.data.dub.length > 0) {
         subOrDubSelectElement.value = "dub";
-    } else if (servers.raw.length > 0) {
+    } else if (servers.data.raw.length > 0) {
         subOrDubSelectElement.value = "raw";
     }
     // Get the selected sub or dub value
     const subOrDub = subOrDubSelectElement.value;
 
     // Populate options based on data fetched
-    if (Array.isArray(servers[subOrDub])) {
-        servers[subOrDub].forEach((server) => {
+    if (Array.isArray(servers.data[subOrDub])) {
+        servers.data[subOrDub].forEach((server) => {
             // Rename servers if necessary
             let serverName = server.serverName;
 
@@ -684,7 +690,7 @@ async function setupAvailableServersDropdown(player, episodeId) {
 // Function to get the available servers for the selected episode
 /*async function getAvailableServers(episodeId) {
     // Fetch available servers
-    const servers = await fetchDataWithAlert(`https://aniwatch.tuncay.be/anime/servers?episodeId=${episodeId}`);
+    const servers = await fetchDataWithAlert(`https://aniwatch.tuncay.be/api/v2/hianime/episode/servers?animeEpisodeId=${episodeId}`);
 
     // Initialize array to store selected servers
     const selectedServers = [];
@@ -702,14 +708,14 @@ async function setupAvailableServersDropdown(player, episodeId) {
         // Check sub or dub value
         if (subOrDub == "sub") {
             // Find server in sub array
-            let subServer = servers.sub.find((server) => server.serverId == serverId);
+            let subServer = servers.data.sub.find((server) => server.serverId == serverId);
             if (subServer) {
                 selectedServers.push(subServer);
                 continue;
             }
         } else if (subOrDub == "dub") {
             // Find server in dub array
-            let dubServer = servers.dub.find((server) => server.serverId == serverId);
+            let dubServer = servers.data.dub.find((server) => server.serverId == serverId);
             if (dubServer) {
                 selectedServers.push(dubServer);
                 continue;
@@ -751,7 +757,7 @@ function updateEpisodeList() {
             }
 
             // Add "filler" class to filler episodes
-            if (animeEpisodes.episodes[elementEpisodeNumber - 1].isFiller) {
+            if (animeEpisodes.data.episodes[elementEpisodeNumber - 1].isFiller) {
                 element.classList.add("filler");
             }
         });
@@ -991,7 +997,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     const player = setupVideoPlayer();
 
     // Display the anime title
-    document.querySelector(".anime-title").textContent = animeDataAniwatch?.anime.info.name;
+    document.querySelector(".anime-title").textContent = animeDataAniwatch?.data.anime.info.name;
 
     // Generate the Cards
     generateEpisodeList(player);
