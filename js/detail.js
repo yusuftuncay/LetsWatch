@@ -14,7 +14,7 @@ import {
     fetchAnimeDataFromConsumet,
 } from "./util/main.js";
 import { updateAniListMediaEntry } from "./util/anilist.js";
-import { setupVideoPlayer, setVolume, addEventListenerToQualityItem, loadPreferredQuality, isSafari } from "./util/video.js";
+import { setupVideoPlayer, setVolume, loadHighestQuality, isSafari } from "./util/video.js";
 //#endregion
 
 //#region Firebase
@@ -208,12 +208,8 @@ async function handleEpisodeClick(player, episode) {
 
     // Proceed when the metadata of the video is loaded
     player.one("loadedmetadata", () => {
-        // Add event listener to quality items
-        addEventListenerToQualityItem();
         // Load the preferred quality
-        loadPreferredQuality();
-        // Reload the video player
-        player.load();
+        loadHighestQuality(player);
 
         // Check authentication state
         onAuthStateChanged(auth, (user) => {

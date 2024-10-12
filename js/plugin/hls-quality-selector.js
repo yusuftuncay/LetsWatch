@@ -14,6 +14,7 @@
         s = i.default.getComponent("Menu"),
         n = i.default.getComponent("Component"),
         o = i.default.dom;
+    // Custom MenuButton for selecting quality
     class u extends l {
         constructor(t) {
             super(t, { title: t.localize("Quality"), name: "QualityButton" });
@@ -38,6 +39,7 @@
         }
     }
     const a = i.default.getComponent("MenuItem");
+    // Custom MenuItem for handling quality selection
     class r extends a {
         constructor(t, e, i, l) {
             super(t, { label: e.label, selectable: !0, selected: e.selected || !1 }), (this.item = e), (this.qualityButton = i), (this.plugin = l);
@@ -49,6 +51,7 @@
     }
     const h = i.default.getPlugin("plugin"),
         c = {};
+    // Main plugin class for handling HLS quality selection
     class d extends h {
         constructor(t, e) {
             super(t),
@@ -57,28 +60,33 @@
                     this.player.qualityLevels && (this.player.addClass("vjs-hls-quality-selector"), this.createQualityButton(), this.bindPlayerEvents());
                 });
         }
+        // Bind events to handle quality level additions
         bindPlayerEvents() {
             this.player.qualityLevels().on("addqualitylevel", this.onAddQualityLevel.bind(this));
         }
+        // Create quality selection button and add it to the player
         createQualityButton() {
             const t = this.player;
             this._qualityButton = new u(t);
             const e = t.controlBar.children().length - 2,
                 i = t.controlBar.addChild(this._qualityButton, { componentClass: "qualitySelector" }, this.options.placementIndex || e);
-            if ((i.addClass("vjs-quality-selector"), this.options.displayCurrentQuality)) this.setButtonInnerText(t.localize("Auto"));
+            if ((i.addClass("vjs-quality-selector"), this.options.displayCurrentQuality)) this.setButtonInnerText(t.localize("Quality"));
             else {
                 const t = ` ${this.options.vjsIconClass || "vjs-icon-hd"}`;
                 i.menuButton_.$(".vjs-icon-placeholder").className += t;
             }
             i.removeClass("vjs-hidden");
         }
+        // Set the quality button text to reflect current quality level
         setButtonInnerText(t) {
             this._qualityButton.menuButton_.$(".vjs-icon-placeholder").innerHTML = t;
         }
+        // Get a quality menu item
         getQualityMenuItem(t) {
             const e = this.player;
             return new r(e, t, this._qualityButton, this);
         }
+        // Handle adding new quality levels, sorting them, and displaying them
         onAddQualityLevel() {
             const t = this.player.qualityLevels().levels_ || [],
                 e = [];
@@ -90,22 +98,24 @@
                     e.push(t);
                 }
             }
-            e.sort((t, e) => ("object" != typeof t || "object" != typeof e || t.item.value < e.item.value ? -1 : t.item.value > e.item.value ? 1 : 0)),
-                e.push(this.getQualityMenuItem.call(this, { label: this.player.localize("Auto"), value: "auto", selected: !0 })),
-                this._qualityButton && ((this._qualityButton.createItems = () => e), this._qualityButton.update());
+            // Sort quality items from lowest to highest
+            e.sort((t, e) => ("object" != typeof t || "object" != typeof e || t.item.value < e.item.value ? -1 : t.item.value > e.item.value ? 1 : 0));
+            this._qualityButton && ((this._qualityButton.createItems = () => e), this._qualityButton.update());
         }
+        // Set quality to a specific level and update the button
         setQuality(t) {
             const e = this.player.qualityLevels();
-            (this._currentQuality = t), this.options.displayCurrentQuality && this.setButtonInnerText("auto" === t ? this.player.localize("Auto") : `${t}p`);
+            (this._currentQuality = t), this.options.displayCurrentQuality && this.setButtonInnerText(`${t}p`);
             for (let i = 0; i < e.length; ++i) {
                 const { width: l, height: s } = e[i],
                     n = l > s ? s : l;
-                e[i].enabled = n === t || "auto" === t;
+                e[i].enabled = n === t;
             }
             this._qualityButton.unpressButton();
         }
+        // Get the currently selected quality, defaulting to "null"
         getCurrentQuality() {
-            return this._currentQuality || "auto";
+            return this._currentQuality || "null";
         }
     }
     return (d.VERSION = "2.0.0"), i.default.registerPlugin("hlsQualitySelector", d), d;

@@ -18,6 +18,7 @@ export function setupVideoPlayer() {
         };
     }
 
+    // Create the video player instance with the configuration
     const player = videojs("videoplayer", playerConfig);
 
     // Add event listeners for video end events
@@ -55,48 +56,35 @@ export function setVolume(player) {
 }
 //#endregion
 
-//#region Quality Helpers
-// Function to add event listeners to quality items
-export function addEventListenerToQualityItem() {
-    // Get all quality items
-    const qualities = document.querySelectorAll(".vjs-quality-selector .vjs-menu-item");
+//#region Function to load the highest quality
+export function loadHighestQuality(player) {
+    // Retrieve the highest available quality
+    const validQualities = ["1080p", "720p", "480p", "360p", "240p", "144p"];
 
-    // Add event listener to each quality item
-    qualities.forEach((item) => {
-        // Remove any existing listeners
-        item.removeEventListener("click", handleQualityChange);
-        item.removeEventListener("touchend", handleQualityChange);
+    // Find the highest available quality in the menu items
+    const qualityItems = Array.from(document.querySelectorAll(".vjs-quality-selector .vjs-menu-item .vjs-menu-item-text"));
+    const highestAvailableQuality = validQualities.find((quality) => qualityItems.some((item) => item.textContent.trim() === quality));
 
-        // Add new listeners for both click and touchend
-        item.addEventListener("click", handleQualityChange);
-        item.addEventListener("touchend", handleQualityChange);
-    });
-}
-// Function to handle quality change
-function handleQualityChange(event) {
-    // Prevent the default touch behavior
-    event.preventDefault();
+    // Click the highest available quality item if found
+    if (highestAvailableQuality) {
+        qualityItems
+            .find((item) => item.textContent.trim() === highestAvailableQuality)
+            .closest(".vjs-menu-item")
+            ?.click();
+        // Reload the video player
+        player.load();
 
-    // Get the selected quality
-    const selectedQuality = event.currentTarget.querySelector(".vjs-menu-item-text").textContent.trim();
-
-    // Set the selected quality
-    localStorage.setItem("quality", selectedQuality);
-}
-
-// Function to load the preferred quality from local storage
-export function loadPreferredQuality() {
-    // Retrieve the preferred quality from local storage
-    const validQualities = ["1080p", "720p", "480p", "360p", "Auto"];
-    const storedQuality = localStorage.getItem("quality");
-    const preferredQuality = validQualities.includes(storedQuality) ? storedQuality : "1080p";
-
-    // Search for the preferred quality directly in the menu items
-    const preferredItem = Array.from(document.querySelectorAll(".vjs-menu-item .vjs-menu-item-text")).find((item) => item.textContent.trim() == preferredQuality);
-
-    // Click the preferred quality item if found
-    if (preferredItem) {
-        preferredItem.closest(".vjs-menu-item").click();
+        // Select the quality menu item
+        // qualityItems.forEach((item) => {
+        //     // Check if the item's value matches the selected quality
+        //     if (item.innerText === highestAvailableQuality) {
+        //         // Add "vjs-selected" class to the selected quality item
+        //         item.classList.add("vjs-selected");
+        //     } else {
+        //         // Remove "vjs-selected" class from other items
+        //         item.classList.remove("vjs-selected");
+        //     }
+        // });
     }
 }
 //#endregion
