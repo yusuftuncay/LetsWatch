@@ -20,7 +20,7 @@ async function uploadData() {
 
         const keepData = {};
         // Collect specific items from localStorage for preservation
-        ["recently-watched", "volume", "quality"].forEach((key) => {
+        ["recently-watched", "volume"].forEach((key) => {
             const value = localStorage.getItem(key);
             if (value && value.trim()) {
                 keepData[key] = value;
@@ -53,7 +53,7 @@ async function backupData() {
 
         const backupData = {};
         // Collect specific items from localStorage for backup
-        ["recently-watched", "volume", "quality"].forEach((key) => {
+        ["recently-watched", "volume"].forEach((key) => {
             const value = localStorage.getItem(key);
             if (value && value.trim()) {
                 backupData[key] = value;
