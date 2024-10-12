@@ -828,22 +828,34 @@ function setupSkipButtons(player, intro, outro) {
         videoContainer.appendChild(skipOutroButton);
     }
 
-    // Monitor current time to show the skip intro button at the right time
+    // Monitor current time to show the skip intro and outro buttons at the right time
     function handleTimeUpdate() {
         // Get the current time
         const currentTime = player.currentTime();
 
-        // Show the skip intro button when the current time is within the intro interval
-        if (currentTime >= intro.start && currentTime <= intro.end) {
-            skipIntroButton.style.display = "block";
+        // Check if intro exists and handle the skip intro button
+        if (intro.start > 0 && intro.end > 0) {
+            // Show the skip intro button when the current time is within the intro interval
+            if (currentTime >= intro.start && currentTime <= intro.end) {
+                skipIntroButton.style.display = "block";
+            } else {
+                skipIntroButton.style.display = "none";
+            }
         } else {
+            // If intro does not exist, hide the skip intro button
             skipIntroButton.style.display = "none";
         }
 
-        // Show the skip outro button when the current time is within the outro interval
-        if (currentTime >= outro.start && currentTime <= outro.end) {
-            skipOutroButton.style.display = "block";
+        // Check if outro exists and handle the skip outro button
+        if (outro.start > 0 && outro.end > 0) {
+            // Show the skip outro button when the current time is within the outro interval
+            if (currentTime >= outro.start && currentTime <= outro.end) {
+                skipOutroButton.style.display = "block";
+            } else {
+                skipOutroButton.style.display = "none";
+            }
         } else {
+            // If outro does not exist, hide the skip outro button
             skipOutroButton.style.display = "none";
         }
     }
@@ -879,6 +891,9 @@ function setupNextEpisodeHandler(player) {
         nextEpisodeBtn.classList.add("next-episode");
         nextEpisodeBtn.style.display = "none";
         videoContainer.appendChild(nextEpisodeBtn);
+    } else {
+        // Hide the next episode button
+        nextEpisodeBtn.style.display = "none";
     }
 
     // Monitor playback to show the next episode button at the right time
@@ -896,20 +911,24 @@ function setupNextEpisodeHandler(player) {
 
     // Add event listener to show the next episode button
     player.on("timeupdate", handleTimeUpdate);
+    // Add event listener for video end events
+    player.on("ended", () => playNextEpisode(player, nextEpisodeBtn));
 
     // Handle click events on the next episode button
-    nextEpisodeBtn.addEventListener("click", () => playNextEpisode(player));
+    nextEpisodeBtn.addEventListener("click", () => playNextEpisode(player, nextEpisodeBtn));
 
     // Return the cleanup function
     return () => {
         player.off("timeupdate", handleTimeUpdate);
-        nextEpisodeBtn.removeEventListener("click", () => playNextEpisode(player));
+        nextEpisodeBtn.removeEventListener("click", () => playNextEpisode(player, nextEpisodeBtn));
         nextEpisodeBtn.remove();
     };
 }
 
 // Function to start playing the next episode
-export function playNextEpisode(player) {
+export function playNextEpisode(player, nextEpisodeBtn) {
+    // Hide the next episode button
+    nextEpisodeBtn.style.display = "none";
     // Pause the video player
     player.pause();
     // Show loading element

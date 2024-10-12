@@ -21,9 +21,6 @@ export function setupVideoPlayer() {
     // Create the video player instance with the configuration
     const player = videojs("videoplayer", playerConfig);
 
-    // Add event listeners for video end events
-    player.on("ended", () => playNextEpisode(player));
-
     // Return the player instance
     return player;
 }
