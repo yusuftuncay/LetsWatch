@@ -31,7 +31,7 @@ let animeEpisodes = {};
 //#region Rate Limiter Object
 const rateLimiter = {
     lastRequestTime: 0,
-    cooldown: 2000,
+    cooldown: 1000,
     warnCooldown: function () {
         // Alert the user when requests are made too frequently
         alert("Slow down! Please wait a second before trying again");
