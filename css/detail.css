@@ -173,7 +173,7 @@ main {
     display: block !important;
 }
 .video-js .vjs-quality-selector .vjs-menu-item-text {
-    /* Fixes */
+    /* Font fixes */
     font-family: ForoSans !important;
 }
 .video-js .vjs-quality-selector .vjs-menu {
@@ -207,7 +207,7 @@ main {
     outline: 0 !important;
 }
 /* Download Button */
-.video-js .download-button {
+/* .video-js .download-button {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -216,7 +216,7 @@ main {
     width: 15px;
     height: 15px;
     cursor: pointer;
-}
+} */
 /* #endregion */
 
 /* #region Titles */
@@ -297,6 +297,11 @@ main {
 /* #endregion */
 
 /* #region Next Episode/Skip Intro/Skip Outro Buttons */
+.video-js .next-episode,
+.video-js .skip-intro-button,
+.video-js .skip-outro-button {
+    font-family: ForoSans !important;
+}
 /* Next Episode */
 .video-js .next-episode {
     background-color: #610000;
