@@ -40,9 +40,13 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Check if the URL contains the authorization code
     const urlParams = new URLSearchParams(window.location.search);
     const authCode = urlParams.get("code");
-    if (authCode) {
-        // Fetch the access token from the Cloudflare Worker instead of AniList API to avoid CORS issues
-        const workerUrl = "https://anilist.letswatch.site";
+
+    // No auth code
+    if (!authCode) return;
+
+    try {
+        // Fetch the access token from the Cloudflare Worker
+        const workerUrl = "https://anilist.letswatch.site/token";
         const workerResponse = await fetch(workerUrl, {
             method: "POST",
             headers: {
@@ -50,8 +54,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 Accept: "application/json",
             },
             body: JSON.stringify({
-                // Send the auth code to your Worker
-                code: authCode,
+                code: authCode, // Send the auth code to your Worker
             }),
         });
 
@@ -61,7 +64,11 @@ document.addEventListener("DOMContentLoaded", async function () {
             // Store it in localStorage
             localStorage.setItem("anilist-token", data.access_token);
         } else {
+            // Log error
             console.error(await workerResponse.text());
         }
+    } catch (error) {
+        // Log error
+        console.error(error);
     }
 });
