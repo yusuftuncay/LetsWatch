@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     const authCode = urlParams.get("code");
     if (authCode) {
         // Fetch the access token from the Cloudflare Worker instead of AniList API to avoid CORS issues
-        const workerUrl = "https://anilist.letswatch.site/token";
+        const workerUrl = "https://anilist.letswatch.site";
         const workerResponse = await fetch(workerUrl, {
             method: "POST",
             headers: {
