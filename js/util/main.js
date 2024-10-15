@@ -119,7 +119,7 @@ export function getEpisodeNumber() {
 
 // Function to retrieve the total available episodes
 export function getTotalEpisodes(animeData) {
-    return animeData.data.totalEpisodes;
+    return animeData.data.anime.info.stats.episodes.sub;
 }
 // Function to retrieve the total number of episodes
 export function getTotalAvailableEpisodes() {

@@ -95,7 +95,8 @@ main {
     cursor: pointer;
 }
 /* Account Buttons */
-.account-buttons-container {
+.account-buttons-container,
+.anilist-buttons-container {
     display: flex;
     margin: 20px 0;
     gap: 20px;
@@ -109,7 +110,8 @@ main {
 .account-buttons-container .delete {
     background-color: darkred;
 }
-.account-buttons-container button {
+.account-buttons-container a,
+.anilist-buttons-container a {
     border: none;
     border-radius: 18px;
     box-shadow: 0 0 20px 0 #333;
@@ -119,8 +121,13 @@ main {
     padding: 15px;
     transition: background-color 0.3s ease;
 }
-.account-buttons-container button:hover {
+.account-buttons-container a:hover,
+.anilist-buttons-container a:hover {
     background-color: #444;
+}
+/* AniList Buttons */
+.anilist-buttons-container a {
+    background-color: #333;
 }
 /* #endregion */
 

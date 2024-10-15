@@ -60,14 +60,18 @@
                     <button type="submit">Update Password</button>
                 </form>
             </section>
-            <form class="account-buttons-container">
+            <div class="account-buttons-container">
                 <!-- Backup -->
                 <!-- <button class="backup">Backup Data</button> -->
                 <!-- Log out -->
-                <button class="logout">Logout?</button>
+                <a class="logout">Logout?</a>
                 <!-- Delete Account -->
-                <button class="delete">Delete Account?</a>
-            </form>
+                <a class="delete">Delete Account?</a>
+            </div>
+            <div class="anilist-buttons-container">
+                <!--letswatch.site/html/account.html-->
+                <a href="https://anilist.co/api/v2/oauth/authorize?client_id=21793&redirect_uri=http://127.0.0.1:5500/html/account.html&response_type=code">Login with AniList</a>
+            </div>
         </main>
 
         <!-- Firebase SDK -->
@@ -75,5 +79,7 @@
         <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js"></script>
         <!-- Authentication Logic -->
         <script type="module" src="../js/firebase/auth.js" crossorigin="anonymous"></script>
+        <!-- AniList Login -->
+        <script type="module" src="../js/util/anilist.js" crossorigin="anonymous"></script>
     </body>
 </html>

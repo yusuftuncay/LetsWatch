@@ -801,11 +801,14 @@ function setupAniListUpdate(player) {
         if (!updateTriggered && currentPercentage >= 90 && currentPercentage <= 100) {
             updateTriggered = true; // Set flag to true to prevent multiple firings
 
-            // Update AniList media entry for the user "yusuf@tuncay.be"
-            onAuthStateChanged(auth, async (user) => {
-                if (user.email.includes("yusuf@tuncay.be"))
-                    // Parameters: AniList ID, Episode Number, Total Episodes
-                    await updateAniListMediaEntry(getAnilistId(animeDataAniwatch), getEpisodeNumber(), getTotalEpisodes(animeDataAniwatch));
+            // Update AniList media entry
+            onAuthStateChanged(auth, async () => {
+                // Check if the token is available
+                const token = localStorage.getItem("anilist-token");
+                if (!token) return;
+
+                // Parameters: Token, AniList ID, Episode Number, Total Episodes
+                await updateAniListMediaEntry(token, getAnilistId(animeDataAniwatch), getEpisodeNumber(), getTotalEpisodes(animeDataAniwatch));
             });
         }
     }

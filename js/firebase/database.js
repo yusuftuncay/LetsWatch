@@ -83,19 +83,13 @@ async function backupData() {
     });
 }
 
-// Function to clear localStorage except for "play-recently-watched"
+// Function to clear localStorage except for "play-recently-watched" and "anilist-token"
 function clearLocalStorage() {
-    // Key to preserve
-    const keyToKeep = "play-recently-watched";
-    const valueToKeep = localStorage.getItem(keyToKeep);
-
-    // Clear localStorage
-    localStorage.clear();
-
-    // Restore the preserved key if it exists
-    if (valueToKeep !== null) {
-        localStorage.setItem(keyToKeep, valueToKeep);
-    }
+    Object.keys(localStorage).forEach((key) => {
+        if (key !== "play-recently-watched" && key !== "anilist-token") {
+            localStorage.removeItem(key);
+        }
+    });
 }
 
 // Function to fetch user data from Firestore and populate localStorage with it
