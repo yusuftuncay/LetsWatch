@@ -26,6 +26,7 @@ import { getFirebase } from "./firebase/init.js";
 let animeDataAniwatch = {};
 let animeDataConsumet = {};
 let animeEpisodes = {};
+let isLoadingEpisode = false;
 //#endregion
 
 //#region Rate Limiter Object
@@ -160,6 +161,10 @@ function openRecentlyWatchedEpisode() {
 
 //#region Episode Click Handler
 async function handleEpisodeClick(player, episode) {
+    // Prevents new requests if one is in progress
+    if (isLoadingEpisode) return;
+    isLoadingEpisode = true;
+
     // Prevent spam clicking
     if (rateLimiter.isCooldownActive()) {
         rateLimiter.warnCooldown();
@@ -168,84 +173,91 @@ async function handleEpisodeClick(player, episode) {
     // Record the time of the request
     rateLimiter.updateLastRequestTime();
 
-    // Pause the video player
-    player.pause();
-    // Show loading element
-    document.getElementById("videoplayer").classList.add("vjs-waiting");
+    try {
+        // Pause the video player
+        player.pause();
+        // Show loading element
+        document.getElementById("videoplayer").classList.add("vjs-waiting");
 
-    // Get the episode title element
-    const episodeTitle = document.querySelector(".main-title.episode-title");
-    // Check if episode.title starts with "EP" and avoid duplication
-    const titleText = episode.title && !episode.title.startsWith("EP") ? ": " + episode.title : "";
-    // Construct the full title text
-    let fullTitle = "EP " + episode.number + titleText;
-    // Truncate the full title if it exceeds 40 characters and add ellipsis
-    if (fullTitle.length > 40) {
-        fullTitle = fullTitle.slice(0, 42) + "..";
-    }
-    // Set episode title and number to the episodeTitle element
-    episodeTitle.textContent = fullTitle;
+        // Get the episode title element
+        const episodeTitle = document.querySelector(".main-title.episode-title");
+        // Check if episode.title starts with "EP" and avoid duplication
+        const titleText = episode.title && !episode.title.startsWith("EP") ? ": " + episode.title : "";
+        // Construct the full title text
+        let fullTitle = "EP " + episode.number + titleText;
+        // Truncate the full title if it exceeds 40 characters and add ellipsis
+        if (fullTitle.length > 40) {
+            fullTitle = fullTitle.slice(0, 42) + "..";
+        }
+        // Set episode title and number to the episodeTitle element
+        episodeTitle.textContent = fullTitle;
 
-    // Set data attribute
-    setEpisodeNumber(episode.number);
+        // Set data attribute
+        setEpisodeNumber(episode.number);
 
-    // Setup the available servers dropdown
-    await setupAvailableServersDropdown(player, episode.episodeId);
+        // Setup the available servers dropdown
+        await setupAvailableServersDropdown(player, episode.episodeId);
 
-    // Get the sub or dub element
-    const subOrDubSelectElement = document.querySelector(".sub-or-dub-dropdown-select");
+        // Get the sub or dub element
+        const subOrDubSelectElement = document.querySelector(".sub-or-dub-dropdown-select");
 
-    // Get the server element
-    const serverSelectElement = document.querySelector(".server-dropdown-select");
+        // Get the server element
+        const serverSelectElement = document.querySelector(".server-dropdown-select");
 
-    // Fetch the episode sources data for the selected episode, sub or dub value and server name
-    const episodeData = await fetchDataWithRedBackgroundColor(
-        `https://aniwatch.tuncay.be/api/v2/hianime/episode/sources?animeEpisodeId=${episode.episodeId}&category=${subOrDubSelectElement.value}&server=${serverSelectElement.value}`
-    );
+        // Fetch the episode sources data for the selected episode, sub or dub value and server name
+        const episodeData = await fetchDataWithRedBackgroundColor(
+            `https://aniwatch.tuncay.be/api/v2/hianime/episode/sources?animeEpisodeId=${episode.episodeId}&category=${subOrDubSelectElement.value}&server=${serverSelectElement.value}`
+        );
 
-    // Set the video source
-    player.src({ src: episodeData.data.sources[0].url, type: "application/x-mpegURL" });
+        // Set the video source
+        player.src({ src: episodeData.data.sources[0].url, type: "application/x-mpegURL" });
 
-    // Proceed when the metadata of the video is loaded
-    player.one("loadedmetadata", () => {
-        // Load the preferred quality
-        loadHighestQuality(player);
+        // Proceed when the metadata of the video is loaded
+        player.one("loadedmetadata", () => {
+            // Load the highest quality
+            loadHighestQuality(player);
 
-        // Check authentication state
-        onAuthStateChanged(auth, (user) => {
-            if (!user) return;
+            // Check authentication state
+            onAuthStateChanged(auth, (user) => {
+                if (!user) return;
 
-            // Resume episode from the last watched position
-            resumeEpisodeProgress(player, animeDataAniwatch.data.anime.info.id);
-            // Save the episode in the recently watched list
-            saveEpisodeInRecentlyWatched({
-                animeId: getAnimeIDUsingURL(),
-                animeTitle: animeDataAniwatch.data.anime.info.name,
-                episodeTitle: episode.title,
-                episodeImage: animeDataAniwatch.data.anime.info.poster,
-                episodeNumber: episode.number,
-                episodeTotal: animeDataConsumet.totalEpisodes,
-                episodeId: episode.episodeId,
-                episodeDuration: Math.floor(player.duration()),
-                subOrDub: subOrDubSelectElement.value,
+                // Resume episode from the last watched position
+                resumeEpisodeProgress(player, animeDataAniwatch.data.anime.info.id);
+                // Save the episode in the recently watched list
+                saveEpisodeInRecentlyWatched({
+                    animeId: getAnimeIDUsingURL(),
+                    animeTitle: animeDataAniwatch.data.anime.info.name,
+                    episodeTitle: episode.title,
+                    episodeImage: animeDataAniwatch.data.anime.info.poster,
+                    episodeNumber: episode.number,
+                    episodeTotal: animeDataConsumet.totalEpisodes,
+                    episodeId: episode.episodeId,
+                    episodeDuration: Math.floor(player.duration()),
+                    subOrDub: subOrDubSelectElement.value,
+                });
+                // Save the episode progress
+                saveEpisodeProgress(player, episode.episodeId);
             });
-            // Save the episode progress
-            saveEpisodeProgress(player, episode.episodeId);
+
+            // Setup subtitles
+            setupSubtitles(player, episodeData.data);
+
+            // Update the episodes list
+            updateEpisodeList();
         });
 
-        // Setup subtitles
-        setupSubtitles(player, episodeData.data);
+        // Setup AniList update
+        setupAniListUpdate(player);
 
-        // Update the episodes list
-        updateEpisodeList();
-    });
-
-    // Setup AniList update
-    setupAniListUpdate(player);
-
-    // Setup Buttons
-    setupSkipButtons(player, episodeData.data.intro, episodeData.data.outro);
-    setupNextEpisodeHandler(player);
+        // Setup Buttons
+        setupSkipButtons(player, episodeData.data.intro, episodeData.data.outro);
+        setupNextEpisodeHandler(player);
+    } catch (error) {
+        console.error(error.message);
+    } finally {
+        // Reset once the process finishes
+        isLoadingEpisode = false;
+    }
 }
 //#endregion
 
@@ -956,10 +968,10 @@ export function playNextEpisode(player, nextEpisodeBtn) {
 //#endregion
 
 //#region Event Listener Functions
-// Function to handle visibility change
-function handleVisibilityChange(player) {
-    // Check if the tab is hidden and pause the video player
-    if (document.hidden) {
+// Function to handle window focus
+function handleFocusChange(player) {
+    // Pause the player when the window is unfocused
+    if (!document.hasFocus()) {
         player.pause();
     }
 }
@@ -1036,9 +1048,12 @@ document.addEventListener("DOMContentLoaded", async function () {
         resizeTriggered();
     });
 
-    // Event listener for visibility change
-    document.addEventListener("visibilitychange", function () {
-        handleVisibilityChange(player);
+    // Event listener for window focus and blur
+    window.addEventListener("focus", function () {
+        handleFocusChange(player);
+    });
+    window.addEventListener("blur", function () {
+        handleFocusChange(player);
     });
     // Event listener for keyboard controls
     document.addEventListener("keydown", function (event) {
