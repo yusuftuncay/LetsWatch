@@ -72,3 +72,44 @@ document.addEventListener("DOMContentLoaded", async function () {
         console.error(error);
     }
 });
+
+// DOMContentLoaded: Update the AniList button text according to the login status
+document.addEventListener("DOMContentLoaded", function () {
+    // Get the token from localStorage
+    let token = localStorage.getItem("anilist-token");
+
+    // Get the AniList button
+    const anilistButton = document.querySelector(".anilist-button-container a");
+
+    // Check if the token is available
+    if (token) {
+        // Change the button text according to the AniList login status
+        anilistButton.textContent = "Logout from AniList";
+    } else {
+        // Change the button text according to the AniList login status
+        anilistButton.textContent = "Login to AniList";
+    }
+});
+
+// DOMContentLoaded
+document.addEventListener("DOMContentLoaded", function () {
+    // Get the AniList button
+    const anilistButton = document.querySelector(".anilist-button-container a");
+
+    // Add event listener to the AniList button
+    anilistButton.addEventListener("click", function () {
+        // Prevent the default action
+        event.preventDefault();
+
+        // Check if the user is logged in
+        if (anilistButton.textContent === "Login to AniList") {
+            // Redirect the user to the AniList login page
+            window.location.href = "https://anilist.co/api/v2/oauth/authorize?client_id=21793&redirect_uri=https://letswatch.site/html/account.html&response_type=code";
+        } else if (anilistButton.textContent === "Logout from AniList") {
+            // Remove the token from localStorage
+            localStorage.removeItem("anilist-token");
+            // Change the button text according to the AniList login status
+            anilistButton.textContent = "Login to AniList";
+        }
+    });
+});

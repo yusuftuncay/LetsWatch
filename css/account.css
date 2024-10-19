@@ -96,7 +96,7 @@ main {
 }
 /* Account Buttons */
 .account-buttons-container,
-.anilist-buttons-container {
+.anilist-button-container {
     display: flex;
     margin: 20px 0;
     gap: 20px;
@@ -111,7 +111,7 @@ main {
     background-color: darkred;
 }
 .account-buttons-container a,
-.anilist-buttons-container a {
+.anilist-button-container a {
     border: none;
     border-radius: 18px;
     box-shadow: 0 0 20px 0 #333;
@@ -122,11 +122,11 @@ main {
     transition: background-color 0.3s ease;
 }
 .account-buttons-container a:hover,
-.anilist-buttons-container a:hover {
+.anilist-button-container a:hover {
     background-color: #444;
 }
 /* AniList Buttons */
-.anilist-buttons-container a {
+.anilist-button-container a {
     background-color: #333;
 }
 /* #endregion */
