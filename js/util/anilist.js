@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     try {
         // Fetch the access token from the Cloudflare Worker
-        const workerUrl = "https://anilist.letswatch.site/token";
+        const workerUrl = "https://anilist.letswatch.site";
         const workerResponse = await fetch(workerUrl, {
             method: "POST",
             headers: {
