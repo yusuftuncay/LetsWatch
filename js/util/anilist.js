@@ -63,6 +63,8 @@ document.addEventListener("DOMContentLoaded", async function () {
             const data = await workerResponse.json();
             // Store it in localStorage
             localStorage.setItem("anilist-token", data.access_token);
+            // Update the AniList button
+            updateAniListButtonText();
             // Alert the user
             alert("Successfully logged in to AniList. Your progress on AniList will be updated automatically");
         } else {
@@ -75,8 +77,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 });
 
-// DOMContentLoaded: Update the AniList button text according to the login status
-document.addEventListener("DOMContentLoaded", function () {
+// Function to update the AniList button text according to the login status
+function updateAniListButtonText() {
     // Get the token from localStorage
     let token = localStorage.getItem("anilist-token");
 
@@ -91,15 +93,15 @@ document.addEventListener("DOMContentLoaded", function () {
         // Change the button text according to the AniList login status
         anilistButton.textContent = "Login to AniList";
     }
-});
+}
 
-// DOMContentLoaded
-document.addEventListener("DOMContentLoaded", function () {
+// Function to add event listener to the AniList button
+function addAniListButtonEvent() {
     // Get the AniList button
     const anilistButton = document.querySelector(".anilist-button-container a");
 
     // Add event listener to the AniList button
-    anilistButton.addEventListener("click", function () {
+    anilistButton.addEventListener("click", function (event) {
         // Prevent the default action
         event.preventDefault();
 
@@ -120,4 +122,10 @@ document.addEventListener("DOMContentLoaded", function () {
             alert("Successfully logged out from AniList");
         }
     });
+}
+
+// DOMContentLoaded
+document.addEventListener("DOMContentLoaded", function () {
+    updateAniListButtonText();
+    addAniListButtonEvent();
 });
