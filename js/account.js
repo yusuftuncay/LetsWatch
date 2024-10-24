@@ -118,7 +118,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         emailForm.addEventListener("submit", (event) => {
             event.preventDefault();
             const newEmail = document.getElementById("email").value;
-            const currentPassword = document.getElementById("current-password").value;
+            const currentPassword = document.getElementById("current-password-1").value;
             updateUserEmail(newEmail, currentPassword);
         });
     }
@@ -133,7 +133,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             // Get the values from the form
             const newPassword = document.getElementById("password").value;
             const newPasswordRepeat = document.getElementById("password-repeat").value;
-            const currentPassword = document.getElementById("current-password").value;
+            const currentPassword = document.getElementById("current-password-2").value;
             updateUserPassword(newPassword, newPasswordRepeat, currentPassword);
         });
     }
