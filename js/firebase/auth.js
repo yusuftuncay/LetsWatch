@@ -6,6 +6,7 @@ import {
     sendEmailVerification,
     sendPasswordResetEmail,
 } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
+import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
 import { getFirebase } from "./init.js";
 //#endregion
 
@@ -34,11 +35,25 @@ function register(email, password) {
 //#region SignIn
 function signIn(email, password) {
     signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
+        .then(async (userCredential) => {
+            const user = userCredential.user;
+
             // Redirect only if the user's email has been verified
-            if (userCredential.user.emailVerified) {
+            if (user.emailVerified) {
+                const userRef = doc(db, "users", user.email);
+
+                // Check if the document exists
+                const docSnap = await getDoc(userRef);
+
+                // If the document doesn't exist, create it
+                if (!docSnap.exists()) {
+                    await setDoc(userRef, {});
+                }
+
+                // Redirect to index page after handling document
                 window.location.href = "../index.html";
             } else {
+                // Log out the user if their email is not verified
                 signOut();
                 alert("Please verify your email before logging in");
             }

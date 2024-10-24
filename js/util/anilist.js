@@ -85,6 +85,9 @@ function updateAniListButtonText() {
     // Get the AniList button
     const anilistButton = document.querySelector(".anilist-button-container a");
 
+    // Check if the button is available
+    if (!anilistButton) return;
+
     // Check if the token is available
     if (token) {
         // Change the button text according to the AniList login status
@@ -99,6 +102,9 @@ function updateAniListButtonText() {
 function addAniListButtonEvent() {
     // Get the AniList button
     const anilistButton = document.querySelector(".anilist-button-container a");
+
+    // Check if the button is available
+    if (!anilistButton) return;
 
     // Add event listener to the AniList button
     anilistButton.addEventListener("click", function (event) {
