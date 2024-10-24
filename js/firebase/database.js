@@ -112,6 +112,8 @@ async function downloadUserData() {
                 console.log(`${new Date().toLocaleTimeString([], { hour12: false })} - Successfully downloaded user data from Firestore`);
                 // Mark the download as complete
                 isDownloadComplete = true;
+            } else {
+                await setDoc(userRef, {});
             }
         } catch (error) {
             console.error(error.message);
