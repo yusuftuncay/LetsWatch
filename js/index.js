@@ -416,8 +416,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     // generateCards(animeData.data.latestEpisodeAnimes, "Latest Episodes");
     generateCards(animeData.data.topUpcomingAnimes, "Upcoming Anime");
     // generateCards(animeData.data.top10Animes.today, "Top 10");
-    // generateCards(animeData.data.topAiringAnimes, "Top Airing");
-    // generateCards(animeData.data.latestCompletedAnimes, "Latest Completed");
+    generateCards(animeData.data.topAiringAnimes, "Top Airing");
+    generateCards(animeData.data.latestCompletedAnimes, "Latest Completed");
 
     // Check for title overflow
     checkTitleOverflow();
