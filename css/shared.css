@@ -76,6 +76,7 @@ nav li a {
     text-decoration: none;
     border-radius: 10px;
     font-size: large;
+    transition: all 0.3s ease;
 }
 nav li a:hover {
     background-color: #111;

@@ -69,8 +69,15 @@ function createCard(link, title, image, totalEpisodes) {
         const episodeNumberElement = document.createElement("p");
         episodeNumberElement.classList.add("card-episode-number");
         episodeNumberElement.textContent = `EP ${totalEpisodes}`;
+        // Append the episode number element to the card
         cardDiv.appendChild(episodeNumberElement);
     }
+
+    // Create the gradient overlay element
+    const gradientElement = document.createElement("div");
+    gradientElement.classList.add("card-gradient");
+    // Append the gradient overlay element to the card
+    cardDiv.appendChild(gradientElement);
 
     // Return the constructed card
     return cardLink;
@@ -368,6 +375,12 @@ function displayRecentlyWatched(recentlyWatchedData) {
         cardDiv.appendChild(animeTitleElement);
         cardDiv.appendChild(cardTitle);
         watchedContainer.appendChild(cardLink);
+
+        // Create the gradient overlay element
+        const gradientElement = document.createElement("div");
+        gradientElement.classList.add("card-gradient");
+        // Append the gradient overlay element to the card
+        cardDiv.appendChild(gradientElement);
     });
 
     // Insert the recently watched section before other content in the main section

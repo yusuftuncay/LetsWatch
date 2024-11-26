@@ -25,55 +25,67 @@ main.show {
 .card {
     display: flex;
     flex-direction: column;
-    width: 200px;
-    height: 380px;
-    background-color: #222;
-    border: 10px solid #222;
+    position: relative;
+    width: 180px;
+    height: 280px;
+    overflow: hidden;
+    /* background-color: #222;
+    border: 10px solid #222; */
     border-radius: 30px;
-    box-shadow: 0 0 10px 1px #222;
+    box-shadow: 0 0 12px 1px #222;
     text-align: center;
+    transition: all 0.3s ease;
 }
 .card:hover {
-    background-color: #111;
-    border-color: #111;
-    box-shadow: 0 0 10px 8px #111;
+    background-color: #444;
+    border-color: #444;
+    box-shadow: 0 0 12px 8px #333;
 }
 .card img {
-    width: 200px;
-    height: 280px;
-    min-height: 280px;
-    border-radius: 20px;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
+    border-radius: 30px;
 }
 .card .card-title,
 .card-anime-title {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100px;
-    margin: 8px;
-    color: white;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    color: #ececec;
+    text-shadow: 0 0 20px black;
+    padding: 20px;
+    font-size: 1em;
+    text-align: center;
+    box-sizing: border-box;
     overflow: hidden;
+    z-index: 2;
 }
-/* Main Title */
 .main-title {
     margin: 15px 22px;
+}
+/* Card Background Overlay */
+.card-gradient {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%; /* Full height, adjusts gradient placement */
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9), /* Fully black at bottom */ rgba(0, 0, 0, 0.3), /* Semi-transparent */ transparent);
+    z-index: 1;
+    pointer-events: none;
 }
 /* #endregion */
 
 /* #region Recently Watched & Latest Episodes (cards with episode number) */
-.recently-watched .card {
-    position: relative; /* Prevents the delete button floating when scrolling*/
-    height: 280px;
-}
 .recently-watched .card a,
 .recent-episodes .card a {
     display: flex;
     align-items: center;
     justify-content: center;
     position: absolute;
-    top: 5px;
-    right: 5px;
+    top: 15px;
+    right: 15px;
     padding: 6px 10px;
     height: 14px;
     background-color: #800000;
@@ -82,39 +94,27 @@ main.show {
     box-shadow: 0 0 20px 5px #222;
     z-index: 1;
 }
-.recently-watched .card img {
-    max-height: 130px;
-    min-height: 130px;
-    border-radius: 20px 20px 0 0;
-}
+/* Recent Episodes - Image Styles */
 .recent-episodes .card img {
     max-height: 130px;
     min-height: 130px;
     border-radius: 16px;
 }
-.recently-watched .card .card-anime-title,
-.recent-episodes .card .card-anime-title {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 200px;
-    margin: 10px;
-    color: white;
-    overflow: hidden;
-}
 /* Recently Watched - Progress Bar Styles */
 .recently-watched .card .progress-bar-container {
+    position: absolute;
+    bottom: 0;
     width: 100%;
-    height: 15px;
-    background-color: #444;
-    border-radius: 0 0 20px 20px;
-    box-shadow: 0 0 20px 5px #222;
-    overflow: hidden;
+    z-index: 2;
 }
 .recently-watched .card .progress-bar {
     height: 8px;
     background-color: #800000;
     box-shadow: 0 0 20px 4px black;
+}
+/* Recently Watched - Episode Number Styles */
+.recently-watched .card-episode-number {
+    margin-top: 50px;
 }
 /* #region Loaded */
 .recently-watched,
@@ -186,8 +186,11 @@ main.show {
 
 /* #region Helper */
 .card-episode-number {
-    margin: 8px;
-    color: #666;
+    position: absolute;
+    width: 100%;
+    color: #ececec;
+    z-index: 2;
+    text-shadow: 0 0 8px black;
 }
 .start {
     align-items: flex-start !important;
@@ -198,21 +201,7 @@ main.show {
 @media (max-width: 1200px) {
     .card {
         width: 110px;
-        height: 260px;
-    }
-    .card img {
-        width: 110px;
-        height: 150px;
-        min-height: 150px;
-    }
-    /* Recently Watched */
-    .recently-watched .card img {
-        height: 80px;
-        min-height: 80px;
-    }
-    .recent-episodes .card img {
-        height: 100px;
-        min-height: 100px;
+        height: 210px;
     }
     /* Schedule */
     .schedule .card {
