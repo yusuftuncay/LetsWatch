@@ -1052,12 +1052,12 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
 
     // Event listener for window focus and blur
-    window.addEventListener("focus", function () {
-        handleFocusChange(player);
-    });
-    window.addEventListener("blur", function () {
-        handleFocusChange(player);
-    });
+    //window.addEventListener("focus", function () {
+    //    handleFocusChange(player);
+    //});
+    //window.addEventListener("blur", function () {
+    //    handleFocusChange(player);
+    //});
     // Event listener for keyboard controls
     document.addEventListener("keydown", function (event) {
         handleKeyboardControls(event, player);
