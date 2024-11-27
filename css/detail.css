@@ -39,12 +39,12 @@ main {
 .card-item a {
     margin: 5px;
     padding: 5px;
+    border-radius: 20px;
     transition: all 0.3s ease;
 }
 .card-item a:hover,
 .card-item a:focus {
     background-color: #111;
-    border-radius: 20px;
     box-shadow: 0 0 5px 5px #111;
     cursor: pointer;
 }

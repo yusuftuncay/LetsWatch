@@ -7,18 +7,28 @@ html {
 }
 /* Body background and layout */
 body {
-    background: #666;
+    background: linear-gradient(-45deg, #4b0c5c, #7a3f0d, #4b0c5c);
     background-attachment: fixed;
-    background-size: 500% auto;
+    background-size: 300% 300%;
+    animation: gradient 20s ease infinite;
+    /* background: #666;
+    background-attachment: fixed;
+    background-size: 500% auto; */
     max-height: 100vh;
     margin: 0;
     padding: 0;
 }
-/* @keyframes gradient {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-} */
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
 main {
     margin: 0 auto;
     padding: 70px 0 20px 0;
@@ -117,7 +127,8 @@ nav #info-icon img {
 
 /* #region Scrollbar Styles */
 ::-webkit-scrollbar {
-    background-color: #666;
+    background-color: #66666633;
+    border-radius: 20px;
     height: 10px;
     width: 15px;
 }
@@ -126,6 +137,7 @@ nav #info-icon img {
 }
 ::-webkit-scrollbar-thumb {
     background-color: #555;
+    box-shadow: 0 0 10px 1px #333;
     border-radius: 7px;
 }
 /* Hide Vertical Scrollbar */

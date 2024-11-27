@@ -37,9 +37,7 @@ main.show {
     transition: all 0.3s ease;
 }
 .card:hover {
-    background-color: #444;
-    border-color: #444;
-    box-shadow: 0 0 12px 8px #333;
+    box-shadow: 0 0 12px 5px #222;
 }
 .card img {
     width: 100%;
