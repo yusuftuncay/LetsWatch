@@ -1052,26 +1052,26 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
 
     // Event listener for window focus and blur
-    window.addEventListener("focus", function () {
-        handleFocusChange(player);
-    });
-    window.addEventListener("blur", function () {
-        handleFocusChange(player);
-    });
+    //window.addEventListener("focus", function () {
+    //    handleFocusChange(player);
+    //});
+    //window.addEventListener("blur", function () {
+    //    handleFocusChange(player);
+    //});
     // Event listener for keyboard controls
     document.addEventListener("keydown", function (event) {
         handleKeyboardControls(event, player);
     });
 
     // Event listener for beforeunload to handle cases like refreshing the page and page navigation
-    window.addEventListener("beforeunload", () => {
+    //window.addEventListener("beforeunload", () => {
         // Pause the video player
-        player.pause();
-    });
+    //    player.pause();
+    //});
     // Event listener for pagehide to handle cases like closing the tab or switching to another app
-    window.addEventListener("pagehide", () => {
+    //window.addEventListener("pagehide", () => {
         // Pause the video player
-        player.pause();
-    });
+    //    player.pause();
+    //});
 });
 //#endregion
