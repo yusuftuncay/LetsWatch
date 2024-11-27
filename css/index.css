@@ -32,12 +32,12 @@ main.show {
     /* background-color: #222;
     border: 10px solid #222; */
     border-radius: 25px;
-    box-shadow: 0 0 12px 1px #222;
+    box-shadow: 0 0 20px 0px #22222275;
     text-align: center;
     transition: all 0.3s ease;
 }
 .card:hover {
-    box-shadow: 0 0 12px 5px #222;
+    box-shadow: 0 0 20px 0px #222;
 }
 .card img {
     width: 100%;

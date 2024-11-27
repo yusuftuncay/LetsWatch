@@ -5,12 +5,12 @@ html {
     margin: 0;
     padding: 0;
 }
-/* Body background and layout */
+/* Body Background and Layout */
 body {
-    background: linear-gradient(-45deg, #4b0c5c, #7a3f0d, #4b0c5c);
+    background: linear-gradient(270deg, rgb(60, 8, 57), rgb(130, 13, 52), rgb(141, 55, 0), rgb(153, 107, 0));
     background-attachment: fixed;
     background-size: 300% 300%;
-    animation: gradient 20s ease infinite;
+    animation: gradient 15s ease-in-out infinite;
     /* background: #666;
     background-attachment: fixed;
     background-size: 500% auto; */
@@ -127,7 +127,7 @@ nav #info-icon img {
 
 /* #region Scrollbar Styles */
 ::-webkit-scrollbar {
-    background-color: #66666633;
+    background-color: #66666622;
     border-radius: 20px;
     height: 10px;
     width: 15px;
