@@ -61,6 +61,11 @@ To set up the project locally, follow these steps:
 -   Minimalistic design
 -   Responsive UI for various devices
 
+## APIs Used
+
+- [Aniwatch API](https://github.com/ghoshRitesh12/aniwatch-api)
+- [Consumet API](https://github.com/consumet/api.consumet.org)
+
 ## Logged In Users
 
 Logged in users can:
