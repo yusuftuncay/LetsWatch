@@ -68,14 +68,11 @@ document.addEventListener("DOMContentLoaded", async function () {
             localStorage.setItem("anilist-token", data.access_token);
             // Update the AniList button
             updateAniListButtonText();
-            // Use a small delay to allow the button update to render before the alert
-            setTimeout(() => {
-                // Alert the user
-                alert("Successfully logged in to AniList. Your progress on AniList will be updated automatically");
-            }, 0);
+            // Alert the user
+            alert("Successfully logged in to AniList. Your progress on AniList will be updated automatically");
         } else {
             // Log error
-            console.error("AniList Worker Error:", workerResponse.statusText);
+            console.error("AniList Worker Error:", await workerResponse.text());
         }
     } catch (error) {
         // Log error
