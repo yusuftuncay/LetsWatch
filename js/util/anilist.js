@@ -41,8 +41,11 @@ document.addEventListener("DOMContentLoaded", async function () {
     const urlParams = new URLSearchParams(window.location.search);
     const authCode = urlParams.get("code");
 
-    // No auth code
-    if (!authCode) return;
+    // Check if the authorization code is available
+    if (authCode) {
+        // Remove the authorization code from the URL
+        urlParams.delete("code");
+    } else if (!authCode) return;
 
     try {
         // Fetch the access token from the Cloudflare Worker
@@ -65,11 +68,14 @@ document.addEventListener("DOMContentLoaded", async function () {
             localStorage.setItem("anilist-token", data.access_token);
             // Update the AniList button
             updateAniListButtonText();
-            // Alert the user
-            alert("Successfully logged in to AniList. Your progress on AniList will be updated automatically");
+            // Use a small delay to allow the button update to render before the alert
+            setTimeout(() => {
+                // Alert the user
+                alert("Successfully logged in to AniList. Your progress on AniList will be updated automatically");
+            }, 0);
         } else {
             // Log error
-            console.error(await workerResponse.text());
+            console.error("AniList Worker Error:", workerResponse.statusText);
         }
     } catch (error) {
         // Log error
@@ -114,18 +120,20 @@ function addAniListButtonEvent() {
         // Check if the user is logged in
         if (anilistButton.textContent === "Login to AniList") {
             // Alert the user
-            let confirm = window.confirm("You will be redirected to AniList.co to login. Do you want to continue?");
+            let confirm = window.confirm("You will be redirected to 'AniList.co' to login. Do you want to continue?");
             if (confirm) {
                 // Redirect the user to the AniList login page
                 window.location.href = "https://anilist.co/api/v2/oauth/authorize?client_id=21793&redirect_uri=https://letswatch.site/html/account.html&response_type=code";
             }
         } else if (anilistButton.textContent === "Logout from AniList") {
+            // Confirm the user action
+            let confirm = window.confirm("Do you want to logout from AniList?");
+            if (!confirm) return;
+
             // Remove the token from localStorage
             localStorage.removeItem("anilist-token");
             // Change the button text according to the AniList login status
             anilistButton.textContent = "Login to AniList";
-            // Alert the user
-            alert("Successfully logged out from AniList");
         }
     });
 }
