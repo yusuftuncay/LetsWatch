@@ -87,10 +87,14 @@ main {
     cursor: pointer;
 }
 /* Account Buttons */
-.account-buttons-container,
-.anilist-button-container {
+.account-buttons-container {
     display: flex;
     margin: 20px 0;
+    gap: 20px;
+}
+.anilist-button-container {
+    display: flex;
+    margin: 0 0 20px 0;
     gap: 20px;
 }
 .account-buttons-container .logout {
