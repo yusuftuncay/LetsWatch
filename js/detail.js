@@ -12,6 +12,7 @@ import {
     getTotalAvailableEpisodes,
     fetchAnimeDataFromAniwatch,
     fetchAnimeDataFromConsumet,
+    fetchAnimeInfoFromConsumet,
 } from "./util/main.js";
 import { updateAniListMediaEntry } from "./util/anilist.js";
 import { setupVideoPlayer, setVolume, loadHighestQuality, isSafari } from "./util/video.js";
@@ -25,6 +26,7 @@ import { getFirebase } from "./firebase/init.js";
 //#region Objects
 let animeDataAniwatch = {};
 let animeDataConsumet = {};
+let animeInfoConsumet = {};
 let animeEpisodes = {};
 let isLoadingEpisode = false;
 //#endregion
@@ -196,21 +198,37 @@ async function handleEpisodeClick(player, episode) {
         setEpisodeNumber(episode.number);
 
         // Setup the available servers dropdown
-        await setupAvailableServersDropdown(player, episode.episodeId);
+        // await setupAvailableServersDropdown(player, episode.episodeId);
 
         // Get the sub or dub element
         const subOrDubSelectElement = document.querySelector(".sub-or-dub-dropdown-select");
 
         // Get the server element
-        const serverSelectElement = document.querySelector(".server-dropdown-select");
+        // const serverSelectElement = document.querySelector(".server-dropdown-select");
 
         // Fetch the episode sources data for the selected episode, sub or dub value and server name
-        const episodeData = await fetchDataWithRedBackgroundColor(
-            `https://aniwatch.tuncay.be/api/v2/hianime/episode/sources?animeEpisodeId=${episode.episodeId}&category=${subOrDubSelectElement.value}&server=${serverSelectElement.value}`
-        );
+        // const episodeData = await fetchDataWithRedBackgroundColor(
+        // 	`https://aniwatch.tuncay.be/api/v2/hianime/episode/sources?animeEpisodeId=${episode.episodeId}&category=${subOrDubSelectElement.value}&server=${serverSelectElement.value}`
+        // );
+        // Find the episode with the matching episode number and get its ID
+        const selectedEpisode = animeInfoConsumet.episodes.find((item) => item.number === episode.number);
+        const selectedEpisodeId = selectedEpisode ? selectedEpisode.id : null;
+        // Fetch the episode data
+        const episodeData = await fetchDataWithRedBackgroundColor(`https://consumet.tuncay.be/meta/anilist/watch/${selectedEpisodeId}`);
+        // Find the highest quality source
+        const highestQualitySource = episodeData.sources.reduce((highest, current) => {
+            // Compare the quality of each source and return the one with the highest quality
+            const currentQuality = parseInt(current.quality);
+            const highestQuality = parseInt(highest.quality);
+            return currentQuality > highestQuality ? current : highest;
+        });
+        // Get the URL of the highest quality source
+        const highestQualityUrl = highestQualitySource?.url;
+        // Log the highest available quality
+        console.log(highestQualitySource.quality);
 
-        // Set the video source
-        player.src({ src: episodeData.data.sources[0].url, type: "application/x-mpegURL" });
+        // Set the video source .m3u8
+        player.src({ src: `https://proxy.tuncay.be/cors?url=${highestQualityUrl}` });
 
         // Proceed when the metadata of the video is loaded
         player.one("loadedmetadata", () => {
@@ -233,14 +251,14 @@ async function handleEpisodeClick(player, episode) {
                     episodeTotal: animeDataConsumet.totalEpisodes,
                     episodeId: episode.episodeId,
                     episodeDuration: Math.floor(player.duration()),
-                    subOrDub: subOrDubSelectElement.value,
+                    subOrDub: "sub", //subOrDubSelectElement.value
                 });
                 // Save the episode progress
                 saveEpisodeProgress(player, episode.episodeId);
             });
 
             // Setup subtitles
-            setupSubtitles(player, episodeData.data);
+            // setupSubtitles(player, episodeData.data);
 
             // Update the episodes list
             updateEpisodeList();
@@ -250,7 +268,7 @@ async function handleEpisodeClick(player, episode) {
         setupAniListUpdate(player);
 
         // Setup Buttons
-        setupSkipButtons(player, episodeData.data.intro, episodeData.data.outro);
+        // setupSkipButtons(player, episodeData.data.intro, episodeData.data.outro);
         setupNextEpisodeHandler(player);
     } catch (error) {
         console.error(error.message);
@@ -972,12 +990,12 @@ export function playNextEpisode(player, nextEpisodeBtn) {
 
 //#region Event Listener Functions
 // Function to handle window focus
-function handleFocusChange(player) {
-    // Pause the player when the window is unfocused
-    if (!document.hasFocus()) {
-        player.pause();
-    }
-}
+// function handleFocusChange(player) {
+//     // Pause the player when the window is unfocused
+//     if (!document.hasFocus()) {
+//         player.pause();
+//     }
+// }
 // Function to handle keyboard controls
 function handleKeyboardControls(event, player) {
     switch (event.code) {
@@ -1022,6 +1040,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Fetch anime and episodes data
     animeDataAniwatch = await fetchAnimeDataFromAniwatch();
     animeEpisodes = await fetchEpisodesData();
+    // Fetch anime data from Consumet
+    [animeDataConsumet, animeInfoConsumet] = await Promise.all([fetchAnimeDataFromConsumet(animeDataAniwatch), fetchAnimeInfoFromConsumet(animeDataAniwatch)]);
 
     // Get the video player instance
     const player = setupVideoPlayer();
@@ -1034,14 +1054,13 @@ document.addEventListener("DOMContentLoaded", async function () {
     updateEpisodeList();
 
     // Additional player settings
-    setupSubOrDubDropdown(player);
+    // setupSubOrDubDropdown(player);
     setVolume(player);
 
     // Setup season card
     setupSeasonsCard();
 
     // Fetch the anime data from Consumet and setup the next airing episode card
-    animeDataConsumet = await fetchAnimeDataFromConsumet(animeDataAniwatch);
     await setupNextAiringEpisodeCard();
 
     // Trigger a resize event to adjust the UI components
@@ -1065,12 +1084,12 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // Event listener for beforeunload to handle cases like refreshing the page and page navigation
     //window.addEventListener("beforeunload", () => {
-        // Pause the video player
+    // Pause the video player
     //    player.pause();
     //});
     // Event listener for pagehide to handle cases like closing the tab or switching to another app
     //window.addEventListener("pagehide", () => {
-        // Pause the video player
+    // Pause the video player
     //    player.pause();
     //});
 });

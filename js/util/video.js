@@ -1,7 +1,3 @@
-//#region Import
-import { playNextEpisode } from "../detail.js";
-//#endregion
-
 //#region VideoPlayer Setup
 export function setupVideoPlayer() {
     // Set up the video player with configuration

@@ -62,6 +62,15 @@ export async function fetchAnimeDataFromConsumet(animeDataAniwatch) {
     return await fetchDataWithRedBackgroundColor(`https://consumet.tuncay.be/meta/anilist/data/${anilistId}`);
 }
 
+// Function to fetch anime info from consumet api
+export async function fetchAnimeInfoFromConsumet(animeDataAniwatch) {
+    // Get anime id from the URL
+    const anilistId = getAnilistId(animeDataAniwatch);
+
+    // Fetch anime info
+    return await fetchDataWithRedBackgroundColor(`https://consumet.tuncay.be/meta/anilist/info/${anilistId}`);
+}
+
 // Function to fetch episodes data
 export async function fetchEpisodesData() {
     // Get anime id from the URL
