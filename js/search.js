@@ -16,7 +16,7 @@ const createCard = (link, title, imageSrc) => {
 
     // Create image element
     const img = document.createElement("img");
-    img.src = imageSrc;
+    img.src = `https://proxy.tuncay.be/cors?url=${imageSrc}`;
 
     // Create card title element
     const cardTitle = document.createElement("h3");

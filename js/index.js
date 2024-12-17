@@ -52,7 +52,7 @@ function createCard(link, title, image, totalEpisodes) {
 
     // Create an image element
     const imgElement = document.createElement("img");
-    imgElement.src = image;
+    imgElement.src = `https://proxy.tuncay.be/cors?url=${image}`;
 
     // Create a title element
     const cardTitle = document.createElement("h3");
@@ -344,7 +344,7 @@ function displayRecentlyWatched(recentlyWatchedData) {
 
         // Create an image element
         const imgElement = document.createElement("img");
-        imgElement.src = item["episode-image"];
+        imgElement.src = `https://proxy.tuncay.be/cors?url=${item["episode-image"]}`;
 
         // Calculate progress percentage
         const progressPercentage = (item["episode-progress"] / item["episode-duration"]) * 100;
