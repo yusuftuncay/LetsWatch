@@ -28,16 +28,16 @@ async function uploadData() {
             }
         });
 
-        // Add browser and device information
-        const userAgent = navigator.userAgent;
-        keepData["browser"] = getBrowserName(userAgent);
-        keepData["device"] = getDeviceType(userAgent);
-
-        // Add IP address
-        keepData["ip-address"] = await getIPAddress();
-
         // If the data is the same, do nothing
         if (keepData["recently-watched"] === lastDownloadedData["recently-watched"]) return;
+
+        // Add browser and device information
+        keepData["browser"] = getBrowserName(navigator.userAgent);
+        keepData["device"] = getDeviceType(navigator.userAgent);
+        // Add IP address
+        keepData["ip-address"] = await getIPAddress();
+        // Add last data sent time
+        keepData["last-online"] = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) + " [" + new Date().toLocaleDateString([]) + "]";
 
         try {
             // Reference the user data using the user's email
