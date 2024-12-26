@@ -2,6 +2,7 @@
 import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
 import { getFirebase } from "./init.js";
+import { getBrowserName, getDeviceType, getIPAddress } from "../util/user-agent.js";
 
 // Last downloaded user data
 let lastDownloadedData = {};
@@ -26,6 +27,18 @@ async function uploadData() {
                 keepData[key] = value;
             }
         });
+
+        // Add browser and device information
+        const userAgent = navigator.userAgent;
+        keepData["browser"] = getBrowserName(userAgent);
+        keepData["device"] = getDeviceType(userAgent);
+
+        // Add IP address
+        try {
+            keepData["ipAddress"] = await getIPAddress();
+        } catch (error) {
+            console.error("Failed to retrieve IP address:", error.message);
+        }
 
         // If the data is the same, do nothing
         if (keepData["recently-watched"] === lastDownloadedData["recently-watched"]) return;
