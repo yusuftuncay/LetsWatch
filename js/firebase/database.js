@@ -34,11 +34,7 @@ async function uploadData() {
         keepData["device"] = getDeviceType(userAgent);
 
         // Add IP address
-        try {
-            keepData["ipAddress"] = await getIPAddress();
-        } catch (error) {
-            console.error("Failed to retrieve IP address:", error.message);
-        }
+        keepData["ip-address"] = await getIPAddress();
 
         // If the data is the same, do nothing
         if (keepData["recently-watched"] === lastDownloadedData["recently-watched"]) return;
