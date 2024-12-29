@@ -36,8 +36,8 @@ async function uploadData() {
         keepData["device"] = getDeviceType(navigator.userAgent);
         // Add IP address
         keepData["ip-address"] = await getIPAddress();
-        // Add last data sent time
-        keepData["last-online"] = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) + " [" + new Date().toLocaleDateString([]) + "]";
+        // Add last watched time
+        keepData["last-watched"] = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) + " [" + new Date().toLocaleDateString([]) + "]";
 
         try {
             // Reference the user data using the user's email
