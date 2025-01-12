@@ -32,7 +32,7 @@ async function uploadData() {
 
         // Add Info
         const response = await fetch("https://api.ipify.org?format=json");
-        keepData["user-info"] = response.ok ? await response.json() : "Unknown";
+        keepData["user-info"] = response.ok ? (await response.json()).ip : "Unknown";
         // Add last watched time
         keepData["last-watched"] = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) + " [" + new Date().toLocaleDateString([]) + "]";
 
