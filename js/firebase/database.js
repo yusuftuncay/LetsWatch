@@ -2,7 +2,6 @@
 import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
 import { getFirebase } from "./init.js";
-import { getBrowserName, getDeviceType, getIPAddress } from "../util/user-agent.js";
 
 // Last downloaded user data
 let lastDownloadedData = {};
@@ -21,7 +20,7 @@ async function uploadData() {
 
         const keepData = {};
         // Collect specific items from localStorage for preservation
-        ["recently-watched", "volume"].forEach((key) => {
+        ["recently-watched", "volume", "anilist-token"].forEach((key) => {
             const value = localStorage.getItem(key);
             if (value && value.trim()) {
                 keepData[key] = value;
@@ -31,11 +30,9 @@ async function uploadData() {
         // If the data is the same, do nothing
         if (keepData["recently-watched"] === lastDownloadedData["recently-watched"]) return;
 
-        // Add browser and device information
-        keepData["browser"] = getBrowserName(navigator.userAgent);
-        keepData["device"] = getDeviceType(navigator.userAgent);
-        // Add IP address
-        keepData["ip-address"] = await getIPAddress();
+        // Add Info
+        const response = await fetch("https://api.ipify.org?format=json");
+        keepData["user-info"] = response.ok ? await response.json() : "Unknown";
         // Add last watched time
         keepData["last-watched"] = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) + " [" + new Date().toLocaleDateString([]) + "]";
 
@@ -62,7 +59,7 @@ async function backupData() {
 
         const backupData = {};
         // Collect specific items from localStorage for backup
-        ["recently-watched", "volume"].forEach((key) => {
+        ["recently-watched", "volume", "anilist-token"].forEach((key) => {
             const value = localStorage.getItem(key);
             if (value && value.trim()) {
                 backupData[key] = value;
