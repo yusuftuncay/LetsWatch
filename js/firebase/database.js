@@ -27,7 +27,7 @@ async function uploadData() {
             }
         });
 
-        // If the data is the same, do nothing
+        // If the recently-watched data is the same, do nothing
         if (keepData["recently-watched"] === lastDownloadedData["recently-watched"]) return;
 
         // Add Info
@@ -59,7 +59,7 @@ async function backupData() {
 
         const backupData = {};
         // Collect specific items from localStorage for backup
-        ["recently-watched", "volume", "anilist-token"].forEach((key) => {
+        ["recently-watched", "anilist-token", "volume", "last-watched", "info"].forEach((key) => {
             const value = localStorage.getItem(key);
             if (value && value.trim()) {
                 backupData[key] = value;
