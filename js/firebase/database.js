@@ -59,7 +59,7 @@ async function backupData() {
 
         const backupData = {};
         // Collect specific items from localStorage for backup
-        ["recently-watched", "anilist-token", "volume", "last-watched", "info"].forEach((key) => {
+        ["recently-watched", "anilist-token", "info"].forEach((key) => {
             const value = localStorage.getItem(key);
             if (value && value.trim()) {
                 backupData[key] = value;
@@ -69,17 +69,20 @@ async function backupData() {
         // If there is no recently-watched data, do nothing
         if (!backupData["recently-watched"]) return;
 
+        // Update last backup date in localStorage
+        const today = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) + " [" + new Date().toLocaleDateString([]) + "]"; // HH:MM [MM/DD/YYYY]
+        lastBackupDate = today;
+        localStorage.setItem("last-backup-date", lastBackupDate);
+
         try {
-            // Update last backup date in localStorage
-            const today = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) + " [" + new Date().toLocaleDateString([]) + "]"; // HH:MM [MM/DD/YYYY]
-            lastBackupDate = today;
-            localStorage.setItem("last-backup-date", lastBackupDate);
             // Reference the backup data using the user's email
             const backupRef = doc(db, "backup", user.email);
             // Upload both the recently-watched data and last-backup-date
             await setDoc(backupRef, {
-                "recently-watched": backupData["recently-watched"],
                 "last-backup-date": lastBackupDate,
+                "recently-watched": backupData["recently-watched"],
+                "anilist-token": backupData["anilist-token"],
+                info: backupData["info"],
             });
             // Log successful backup
             console.log(`${new Date().toLocaleTimeString([], { hour12: false })} - Backup successful`);
