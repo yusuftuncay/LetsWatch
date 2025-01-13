@@ -2,39 +2,68 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0" />
         <!-- Change color of StatusBar on most mobile devices -->
-        <meta name="theme-color" content="#222222" />
+        <meta
+            name="theme-color"
+            content="#222222" />
         <!-- Appicon -->
-        <link rel="icon" type="image/png" href="../img/appicon.png" />
+        <link
+            rel="icon"
+            type="image/png"
+            href="../img/appicon.png" />
         <title>Lets Watch!</title>
 
         <!-- JS -->
-        <script type="module" src="../js/firebase/database.js" crossorigin="anonymous" defer></script>
-        <script type="module" src="../js/shared.js" crossorigin="anonymous"></script>
+        <script
+            type="module"
+            src="../js/firebase/database.js"
+            crossorigin="anonymous"
+            defer></script>
+        <script
+            type="module"
+            src="../js/shared.js"
+            crossorigin="anonymous"></script>
         <!-- Prevent "favicon.ico" error -->
-        <link rel="shortcut icon" href="#" />
+        <link
+            rel="shortcut icon"
+            href="#" />
         <!-- Shared Import -->
-        <link rel="stylesheet" href="../css/shared.css" />
+        <link
+            rel="stylesheet"
+            href="../css/shared.css" />
         <!-- Custom Import -->
-        <link rel="stylesheet" href="../css/detail.css" />
+        <link
+            rel="stylesheet"
+            href="../css/detail.css" />
     </head>
     <body>
         <!-- Header -->
         <nav>
             <ul>
                 <li>
-                    <a href="../html/about.html" class="info-icon">
-                        <img src="../img/info-icon.svg" alt="Info Icon" />
+                    <a
+                        href="../html/about.html"
+                        class="info-icon">
+                        <img
+                            src="../img/info-icon.svg"
+                            alt="Info Icon" />
                     </a>
                 </li>
                 <li><a href="../index.html">Home</a></li>
                 <li><a href="../html/login.html"></a></li>
                 <!-- Search -->
                 <li class="search-container">
-                    <input type="text" placeholder="Search.." name="search" />
+                    <input
+                        type="text"
+                        placeholder="Search.."
+                        name="search" />
                     <button type="submit">
-                        <img src="../img/search.png" alt="Search" />
+                        <img
+                            src="../img/search.png"
+                            alt="Search" />
                     </button>
                 </li>
             </ul>
@@ -57,8 +86,15 @@
                     </div>
                 </div>
                 <!-- Player -->
-                <div class="player" id="player">
-                    <video-js id="videoplayer" class="video-js" controls preload="auto" autoplay>
+                <div
+                    class="player"
+                    id="player">
+                    <video-js
+                        id="videoplayer"
+                        class="video-js"
+                        controls
+                        preload="auto"
+                        autoplay>
                         <!-- Will be generated using JS -->
                     </video-js>
                 </div>
@@ -66,15 +102,29 @@
         </main>
 
         <!-- AniList JS -->
-        <script type="module" src="../js/util/anilist.js" crossorigin="anonymous"></script>
+        <script
+            type="module"
+            src="../js/util/anilist.js"
+            crossorigin="anonymous"></script>
         <!-- Util JS -->
-        <script type="module" src="../js/util/main.js" crossorigin="anonymous"></script>
-        <script type="module" src="../js/util/video.js" crossorigin="anonymous"></script>
+        <script
+            type="module"
+            src="../js/util/main.js"
+            crossorigin="anonymous"></script>
+        <script
+            type="module"
+            src="../js/util/video.js"
+            crossorigin="anonymous"></script>
         <!-- JS -->
-        <script type="module" src="../js/detail.js" crossorigin="anonymous"></script>
+        <script
+            type="module"
+            src="../js/detail.js"
+            crossorigin="anonymous"></script>
 
         <!-- Video -->
-        <link href="https://vjs.zencdn.net/8.16.1/video-js.css" rel="stylesheet" />
+        <link
+            href="https://vjs.zencdn.net/8.16.1/video-js.css"
+            rel="stylesheet" />
         <script src="https://vjs.zencdn.net/8.16.1/video.min.js"></script>
         <!-- VideoJS Resolution Switcher -->
         <script src="../js/plugin/hls-quality-selector.js"></script>
