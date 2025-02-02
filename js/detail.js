@@ -14,7 +14,7 @@ import {
     fetchAnimeDataFromConsumet,
 } from "./util/main.js";
 import { updateAniListMediaEntry } from "./util/anilist.js";
-import { setupVideoPlayer, setVolume, loadHighestQuality, isSafari } from "./util/video.js";
+import { setupVideoPlayer, setVolume, isSafari } from "./util/video.js";
 //#endregion
 
 //#region Firebase
@@ -214,9 +214,6 @@ async function handleEpisodeClick(player, episode) {
 
         // Proceed when the metadata of the video is loaded
         player.one("loadedmetadata", () => {
-            // Load the highest quality
-            loadHighestQuality(player);
-
             // Check authentication state
             onAuthStateChanged(auth, (user) => {
                 if (!user) return;
@@ -241,7 +238,6 @@ async function handleEpisodeClick(player, episode) {
 
             // Setup subtitles
             setupSubtitles(player, episodeData.data);
-
             // Update the episodes list
             updateEpisodeList();
         });
@@ -385,8 +381,8 @@ function setupSubtitles(player, episode) {
         );
 
         // Set the default caption style
-        for (var i = 0; i < tracks.length; i++) {
-            var track = tracks[i];
+        for (let i = 0; i < tracks.length; i++) {
+            let track = tracks[i];
             // Find the English captions track and mark it as "showing"
             if (track.kind === "captions" && track.language === "en") {
                 track.mode = "showing";
@@ -815,6 +811,11 @@ function setupAniListUpdate(player) {
 
     // Add event listener to monitor time updates
     player.on("timeupdate", handleTimeUpdate);
+
+    // Return the cleanup function
+    return () => {
+        player.off("timeupdate", handleTimeUpdate);
+    };
 }
 //#endregion
 
@@ -890,6 +891,23 @@ function setupSkipButtons(player, intro, outro) {
         player.currentTime(outro.end);
         player.play();
     });
+
+    // Return the cleanup function
+    return () => {
+        player.off("timeupdate", handleTimeUpdate);
+        skipIntroButton.removeEventListener("click", () => {
+            skipIntroButton.style.display = "none";
+            player.currentTime(intro.end);
+            player.play();
+        });
+        skipOutroButton.removeEventListener("click", () => {
+            skipOutroButton.style.display = "none";
+            player.currentTime(outro.end);
+            player.play();
+        });
+        skipIntroButton.remove();
+        skipOutroButton.remove();
+    };
 }
 //#endregion
 
@@ -935,6 +953,7 @@ function setupNextEpisodeHandler(player) {
     // Return the cleanup function
     return () => {
         player.off("timeupdate", handleTimeUpdate);
+        player.off("ended", () => playNextEpisode(player, nextEpisodeBtn));
         nextEpisodeBtn.removeEventListener("click", () => playNextEpisode(player, nextEpisodeBtn));
         nextEpisodeBtn.remove();
     };

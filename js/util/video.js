@@ -1,7 +1,7 @@
 //#region VideoPlayer Setup
 export function setupVideoPlayer() {
     // Set up the video player with configuration
-    const playerConfig = {
+    const config = {
         controlBar: {
             volumePanel: { inline: false },
         },
@@ -9,13 +9,13 @@ export function setupVideoPlayer() {
 
     // Add the HLS Quality Selector plugin if not Safari
     if (!isSafari()) {
-        playerConfig.plugins = {
-            hlsQualitySelector: { displayCurrentQuality: true },
+        config.plugins = {
+            hlsQualitySelector: { displayCurrentQuality: true, largestResolutionFirst: true, disableAutoQuality: true, defaultQuality: 1080 },
         };
     }
 
     // Create the video player instance with the configuration
-    const player = videojs("videoplayer", playerConfig);
+    const player = videojs("videoplayer", config);
 
     // Return the player instance
     return player;
@@ -46,39 +46,6 @@ export function setVolume(player) {
             localStorage.setItem("volume", player.volume().toFixed(2)); // Save volume to 2 decimal places
         }
     });
-}
-//#endregion
-
-//#region Function to load the highest quality
-export function loadHighestQuality(player) {
-    // Retrieve the highest available quality
-    const validQualities = ["1080p", "720p", "480p", "360p", "240p", "144p"];
-
-    // Find the highest available quality in the menu items
-    const qualityItems = Array.from(document.querySelectorAll(".vjs-quality-selector .vjs-menu-item .vjs-menu-item-text"));
-    const highestAvailableQuality = validQualities.find((quality) => qualityItems.some((item) => item.textContent.trim() === quality));
-
-    // Click the highest available quality item if found
-    if (highestAvailableQuality) {
-        qualityItems
-            .find((item) => item.textContent.trim() === highestAvailableQuality)
-            .closest(".vjs-menu-item")
-            ?.click();
-        // Reload the video player
-        player.load();
-
-        // Select the quality menu item
-        // qualityItems.forEach((item) => {
-        //     // Check if the item's value matches the selected quality
-        //     if (item.innerText === highestAvailableQuality) {
-        //         // Add "vjs-selected" class to the selected quality item
-        //         item.classList.add("vjs-selected");
-        //     } else {
-        //         // Remove "vjs-selected" class from other items
-        //         item.classList.remove("vjs-selected");
-        //     }
-        // });
-    }
 }
 //#endregion
 
