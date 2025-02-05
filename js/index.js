@@ -444,7 +444,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Alert the user of a domain change
     alert(
-        "This website will move to a new domain soon. If LETSWATCH.SITE stops working, please update your bookmarks to ONIGIRIDESU.COM. Contact developer for a restore of your data on OnigiriDesu! Thank you for your understanding!"
+        'This website will move to a new domain soon, from "..site" to "..one"\n\nIf "https://letswatch.site" stops working, please update your bookmarks to "https://letswatch.one"\n\nContact developer for a restore of your account data. Thank you for your understanding!'
     );
 });
 //#endregion
