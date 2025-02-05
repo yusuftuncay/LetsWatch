@@ -443,6 +443,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.addEventListener("resize", checkTitleOverflow);
 
     // Alert the user of a domain change
-    alert('LetsWatch moved to a new domain, from "..site" to "..one"\n\nPlease update your bookmarks to "https://letswatch.one"\n\nThank you for your understanding!');
+    // alert('LetsWatch moved to a new domain, from "..site" to "..one"\n\nPlease update your bookmarks to "https://letswatch.one"\n\nThank you for your understanding!');
 });
 //#endregion
