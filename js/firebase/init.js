@@ -17,7 +17,7 @@ export async function getFirebase() {
         if (!firebasePromise) {
             firebasePromise = (async () => {
                 // Fetch Firebase Config
-                const firebaseConfig = await (await fetch("https://firebase.letswatch.site")).json();
+                const firebaseConfig = await (await fetch("https://firebase.letswatch.one")).json();
 
                 // Initialize Firebase
                 const app = initializeApp(firebaseConfig);

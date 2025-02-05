@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     try {
         // Fetch the access token from the Cloudflare Worker
-        const workerUrl = "https://anilist.letswatch.site";
+        const workerUrl = "https://anilist.letswatch.one";
         const workerResponse = await fetch(workerUrl, {
             method: "POST",
             headers: {
@@ -120,7 +120,7 @@ function addAniListButtonEvent() {
             let confirm = window.confirm("You will be redirected to 'AniList.co' to login. Do you want to continue?");
             if (confirm) {
                 // Redirect the user to the AniList login page
-                window.location.href = "https://anilist.co/api/v2/oauth/authorize?client_id=21793&redirect_uri=https://letswatch.site/html/account.html&response_type=code";
+                window.location.href = "https://anilist.co/api/v2/oauth/authorize?client_id=21793&redirect_uri=https://letswatch.one/html/account.html&response_type=code";
             }
         } else if (anilistButton.textContent === "Logout from AniList") {
             // Confirm the user action

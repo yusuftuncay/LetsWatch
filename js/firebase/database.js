@@ -143,7 +143,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // 0.5 seconds for the home page, 5 seconds for other pages
     const interval =
-        window.location.href.startsWith("https://letswatch.site/?version=") || window.location.href.startsWith("https://letswatch.site/index.html?version=") ? 500 : 5000;
+        window.location.href.startsWith("https://letswatch.one/?version=") || window.location.href.startsWith("https://letswatch.one/index.html?version=") ? 500 : 5000;
     // Set the interval to call uploadData
     setInterval(uploadData, interval);
 
@@ -152,7 +152,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         // Get today's date as YYYY-MM-DD
         const today = new Date().toISOString().split("T")[0];
         // Perform backup if it's the next day
-        if (today !== lastBackupDate && window.location.href.startsWith("https://letswatch.site/html/detail")) {
+        if (today !== lastBackupDate && window.location.href.startsWith("https://letswatch.one/html/detail")) {
             backupData();
         }
     }, 300000);
