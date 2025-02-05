@@ -27,12 +27,12 @@ async function uploadData() {
             }
         });
 
-        // If the recently-watched data or anilist-token is the same, do nothing
-        if (
-            JSON.stringify(keepData["recently-watched"]) === JSON.stringify(lastDownloadedData["recently-watched"]) &&
-            keepData["anilist-token"] === lastDownloadedData["anilist-token"]
-        )
+        // If there is no new recently-watched data, do nothing. Unless the user is on the account page (to update the anilist-token)
+        if (keepData["recently-watched"] === lastDownloadedData["recently-watched"] && !window.location.href.startsWith("https://letswatch.one/html/account")) {
             return;
+        } else if (keepData["anilist-token"] === lastDownloadedData["anilist-token"] && !window.location.href.startsWith("https://letswatch.one/html/account")) {
+            return;
+        }
 
         // Add Info
         const response = await fetch("https://api.ipify.org?format=json");
@@ -145,9 +145,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Download user data
     await downloadUserData();
 
-    // 0.5 seconds for the home page, 5 seconds for other pages
+    // 0.5 seconds for the home or account page, 5 seconds for other pages
     const interval =
-        window.location.href.startsWith("https://letswatch.one/?version=") || window.location.href.startsWith("https://letswatch.one/index.html?version=") ? 500 : 5000;
+        window.location.href.startsWith("https://letswatch.one/?version=") ||
+        window.location.href.startsWith("https://letswatch.one/index.html?version=" || window.location.href.startsWith("https://letswatch.one/html/account"))
+            ? 500
+            : 5000;
     // Set the interval to call uploadData
     setInterval(uploadData, interval);
 
