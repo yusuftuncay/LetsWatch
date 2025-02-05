@@ -441,5 +441,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Call this function on window resize to update content
     window.addEventListener("resize", checkTitleOverflow);
+
+    // Alert the user of a domain change
+    alert(
+        "This website will move to a new domain soon. If LETSWATCH.SITE stops working, please update your bookmarks to ONIGIRIDESU.COM. Contact developer for a restore of your data on OnigiriDesu! Thank you for your understanding!"
+    );
 });
 //#endregion
