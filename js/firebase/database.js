@@ -27,8 +27,12 @@ async function uploadData() {
             }
         });
 
-        // If the recently-watched data is the same, do nothing
-        if (keepData["recently-watched"] === lastDownloadedData["recently-watched"]) return;
+        // If the recently-watched data or anilist-token is the same, do nothing
+        if (
+            JSON.stringify(keepData["recently-watched"]) === JSON.stringify(lastDownloadedData["recently-watched"]) &&
+            keepData["anilist-token"] === lastDownloadedData["anilist-token"]
+        )
+            return;
 
         // Add Info
         const response = await fetch("https://api.ipify.org?format=json");
