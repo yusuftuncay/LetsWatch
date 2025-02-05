@@ -27,12 +27,8 @@ async function uploadData() {
             }
         });
 
-        // If there is no new recently-watched data, do nothing. Unless the user is on the account page (to update the anilist-token)
-        if (keepData["recently-watched"] === lastDownloadedData["recently-watched"] && !window.location.href.startsWith("https://letswatch.one/html/account")) {
-            return;
-        } else if (keepData["anilist-token"] === lastDownloadedData["anilist-token"] && !window.location.href.startsWith("https://letswatch.one/html/account")) {
-            return;
-        }
+        // If the recently-watched data is the same, do nothing
+        if (keepData["recently-watched"] === lastDownloadedData["recently-watched"]) return;
 
         // Add Info
         const response = await fetch("https://api.ipify.org?format=json");
