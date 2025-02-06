@@ -16,7 +16,7 @@ const createCard = (link, title, imageSrc) => {
 
     // Create image element
     const img = document.createElement("img");
-    img.src = `https://proxy.tuncay.be/cors?url=${imageSrc}`;
+    img.src = imageSrc;
 
     // Create card title element
     const cardTitle = document.createElement("h3");
@@ -27,6 +27,12 @@ const createCard = (link, title, imageSrc) => {
     cardLink.appendChild(cardDiv);
     cardDiv.appendChild(img);
     cardDiv.appendChild(cardTitle);
+
+    // Create the gradient overlay element
+    const gradientElement = document.createElement("div");
+    gradientElement.classList.add("card-gradient");
+    // Append the gradient overlay element to the card
+    cardDiv.appendChild(gradientElement);
 
     return cardLink;
 };
