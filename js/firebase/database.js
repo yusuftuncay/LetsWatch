@@ -92,10 +92,10 @@ async function backupData() {
     });
 }
 
-// Function to clear localStorage except for "play-recently-watched" and "anilist-token"
+// Function to clear localStorage except for "play-recently-watched", "anilist-token" and "domain-change-alert"
 function clearLocalStorage() {
     Object.keys(localStorage).forEach((key) => {
-        if (key !== "play-recently-watched" && key !== "anilist-token") {
+        if (key !== "play-recently-watched" && key !== "anilist-token" && key !== "domain-change-alert") {
             localStorage.removeItem(key);
         }
     });
