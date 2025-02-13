@@ -7,7 +7,7 @@ import {
     EmailAuthProvider,
 } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
 import { getFirebase } from "./firebase/init.js";
-import { doc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
+import { doc, getDoc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
 //#endregion
 
 //#region Update User Email
@@ -105,6 +105,41 @@ async function deleteUser() {
 }
 //#endregion
 
+//#region Restore Backup
+async function restoreBackup() {
+    // Get the current user
+    const user = auth.currentUser;
+    if (!user) {
+        alert("No user is currently logged in");
+        return;
+    }
+
+    try {
+        // Get backup document
+        const backupRef = doc(db, "backup", user.email);
+        const backupSnap = await getDoc(backupRef);
+
+        if (!backupSnap.exists()) {
+            alert("No backup found for your account");
+            return;
+        }
+
+        // Ask for confirmation before overwriting data
+        const confirmation = confirm("Are you sure you want to restore your data from backup?\nThis will overwrite your current data!");
+        if (!confirmation) return;
+
+        // Overwrite user document with backup data
+        const backupData = backupSnap.data();
+        const userRef = doc(db, "users", user.email);
+        await setDoc(userRef, backupData);
+
+        alert("Your backup has been restored successfully!");
+    } catch (error) {
+        alert(error.message);
+    }
+}
+//#endregion
+
 //#region "DOMContentLoaded" event handler
 document.addEventListener("DOMContentLoaded", async () => {
     // Fetch Firebase
@@ -163,9 +198,19 @@ document.addEventListener("DOMContentLoaded", async () => {
         deleteButton.addEventListener("click", (event) => {
             // Prevent the form from submitting
             event.preventDefault();
-
             // Delete the user
             deleteUser();
+        });
+    }
+
+    // Restore backup button
+    const restoreButton = document.querySelector(".restore");
+    if (restoreButton) {
+        restoreButton.addEventListener("click", (event) => {
+            // Prevent the form from submitting
+            event.preventDefault();
+            // Restore backup
+            restoreBackup();
         });
     }
 });
