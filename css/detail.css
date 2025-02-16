@@ -126,6 +126,16 @@ main {
     font-family: ForoSans !important;
     inset: auto 0px 0px !important;
     height: auto !important;
+    /* Fix overlapping captions */
+    position: static !important;
+    margin: 0.2em 0 !important;
+    white-space: pre-wrap;
+}
+/* Override the direct child of .vjs-text-track-display to use flex layout */
+.video-js .vjs-text-track-display > div {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-end !important;
 }
 .video-js .vjs-text-track-cue div {
     background-color: rgba(0, 0, 0, 0) !important;
