@@ -209,8 +209,19 @@ async function handleEpisodeClick(player, episode) {
             `https://aniwatch.tuncay.be/api/v2/hianime/episode/sources?animeEpisodeId=${episode.episodeId}&category=${subOrDubSelectElement.value}&server=${serverSelectElement.value}`
         );
 
-        // Set the video source
-        player.src({ src: episodeData.data.sources[0].url, type: "application/x-mpegURL" });
+        // Set the video source with the correct Referer header
+        player.src({
+            src: episodeData.data.sources[0].url,
+            type: "application/x-mpegURL",
+            withCredentials: false,
+        });
+
+        // Manually set the Referer header if needed
+        player.tech(true).on("beforeload", function (event) {
+            event.headers = {
+                Referer: "https://megacloud.club/",
+            };
+        });
 
         // Proceed when the metadata of the video is loaded
         player.one("loadedmetadata", () => {
@@ -662,7 +673,8 @@ async function setupAvailableServersDropdown(player, episodeId) {
     serverSelectElement.dataset.previousValue = previousValue;
     // Set the default value to the previous value
     let firstOptionValue = serverSelectElement.options[0]?.value;
-    serverSelectElement.value = previousValue && previousValue !== "" ? previousValue : firstOptionValue && firstOptionValue !== "" ? firstOptionValue : "N/A";
+    serverSelectElement.value =
+        previousValue && previousValue !== "" ? previousValue : firstOptionValue && firstOptionValue !== "" ? firstOptionValue : "N/A";
 
     // Create div element for dropdown
     const divElement = document.createElement("div");
