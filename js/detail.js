@@ -210,7 +210,12 @@ async function handleEpisodeClick(player, episode) {
         );
 
         // Set the video source
-        player.src({ src: episodeData.data.sources[0].url, type: "application/x-mpegURL" });
+        const proxyUrl = "https://proxy.tuncay.be/cors?url=";
+        const refererHeader = encodeURIComponent('{"Referer":"https://megacloud.club/"}');
+        player.src({
+            src: `${proxyUrl}${encodeURIComponent(episodeData.data.sources[0].url)}&headers=${refererHeader}`,
+            type: "application/x-mpegURL",
+        });
 
         // Proceed when the metadata of the video is loaded
         player.one("loadedmetadata", () => {
