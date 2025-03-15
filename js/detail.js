@@ -209,19 +209,8 @@ async function handleEpisodeClick(player, episode) {
             `https://aniwatch.tuncay.be/api/v2/hianime/episode/sources?animeEpisodeId=${episode.episodeId}&category=${subOrDubSelectElement.value}&server=${serverSelectElement.value}`
         );
 
-        // Set the video source with the correct Referer header
-        player.src({
-            src: episodeData.data.sources[0].url,
-            type: "application/x-mpegURL",
-            withCredentials: false,
-        });
-
-        // Manually set the Referer header if needed
-        player.tech(true).on("beforeload", function (event) {
-            event.headers = {
-                Referer: "https://megacloud.club/",
-            };
-        });
+        // Set the video source
+        player.src({ src: episodeData.data.sources[0].url, type: "application/x-mpegURL" });
 
         // Proceed when the metadata of the video is loaded
         player.one("loadedmetadata", () => {
