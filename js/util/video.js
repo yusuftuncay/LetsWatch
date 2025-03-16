@@ -17,6 +17,16 @@ export function setupVideoPlayer() {
     // Create the video player instance with the configuration
     const player = videojs("videoplayer", config);
 
+    // Ensure this code runs before the player is initialized
+    videojs.Hls.xhr.beforeRequest = function (options) {
+        if (!options.headers) {
+            options.headers = {};
+        }
+        // Add your custom headers here
+        options.headers["Custom-Header-Name"] = "CustomHeaderValue";
+        return options;
+    };
+
     // Return the player instance
     return player;
 }

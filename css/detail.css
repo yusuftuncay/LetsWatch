@@ -86,6 +86,7 @@ main {
 .video-js {
     outline: none;
     z-index: 999;
+    font-family: ForoSans !important;
 }
 .video-js .vjs-modal-dialog,
 .player #videoplayer,
@@ -142,52 +143,56 @@ main {
     font-family: ForoSans !important;
 }
 /* Hide the captions settings */
-.video-js .vjs-subs-caps-button {
+/* .video-js .vjs-subs-caps-button {
     display: none;
 }
 .video-js .vjs-texttrack-settings {
     display: none;
+} */
+.video-js .vjs-texttrack-settings {
+    color: #999;
 }
-/* HLS Quality Selector */
-.video-js .vjs-quality-selector {
-    font-family: ForoSans !important;
+/* Quality Selector */
+.video-js .vjs-menu-content .vjs-quality-selector .vjs-menu-item {
+    width: 80% !important;
 }
-.video-js .vjs-quality-selector .vjs-menu-content {
+/* Menu Styles */
+.video-js .vjs-menu-content {
     background-color: #333 !important;
     border-radius: 15px !important;
     box-shadow: 0 0 10px 1px #222 !important;
     padding: 8px !important;
     display: block !important;
     height: auto !important;
-    width: 80% !important;
+    width: max-content;
 }
-.video-js .vjs-quality-selector .vjs-menu-content li {
+.video-js .vjs-menu-content li {
     display: block !important;
     border-radius: 10px !important;
     margin: 2px 0 !important;
     text-transform: unset !important;
 }
-.video-js .vjs-quality-selector .vjs-menu-content li:hover {
+.video-js .vjs-menu-content li:hover {
     background-color: #222 !important;
     box-shadow: 0 0 10px 1px #222 !important;
     color: white !important;
 }
-.video-js .vjs-quality-selector li.vjs-menu-title {
+.video-js li.vjs-menu-title {
     display: none !important;
 }
-.video-js .vjs-quality-selector .vjs-selected {
+.video-js .vjs-selected {
     background-color: #111 !important;
     box-shadow: 0 0 10px 1px #111 !important;
     color: white !important;
 }
-.video-js .vjs-quality-selector .vjs-menu-item {
+.video-js .vjs-menu-item {
     display: block !important;
 }
-.video-js .vjs-quality-selector .vjs-menu-item-text {
+.video-js .vjs-menu-item-text {
     /* Font fixes */
     font-family: ForoSans !important;
 }
-.video-js .vjs-quality-selector .vjs-menu {
+.video-js .vjs-menu {
     position: absolute !important;
     left: -2.25em !important;
     top: 52% !important;

@@ -211,7 +211,7 @@ async function handleEpisodeClick(player, episode) {
 
         // Set the video source
         player.src({
-            src: episodeData.data.sources[0].url,
+            src: `https://renewed-georgeanne-nekonode-1aa70c0c.koyeb.app/fetch/?url=${episodeData.data.sources[0].url}`,
             type: "application/x-mpegURL",
         });
 
