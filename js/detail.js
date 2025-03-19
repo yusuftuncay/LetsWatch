@@ -211,15 +211,8 @@ async function handleEpisodeClick(player, episode) {
 
         // Set the video source using the M3U8 proxy
         player.src({
-            src: `https://m3u8-proxy.tuncay.be/m3u8-proxy?url=${episodeData.data.sources[0].url}`,
+            src: `https://renewed-georgeanne-nekonode-1aa70c0c.koyeb.app/fetch/?url=${episodeData.data.sources[0].url}`,
             type: "application/x-mpegURL",
-            withCredentials: false,
-        });
-        // Manually set the Referer header
-        player.tech(true).on("beforeload", function (event) {
-            event.headers = {
-                Referer: "https://megacloud.club/",
-            };
         });
 
         // Proceed when the metadata of the video is loaded
