@@ -211,7 +211,7 @@ async function handleEpisodeClick(player, episode) {
 
         // Set the video source using the M3U8 proxy
         player.src({
-            src: `https://m3u8-proxy.yusuftuncay.workers.dev/m3u8-proxy?url=${episodeData.data.sources[0].url}`,
+            src: `https://m3u8-proxy.tuncay.be/m3u8-proxy?url=${episodeData.data.sources[0].url}`,
             type: "application/x-mpegURL",
         });
 
