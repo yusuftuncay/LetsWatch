@@ -666,7 +666,6 @@ async function setupAvailableServersDropdown(player, episodeId) {
     // Set the default value to "hd-2" if available, otherwise use the previous value
     let firstOptionValue = serverSelectElement.options[0]?.value;
     serverSelectElement.value =
-        // previousValue && previousValue !== "" ? previousValue : firstOptionValue && firstOptionValue !== "" ? firstOptionValue : "N/A";
         serverSelectElement.querySelector('option[value="hd-2"]') ? "hd-2" : previousValue && previousValue !== "" ? previousValue : firstOptionValue && firstOptionValue !== "" ? firstOptionValue : "N/A";
 
     // Create div element for dropdown

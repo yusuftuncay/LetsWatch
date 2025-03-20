@@ -133,7 +133,7 @@ main {
     white-space: pre-wrap;
 }
 /* Override the direct child of .vjs-text-track-display to use flex layout */
-.video-js .vjs-text-track-display > div {
+.video-js .vjs-text-track-display>div {
     display: flex !important;
     flex-direction: column !important;
     justify-content: flex-end !important;
@@ -143,14 +143,9 @@ main {
     font-family: ForoSans !important;
 }
 /* Hide the captions settings */
-/* .video-js .vjs-subs-caps-button {
-    display: none;
-}
-.video-js .vjs-texttrack-settings {
-    display: none;
-} */
-.video-js .vjs-texttrack-settings {
-    color: #999;
+.video-js .vjs-subs-caps-button ul.vjs-menu-content {
+    display: flex !important;
+    flex-direction: column-reverse !important;
 }
 /* Quality Selector */
 .video-js .vjs-menu-content .vjs-quality-selector .vjs-menu-item {
