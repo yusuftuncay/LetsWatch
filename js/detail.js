@@ -369,29 +369,44 @@ function setupSubtitles(player, episode) {
         player.removeRemoteTextTrack(tracks[i]);
     }
 
-    // Only select English Subtitles
-    const englishTrack = episode.tracks.find((track) => track.kind === "captions" && track.label === "English");
-    if (englishTrack) {
-        // Add the new track
+    // Get all subtitle tracks
+    const subtitleTracks = episode.tracks.filter((track) => track.kind === "captions");
+
+    let defaultTrackLabel = null;
+
+    subtitleTracks.forEach((track, index) => {
         player.addRemoteTextTrack(
             {
-                kind: englishTrack.kind,
-                label: "English",
-                srclang: "en",
-                src: englishTrack.file,
+                kind: track.kind,
+                label: track.label,
+                srclang: track.label.toLowerCase(),
+                src: track.file,
             },
             false
         );
 
-        // Set the default caption style
-        for (let i = 0; i < tracks.length; i++) {
-            let track = tracks[i];
-            // Find the English captions track and mark it as "showing"
-            if (track.kind === "captions" && track.language === "en") {
-                track.mode = "showing";
+        // Remember the default track
+        if (track.default) {
+            defaultTrackLabel = track.label;
+        }
+    });
+
+    // Ensure only one track is enabled
+    setTimeout(() => {
+        const textTracks = player.textTracks();
+        let selected = false;
+
+        for (let i = 0; i < textTracks.length; i++) {
+            if (textTracks[i].kind === "captions") {
+                if (!selected && (textTracks[i].label === defaultTrackLabel || defaultTrackLabel === null)) {
+                    textTracks[i].mode = "showing";
+                    selected = true;
+                } else {
+                    textTracks[i].mode = "disabled";
+                }
             }
         }
-    }
+    }, 500);
 }
 //#endregion
 
