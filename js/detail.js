@@ -211,7 +211,7 @@ async function handleEpisodeClick(player, episode) {
 
         // Set the video source using the M3U8 proxy
         player.src({
-            src: `https://m3u8-proxy.tuncay.be/m3u8-proxy?url=${episodeData.data.sources[0].url}`,
+            src: `https://m3u8-proxy.tuncay.be/m3u8-proxy?url=${episodeData.data.sources[0].url}&headers=%7B%22Referer%22%3A%22https%3A%2F%2Fmegacloud.club%2F%22%7D`,
             type: "application/x-mpegURL",
         });
 
@@ -663,10 +663,11 @@ async function setupAvailableServersDropdown(player, episodeId) {
 
     // Set the initial previous value for the select element
     serverSelectElement.dataset.previousValue = previousValue;
-    // Set the default value to the previous value
+    // Set the default value to "hd-1" if available, otherwise use the previous value
     let firstOptionValue = serverSelectElement.options[0]?.value;
     serverSelectElement.value =
-        previousValue && previousValue !== "" ? previousValue : firstOptionValue && firstOptionValue !== "" ? firstOptionValue : "N/A";
+        // previousValue && previousValue !== "" ? previousValue : firstOptionValue && firstOptionValue !== "" ? firstOptionValue : "N/A";
+        serverSelectElement.querySelector('option[value="hd-1"]') ? "hd-1" : previousValue && previousValue !== "" ? previousValue : firstOptionValue && firstOptionValue !== "" ? firstOptionValue : "N/A";
 
     // Create div element for dropdown
     const divElement = document.createElement("div");
