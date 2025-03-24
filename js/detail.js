@@ -210,8 +210,12 @@ async function handleEpisodeClick(player, episode) {
         );
 
         // Set the video source using the M3U8 proxy
+        const sourceUrl = episodeData.data.sources[0].url;
+        const referer = "https://megacloud.club/";
+        const headers = { Referer: referer };
+        const playerSrc = `https://m3u8-proxy.tuncay.be/m3u8-proxy?url=${encodeURIComponent(sourceUrl)}&headers=${encodeURIComponent(JSON.stringify(headers))}`;
         player.src({
-            src: `https://m3u8-proxy.tuncay.be/m3u8-proxy?url=${episodeData.data.sources[0].url}&headers=%7B%22Referer%22%3A%22https%3A%2F%2Fmegacloud.club%2F%22%7D`,
+            src: playerSrc,
             type: "application/x-mpegURL",
         });
 
