@@ -441,20 +441,5 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Call this function on window resize to update content
     window.addEventListener("resize", checkTitleOverflow);
-
-    // Alert the user of a domain change (once every 8 hours)
-    (function () {
-        const STORAGE_KEY = "domain-change-alert";
-        const EIGHT_HOURS = 8 * 60 * 60 * 1000; // 8 hours in milliseconds
-        const lastPopupTime = localStorage.getItem(STORAGE_KEY);
-        const now = Date.now();
-
-        if (!lastPopupTime || now - lastPopupTime > EIGHT_HOURS) {
-            alert(
-                'IMPORTANT!!!\n\nLetsWatch moved to a new domain, from "..site" to "..one". Please update your bookmarks to "https://letswatch.one"\n\nThank you for using LetsWatch!'
-            );
-            localStorage.setItem(STORAGE_KEY, now);
-        }
-    })();
 });
 //#endregion
