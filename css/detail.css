@@ -146,10 +146,15 @@ main {
 .video-js .vjs-subs-caps-button ul.vjs-menu-content {
     display: flex !important;
     flex-direction: column-reverse !important;
+    width: 25em !important;
+    left: -8em !important;
 }
 /* Quality Selector */
 .video-js .vjs-menu-content .vjs-quality-selector .vjs-menu-item {
     width: 80% !important;
+}
+.video-js .vjs-quality-selector  ul.vjs-menu-content {
+    left: -1em !important;
 }
 /* Menu Styles */
 .video-js .vjs-menu-content {
@@ -483,6 +488,9 @@ main {
     .player {
         height: 170px !important;
         width: 300px !important;
+    }
+    .server-dropdown select {
+        width: 65px !important;
     }
 }
 /* #endregion */
