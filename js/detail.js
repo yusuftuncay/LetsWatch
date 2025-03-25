@@ -682,10 +682,21 @@ async function setupAvailableServersDropdown(player, episodeId) {
 
     // Set the initial previous value for the select element
     serverSelectElement.dataset.previousValue = previousValue;
-    // Set the default value to "hd-2" if available, otherwise use the previous value
-    let firstOptionValue = serverSelectElement.options[0]?.value;
-    serverSelectElement.value =
-        serverSelectElement.querySelector('option[value="hd-2"]') ? "hd-2" : previousValue && previousValue !== "" ? previousValue : firstOptionValue && firstOptionValue !== "" ? firstOptionValue : "N/A";
+    // Get the first option value
+    const firstOptionValue = serverSelectElement.options[0]?.value;
+    // Default to "hd-2" if available and user hasn't manually changed it before
+    if (!previousValue || !serverSelectElement.querySelector(`option[value="${previousValue}"]`)) {
+        if (serverSelectElement.querySelector('option[value="hd-2"]')) {
+            serverSelectElement.value = "hd-2";
+        } else if (firstOptionValue && firstOptionValue !== "") {
+            serverSelectElement.value = firstOptionValue;
+        } else {
+            serverSelectElement.value = "N/A";
+        }
+    } else {
+        // Preserve previously selected server
+        serverSelectElement.value = previousValue;
+    }
 
     // Create div element for dropdown
     const divElement = document.createElement("div");
@@ -709,7 +720,9 @@ async function setupAvailableServersDropdown(player, episodeId) {
         const episodeElement = document.querySelector(`a.link.text-white[data-episode-number="${episodeNumber}"]`);
         // Check if the element exists
         if (episodeElement) {
-            episodeElement.click();
+            setTimeout(() => {
+                episodeElement.click();
+            }, 500);
         }
     });
 }
