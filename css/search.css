@@ -130,7 +130,6 @@ main.show {
         width: 140px;
     }
     .card img {
-        height: 140px;
         object-fit: cover;
         width: 140px;
     }
