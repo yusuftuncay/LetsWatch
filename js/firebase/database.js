@@ -34,8 +34,7 @@ async function uploadData() {
         const response = await fetch("https://api.ipify.org?format=json");
         keepData["info"] = response.ok ? (await response.json()).ip : "Unknown";
         // Add last watched time
-        keepData["last-watched"] =
-            new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) + " [" + new Date().toLocaleDateString([]) + "]";
+        keepData["last-watched"] = getFormattedDateTime();
 
         try {
             // Reference the user data using the user's email
