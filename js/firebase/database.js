@@ -34,7 +34,8 @@ async function uploadData() {
         const response = await fetch("https://api.ipify.org?format=json");
         keepData["info"] = response.ok ? (await response.json()).ip : "Unknown";
         // Add last watched time
-        keepData["last-watched"] = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) + " [" + new Date().toLocaleDateString([]) + "]";
+        keepData["last-watched"] =
+            new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) + " [" + new Date().toLocaleDateString([]) + "]";
 
         try {
             // Reference the user data using the user's email
@@ -70,9 +71,9 @@ async function backupData() {
         if (!backupData["recently-watched"]) return;
 
         // Update last backup date in localStorage
-        const today = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) + " [" + new Date().toLocaleDateString([]) + "]"; // HH:MM [MM/DD/YYYY]
+        const today = new Date().toISOString().split("T")[0];
         lastBackupDate = today;
-        localStorage.setItem("last-backup-date", lastBackupDate);
+        localStorage.setItem("last-backup-date", today);
 
         try {
             // Reference the backup data using the user's email
@@ -144,7 +145,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 0.5 seconds for the home or account page, 5 seconds for other pages
     const interval =
         window.location.href.startsWith("https://letswatch.one/?version=") ||
-        window.location.href.startsWith("https://letswatch.one/index.html?version=" || window.location.href.startsWith("https://letswatch.one/html/account"))
+        window.location.href.startsWith(
+            "https://letswatch.one/index.html?version=" || window.location.href.startsWith("https://letswatch.one/html/account")
+        )
             ? 500
             : 5000;
     // Set the interval to call uploadData
