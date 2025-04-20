@@ -807,10 +807,10 @@ function updateEpisodeList() {
         });
 
         // Scroll to the current episode element if not Safari
-        const episodeElement = document.querySelector(`.card-item a[data-episode-number="${episodeNumber}"]`);
-        if (episodeElement && !isSafari()) {
-            episodeElement.scrollIntoView({ behavior: "smooth", block: "center" });
-        }
+        // const episodeElement = document.querySelector(`.card-item a[data-episode-number="${episodeNumber}"]`);
+        // if (episodeElement && !isSafari()) {
+        //     episodeElement.scrollIntoView({ behavior: "smooth", block: "center" });
+        // }
     });
 
     // Function to get the episode number from localStorage

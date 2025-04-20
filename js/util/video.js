@@ -29,6 +29,9 @@ export function setupVideoPlayer() {
             tech.el().setAttribute("playsinline", "");
             tech.el().setAttribute("webkit-playsinline", "");
         }
+
+        // Remove the hidden class once Video.js is fully ready
+        player.removeClass("vjs-hidden");
     });
 
     // Return the player instance
