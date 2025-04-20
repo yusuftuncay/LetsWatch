@@ -133,7 +133,7 @@ main {
     white-space: pre-wrap;
 }
 /* Override the direct child of .vjs-text-track-display to use flex layout */
-.video-js .vjs-text-track-display>div {
+.video-js .vjs-text-track-display > div {
     display: flex !important;
     flex-direction: column !important;
     justify-content: flex-end !important;
@@ -153,7 +153,7 @@ main {
 .video-js .vjs-menu-content .vjs-quality-selector .vjs-menu-item {
     width: 80% !important;
 }
-.video-js .vjs-quality-selector  ul.vjs-menu-content {
+.video-js .vjs-quality-selector ul.vjs-menu-content {
     left: -1em !important;
 }
 /* Menu Styles */

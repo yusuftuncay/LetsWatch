@@ -10,12 +10,26 @@ export function setupVideoPlayer() {
     // Add the HLS Quality Selector plugin if not Safari
     if (!isSafari()) {
         config.plugins = {
-            hlsQualitySelector: { displayCurrentQuality: true, largestResolutionFirst: true, disableAutoQuality: true, defaultQuality: 1080 },
+            hlsQualitySelector: {
+                displayCurrentQuality: true,
+                largestResolutionFirst: true,
+                disableAutoQuality: true,
+                defaultQuality: 1080,
+            },
         };
     }
 
     // Create the video player instance with the configuration
     const player = videojs("videoplayer", config);
+
+    // Force inline mode on iOS (tech element)
+    player.ready(() => {
+        const tech = player.tech();
+        if (tech && tech.el()) {
+            tech.el().setAttribute("playsinline", "");
+            tech.el().setAttribute("webkit-playsinline", "");
+        }
+    });
 
     // Return the player instance
     return player;

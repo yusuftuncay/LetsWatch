@@ -213,7 +213,9 @@ async function handleEpisodeClick(player, episode) {
         const sourceUrl = episodeData.data.sources[0].url;
         const referer = "https://megacloud.club/";
         const headers = { Referer: referer };
-        const playerSrc = `https://m3u8-proxy.tuncay.be/m3u8-proxy?url=${encodeURIComponent(sourceUrl)}&headers=${encodeURIComponent(JSON.stringify(headers))}`;
+        const playerSrc = `https://m3u8-proxy.tuncay.be/m3u8-proxy?url=${encodeURIComponent(sourceUrl)}&headers=${encodeURIComponent(
+            JSON.stringify(headers)
+        )}`;
         player.src({
             src: playerSrc,
             type: "application/x-mpegURL",
@@ -225,6 +227,8 @@ async function handleEpisodeClick(player, episode) {
             onAuthStateChanged(auth, (user) => {
                 if (!user) return;
 
+                // Set the volume
+                setVolume(player);
                 // Resume episode from the last watched position
                 resumeEpisodeProgress(player, animeDataAniwatch.data.anime.info.id);
                 // Save the episode in the recently watched list
@@ -1088,9 +1092,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     generateEpisodeList(player);
     updateEpisodeList();
 
-    // Additional player settings
+    // Setup the sub or dub dropdown
     setupSubOrDubDropdown(player);
-    setVolume(player);
 
     // Setup season card
     setupSeasonsCard();
