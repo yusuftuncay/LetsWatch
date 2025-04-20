@@ -45,34 +45,37 @@ To set up the project locally, follow these steps:
 -   **js**: JavaScript files that add interactivity and dynamic content to the application
 -   **index.html**: The main entry point for the application
 
-## Functions
+## 🔧 Features
 
--   **NO ADS**
--   User authentication and data management
--   Browsing, searching and watching all anime series and movies
--   Viewing detailed information about any anime, some features are:
-    -   Highlight previously watched episodes (dark grey)
-    -   Highlight currently watching episode (green)
-    -   Highlight filler episodes (red)
--   Streaming video content, some features are:
-    -   Skip intro/outro buttons
-    -   Next episode button
-    -   Subbed or dubbed dropdown
--   Minimalistic design
--   Responsive UI for various devices
-
-## APIs Used
-
-- [Aniwatch API](https://github.com/ghoshRitesh12/aniwatch-api)
-- [Consumet API](https://github.com/consumet/api.consumet.org)
+- **No ads**
+- Full user authentication
+- Browse, search, and watch all anime series and movies
+- View detailed anime info, including:
+  - Previously watched episodes highlighted in **dark grey**
+  - Currently watching episode highlighted in **green**
+  - Filler episodes marked in **red**
+- Stream video content with (With many more in the VideoPlayer):
+  - **Skip intro/outro** buttons
+  - **Next episode** button
+  - **Subbed/Dubbed** selection dropdown
+- Minimalistic and clean UI
+- Fully responsive across all devices
+- AniList sync support (login via **Account** section)
+- Resume playback from where you left off
+  - Shown in **Recently Watched** on the home screen
 
 ## Logged In Users
 
 Logged in users can:
 
--   Track anime progress, showing a "Recently Watched" section on the homepage with the image, title, episode number and a progress bar
--   Save progress on their account
+-   Track anime progress (Showing a "Recently Watched" section on the homepage with the image, title, episode number and a progress bar)
+-   Saves any progress on their account
 -   When clicked on an anime in the "Recently Watched" section, the player automatically starts at the correct episode and time, resuming playback from where they left off
+
+## APIs Used
+
+- [Aniwatch API](https://github.com/ghoshRitesh12/aniwatch-api)
+- [Consumet API](https://github.com/consumet/api.consumet.org)
 
 ## License
 
