@@ -371,44 +371,52 @@ function saveEpisodeProgress(player, episodeId) {
 
 // Function to setup subtitles and default caption styles
 function setupSubtitles(player, episode) {
-    // Remove existing text tracks
+    // Remove all existing text tracks from the player
     const tracks = player.textTracks();
     for (let i = tracks.length - 1; i >= 0; i--) {
         player.removeRemoteTextTrack(tracks[i]);
     }
 
-    // Get all subtitle tracks
+    // Filter only caption tracks from the episode data
     const subtitleTracks = episode.tracks.filter((track) => track.kind === "captions");
 
     let defaultTrackLabel = null;
 
-    subtitleTracks.forEach((track, index) => {
+    // Add all subtitle tracks to the player
+    subtitleTracks.forEach((track) => {
         player.addRemoteTextTrack(
             {
                 kind: track.kind,
                 label: track.label,
-                srclang: track.label.toLowerCase(),
+                srclang: track.srclang || track.label.toLowerCase(),
                 src: track.file,
             },
             false
         );
 
-        // Remember the default track
+        // Save the label of the default track, if defined
         if (track.default) {
             defaultTrackLabel = track.label;
         }
     });
 
-    // Ensure only one track is enabled
+    // Fallback: if no track was marked as default, try to find English
+    if (!defaultTrackLabel && subtitleTracks.length) {
+        const fallbackTrack = subtitleTracks.find((t) => t.label.toLowerCase().includes("english") || t.srclang === "en");
+        if (fallbackTrack) {
+            defaultTrackLabel = fallbackTrack.label;
+        }
+    }
+
+    // Enable only one subtitle track after a short delay
     setTimeout(() => {
         const textTracks = player.textTracks();
-        let selected = false;
 
         for (let i = 0; i < textTracks.length; i++) {
             if (textTracks[i].kind === "captions") {
-                if (!selected && (textTracks[i].label === defaultTrackLabel || defaultTrackLabel === null)) {
+                // Enable only the track that matches the default label
+                if (textTracks[i].label === defaultTrackLabel) {
                     textTracks[i].mode = "showing";
-                    selected = true;
                 } else {
                     textTracks[i].mode = "disabled";
                 }
