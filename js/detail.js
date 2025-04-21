@@ -209,7 +209,8 @@ async function handleEpisodeClick(player, episode) {
             `https://aniwatch.tuncay.be/api/v2/hianime/episode/sources?animeEpisodeId=${episode.episodeId}&category=${subOrDubSelectElement.value}&server=${serverSelectElement.value}`
         );
 
-        // Prepare headers
+        // Prepare URL and headers
+        const sourceUrl = episodeData.data.sources[0].url;
         const headers = {
             Referer: "https://megacloud.club/",
         };
