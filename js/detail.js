@@ -209,15 +209,18 @@ async function handleEpisodeClick(player, episode) {
             `https://aniwatch.tuncay.be/api/v2/hianime/episode/sources?animeEpisodeId=${episode.episodeId}&category=${subOrDubSelectElement.value}&server=${serverSelectElement.value}`
         );
 
-        // Set the video source using the M3U8 proxy
-        const sourceUrl = episodeData.data.sources[0].url;
-        const referer = "https://megacloud.club/";
-        const headers = { Referer: referer };
-        const playerSrc = `https://m3u8-proxy.tuncay.be/m3u8-proxy?url=${encodeURIComponent(sourceUrl)}&headers=${encodeURIComponent(
-            JSON.stringify(headers)
-        )}`;
+        // Prepare headers
+        const headers = {
+            Referer: "https://megacloud.club/",
+        };
+        // Build the proxied m3u8 URL
+        const proxiedM3u8Url =
+            "https://m3u8-proxy.tuncay.be/m3u8-proxy?" +
+            `url=${encodeURIComponent(sourceUrl)}` +
+            `&headers=${encodeURIComponent(JSON.stringify(headers))}`;
+        // Set the video source
         player.src({
-            src: playerSrc,
+            src: proxiedM3u8Url,
             type: "application/x-mpegURL",
         });
 
@@ -384,12 +387,13 @@ function setupSubtitles(player, episode) {
 
     // Add all subtitle tracks to the player
     subtitleTracks.forEach((track) => {
+        // Add each VTT via the vtt‑proxy endpoint
         player.addRemoteTextTrack(
             {
                 kind: track.kind,
                 label: track.label,
                 srclang: track.srclang || track.label.toLowerCase(),
-                src: `https://m3u8-proxy.tuncay.be/m3u8-proxy?url=${encodeURIComponent(track.file)}`,
+                src: `https://m3u8-proxy.tuncay.be/vtt-proxy?url=${encodeURIComponent(track.file)}`,
             },
             false
         );
