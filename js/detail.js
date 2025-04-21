@@ -210,20 +210,13 @@ async function handleEpisodeClick(player, episode) {
         );
 
         // Prepare URL and headers
-        const sourceUrl = episodeData.data.sources[0].url;
+        let sourceUrl = episodeData.data.sources[0].url;
         const headers = {
             Referer: "https://megacloud.club/",
         };
-        // Build the proxied m3u8 URL
         const proxiedM3u8Url =
-            "https://m3u8-proxy.yusuftuncay.workers.dev/m3u8-proxy?" +
-            `url=${encodeURIComponent(sourceUrl)}` +
-            `&headers=${encodeURIComponent(JSON.stringify(headers))}`;
-        // Set the video source
-        player.src({
-            src: proxiedM3u8Url,
-            type: "application/x-mpegURL",
-        });
+            "https://proxy.letswatch.one/proxy?" + `url=${encodeURIComponent(sourceUrl)}` + `&headers=${encodeURIComponent(JSON.stringify(headers))}`;
+        player.src({ src: proxiedM3u8Url, type: "application/x-mpegURL" });
 
         // Proceed when the metadata of the video is loaded
         player.one("loadedmetadata", () => {
@@ -394,7 +387,7 @@ function setupSubtitles(player, episode) {
                 kind: track.kind,
                 label: track.label,
                 srclang: track.srclang || track.label.toLowerCase(),
-                src: `https://m3u8-proxy.yusuftuncay.workers.dev/vtt-proxy?url=${encodeURIComponent(track.file)}`,
+                src: `https://proxy.letswatch.one/proxy?url=${encodeURIComponent(track.file)}`,
             },
             false
         );
