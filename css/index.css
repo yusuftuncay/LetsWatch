@@ -7,6 +7,7 @@
     width: 90vw;
     padding: 18px;
     overflow: auto;
+    scroll-behavior: smooth;
     text-shadow: 0 0 black;
 }
 /* #endregion */
@@ -123,7 +124,8 @@ main.show {
     opacity: 0;
     padding: 0;
     margin: 0;
-    transition: max-height 1s cubic-bezier(0.65, 0.05, 0.35, 1), padding 1s cubic-bezier(0.65, 0.05, 0.35, 1), margin 1s cubic-bezier(0.65, 0.05, 0.35, 1);
+    transition: max-height 1s cubic-bezier(0.65, 0.05, 0.35, 1), padding 1s cubic-bezier(0.65, 0.05, 0.35, 1),
+        margin 1s cubic-bezier(0.65, 0.05, 0.35, 1);
 }
 /* Loaded */
 .recently-watched.loaded {

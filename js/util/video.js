@@ -22,7 +22,7 @@ export function setupVideoPlayer() {
     // Create the video player instance with the configuration
     const player = videojs("videoplayer", config);
 
-    // Force inline mode on iOS (tech element)
+    // Force inline mode on iOS
     player.ready(() => {
         const tech = player.tech();
         if (tech && tech.el()) {
@@ -30,8 +30,13 @@ export function setupVideoPlayer() {
             tech.el().setAttribute("webkit-playsinline", "");
         }
 
-        // Remove the hidden class once Video.js is fully ready
+        // Remove the loading spinner
         player.removeClass("vjs-hidden");
+
+        // Unmute on all non‑Safari browsers
+        if (!isSafari()) {
+            player.muted(false);
+        }
     });
 
     // Return the player instance
