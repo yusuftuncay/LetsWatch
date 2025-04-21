@@ -216,7 +216,7 @@ async function handleEpisodeClick(player, episode) {
         };
         // Build the proxied m3u8 URL
         const proxiedM3u8Url =
-            "https://m3u8-proxy.tuncay.be/m3u8-proxy?" +
+            "https://proxy.tuncay.be/m3u8-proxy?" +
             `url=${encodeURIComponent(sourceUrl)}` +
             `&headers=${encodeURIComponent(JSON.stringify(headers))}`;
         // Set the video source
@@ -394,7 +394,7 @@ function setupSubtitles(player, episode) {
                 kind: track.kind,
                 label: track.label,
                 srclang: track.srclang || track.label.toLowerCase(),
-                src: `https://m3u8-proxy.tuncay.be/vtt-proxy?url=${encodeURIComponent(track.file)}`,
+                src: `https://proxy.tuncay.be/vtt-proxy?url=${encodeURIComponent(track.file)}`,
             },
             false
         );
