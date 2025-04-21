@@ -389,7 +389,7 @@ function setupSubtitles(player, episode) {
                 kind: track.kind,
                 label: track.label,
                 srclang: track.srclang || track.label.toLowerCase(),
-                src: track.file,
+                src: `https://m3u8-proxy.tuncay.be/m3u8-proxy?url=${encodeURIComponent(track.file)}`,
             },
             false
         );
