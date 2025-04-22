@@ -52,50 +52,74 @@ async function uploadData() {
     });
 }
 
-// Function to back up user data to the "backup" collection
+// Function to back up data to Firestore
 async function backupData() {
-    onAuthStateChanged(auth, async (user) => {
-        if (!user) return;
+    // ensure user is authenticated
+    const user = auth.currentUser;
+    if (!user) {
+        return;
+    }
 
-        const backupData = {};
-        // Collect specific items from localStorage for backup
-        ["recently-watched", "anilist-token", "info"].forEach((key) => {
-            const value = localStorage.getItem(key);
-            if (value && value.trim()) {
-                backupData[key] = value;
-            }
-        });
+    // parse last backup date (DD/MM/YYYY) into ISO YYYY‑MM‑DD
+    const prevTS = localStorage.getItem("last-backup-date") || "";
+    let prevISO = "";
+    if (prevTS) {
+        const prevDate = prevTS.split(" ")[1]; // "DD/MM/YYYY"
+        const [d, m, y] = prevDate.split("/");
+        prevISO = `${y}-${m}-${d}`;
+    }
 
-        // If there is no recently-watched data, do nothing
-        if (!backupData["recently-watched"]) return;
+    // compute today’s ISO date
+    const nowFull = getFormattedDateTime(); // "HH:MM:SS DD/MM/YYYY"
+    const todayDate = nowFull.split(" ")[1]; // "DD/MM/YYYY"
+    const [d2, m2, y2] = todayDate.split("/");
+    const todayISO = `${y2}-${m2}-${d2}`;
 
-        // Update last backup date in localStorage
-        const today = getFormattedDateTime();
-        lastBackupDate = today;
-        localStorage.setItem("last-backup-date", today);
+    // exit if already backed up today
+    if (todayISO === prevISO) {
+        return;
+    }
 
-        try {
-            // Reference the backup data using the user's email
-            const backupRef = doc(db, "backup", user.email);
-            // Upload both the recently-watched data and last-backup-date
-            await setDoc(backupRef, {
-                "last-backup-date": lastBackupDate,
-                "recently-watched": backupData["recently-watched"],
-                "anilist-token": backupData["anilist-token"],
-                info: backupData["info"],
-            });
-            // Log successful backup
-            console.log(`${new Date().toLocaleTimeString([], { hour12: false })} - Backup successful`);
-        } catch (error) {
-            console.error(error.message);
+    // only proceed on detail pages (prod or local)
+    const url = window.location.href;
+    const isDetail = url.startsWith("https://letswatch.one/html/detail") || url.startsWith("http://127.0.0.1:5500/html/detail");
+    if (!isDetail) {
+        return;
+    }
+
+    // collect items to back up
+    const data = {};
+    ["recently-watched", "anilist-token", "info"].forEach((key) => {
+        const v = localStorage.getItem(key);
+        if (v?.trim()) {
+            data[key] = v;
         }
     });
+    if (!data["recently-watched"]) {
+        return;
+    }
+
+    // write backup to Firestore
+    try {
+        const backupRef = doc(db, "backup", user.email);
+        await setDoc(backupRef, {
+            "last-backup-date": nowFull,
+            ...data,
+        });
+    } catch (error) {
+        console.error("Backup failed:", error);
+        return;
+    }
+
+    // store timestamp for next run
+    localStorage.setItem("last-backup-date", nowFull);
 }
 
-// Function to clear localStorage except for "play-recently-watched", "anilist-token" and "domain-change-alert"
+// Function to clear localStorage except for specific keys
 function clearLocalStorage() {
+    const keep = ["play-recently-watched", "anilist-token", "domain-change-alert", "last-backup-date", "last-watched"];
     Object.keys(localStorage).forEach((key) => {
-        if (key !== "play-recently-watched" && key !== "anilist-token" && key !== "domain-change-alert") {
+        if (!keep.includes(key)) {
             localStorage.removeItem(key);
         }
     });
@@ -149,18 +173,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         )
             ? 500
             : 5000;
+
     // Set the interval to call uploadData
     setInterval(uploadData, interval);
 
-    // Backup data after 5 minutes, but only once per day and when the user is on the detail page
-    setTimeout(() => {
-        // Get today's date as YYYY-MM-DD
-        const today = new Date().toISOString().split("T")[0];
-        // Perform backup if it's the next day
-        if (today !== lastBackupDate && window.location.href.startsWith("https://letswatch.one/html/detail")) {
-            backupData();
-        }
-    }, 300000);
+    // 10 000 ms for testing; change to 300 000 (5 min) in production
+    setTimeout(backupData, 300000);
 });
 
 function getFormattedDateTime() {
