@@ -124,7 +124,7 @@ main.show {
     transition: max-height 0.75s ease-in-out, padding-block 0.75s ease-in-out;
 }
 .recently-watched.loaded {
-    max-height: 210px;
+    max-height: fit-content;
     padding-block: 18px;
 }
 /* Cards just fade in */
