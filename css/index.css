@@ -115,36 +115,47 @@ main.show {
 .recently-watched .card-episode-number {
     margin-top: 50px;
 }
-/* #region Recently Watched — Animation */
-/* — Recently Watched — */
+/* #region Loaded */
 .recently-watched {
-    overflow: hidden;
-    max-height: 0;
-    padding: 0 18px;
-    transition: max-height 0.75s ease-in-out, padding-block 0.75s ease-in-out;
+    padding: 0 22px;
+    box-sizing: border-box;
 }
-.recently-watched.loaded {
-    max-height: fit-content;
-    padding-block: 18px;
-}
-/* Cards just fade in */
-.recently-watched .card {
-    opacity: 0;
-    transition: opacity 0.75s ease-in-out;
-}
-.recently-watched.loaded .card {
-    opacity: 1;
-}
-/* Title fades in & its margin grows */
 .text-white.recently-watched-title {
-    opacity: 0;
     margin: 0 22px;
-    transition: opacity 0.75s ease-in-out, margin 0.75s ease-in-out;
+    box-sizing: border-box;
+}
+.recently-watched,
+.text-white.recently-watched-title {
+    display: flex;
+    align-items: flex-start;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 1s ease-in-out, opacity 0.2s ease-in-out, padding 0.5s ease-in-out, margin 0.5s ease-in-out;
+}
+/* Loaded */
+.recently-watched.loaded {
+    max-height: 326px;
+    padding: 18px 22px;
 }
 .text-white.recently-watched-title.loaded {
-    opacity: 1;
+    max-height: 326px;
     margin: 15px 22px;
 }
+/* Animation for opacity */
+@keyframes fade {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+.recently-watched.loaded,
+.text-white.recently-watched-title.loaded {
+    animation: fade 0.5s ease-in-out 0.5s forwards;
+}
+/* #endregion */
 /* #endregion */
 
 /* #region Schedule */

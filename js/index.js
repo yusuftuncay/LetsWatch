@@ -383,11 +383,11 @@ function displayRecentlyWatched(recentlyWatchedData) {
         cardDiv.appendChild(gradientElement);
     });
 
-    // Insert the recently watched section before other content in the main section
+    // Insert title + cards container
     mainSection.insertBefore(watchedContainer, mainSection.firstChild);
-    mainSection.insertBefore(sectionTitle, mainSection.firstChild);
+    mainSection.insertBefore(sectionTitle, watchedContainer);
 
-    // Add animation class
+    // Animate
     setTimeout(() => {
         watchedContainer.classList.add("loaded");
         sectionTitle.classList.add("loaded");
@@ -420,17 +420,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Generate "Schedule" section
     // await generateSchedule();
 
-    // Fetch data from the API
-    const animeData = await fetchDataWithoutRedBackgroundColor("https://aniwatch.tuncay.be/api/v2/hianime/home");
+    // // Fetch data from the API
+    // const animeData = await fetchDataWithoutRedBackgroundColor("https://aniwatch.tuncay.be/api/v2/hianime/home");
 
-    // Generate cards for different sections
-    // generateCards(animeData.data.spotlightAnimes, "Spotlight");
-    generateCards(animeData.data.trendingAnimes, "Trending");
-    // generateCards(animeData.data.latestEpisodeAnimes, "Latest Episodes");
-    generateCards(animeData.data.topUpcomingAnimes, "Upcoming Anime");
-    // generateCards(animeData.data.top10Animes.today, "Top 10");
-    generateCards(animeData.data.topAiringAnimes, "Top Airing");
-    generateCards(animeData.data.latestCompletedAnimes, "Latest Completed");
+    // // Generate cards for different sections
+    // // generateCards(animeData.data.spotlightAnimes, "Spotlight");
+    // generateCards(animeData.data.trendingAnimes, "Trending");
+    // // generateCards(animeData.data.latestEpisodeAnimes, "Latest Episodes");
+    // generateCards(animeData.data.topUpcomingAnimes, "Upcoming Anime");
+    // // generateCards(animeData.data.top10Animes.today, "Top 10");
+    // generateCards(animeData.data.topAiringAnimes, "Top Airing");
+    // generateCards(animeData.data.latestCompletedAnimes, "Latest Completed");
+
+    generateCards(hardcodedData, "Spotlight");
 
     // Check for title overflow
     checkTitleOverflow();
@@ -443,3 +445,130 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.addEventListener("resize", checkTitleOverflow);
 });
 //#endregion
+
+//#region Hardcoded Data
+const hardcodedData = [
+    {
+        spotlightAnimes: [
+            {
+                rank: 1,
+                id: "one-piece-100",
+                name: "One Piece",
+                description:
+                    'Gold Roger was known as the "Pirate King," the strongest and most infamous being to have sailed the Grand Line. The capture and execution of Roger by the World Government brought a change throughout the world. His last words before his death revealed the existence of the greatest treasure in the world, One Piece. It was this revelation that brought about the Grand Age of Pirates, men who dreamed of finding One Piece—which promises an unlimited amount of riches and fame—and quite possibly the pinnacle of glory and the title of the Pirate King.\n\nEnter Monkey Luffy, a 17-year-old boy who defies your standard definition of a pirate. Rather than the popular persona of a wicked, hardened, toothless pirate ransacking villages for fun, Luffy\'s reason for being a pirate is one of pure wonder: the thought of an exciting adventure that leads him to intriguing people and ultimately, the promised treasure. Following in the footsteps of his childhood hero, Luffy and his crew travel across the Grand Line, experiencing crazy adventures, unveiling dark mysteries and battling strong enemies, all in order to reach the most coveted of all fortunes—One Piece.',
+                poster: "https://cdn.noitatnemucod.net/thumbnail/1366x768/100/db8603d2f4fa78e1c42f6cf829030a18.jpg",
+                jname: "One Piece",
+                episodes: {
+                    sub: 1127,
+                    dub: 1122,
+                },
+                type: "TV",
+                otherInfo: ["TV", "24m", "Oct 20, 1999", "HD"],
+            },
+            {
+                rank: 2,
+                id: "the-unaware-atelier-master-19569",
+                name: "The Unaware Atelier Master",
+                description:
+                    'One day, Kurt, a kind-hearted boy, is suddenly kicked out of the Hero\'s Party for being "useless." He finds that his aptitude for weapons, magic, and all other combat-related skills is the lowest rand, so he takes odd-jobs repairing the castle walls and digging for minerals, where his exceptional abilities are immediately revealed. He proves to be skillful in cooking, building, mining, crafting magical tools—in fact, his aptitude for every skill unrelated to combat had an SSS-ranking! Kurt, however, seems completely unaware to his talent and ends up saving people, the town, and even the country through his unaware actions!?',
+                poster: "https://cdn.noitatnemucod.net/thumbnail/1366x768/100/349d1bbdd4d7fa786e8f6aceb84697ef.jpg",
+                jname: "Kanchigai no Atelier Meister: Eiyuu Party no Moto Zatsuyougakari ga, Jitsu wa Sentou Igai ga SSS Rank Datta to Iu Yoku Aru Hanashi",
+                episodes: {
+                    sub: 5,
+                    dub: 4,
+                },
+                type: "TV",
+                otherInfo: ["TV", "24m", "Apr 6, 2025", "HD"],
+            },
+            {
+                rank: 3,
+                id: "to-be-hero-x-19591",
+                name: "To Be Hero X",
+                description:
+                    "This is a world where heroes are created by people's trust, and the hero who has received the most trust is known as - X. In this world, people's trust can be calculated by data, and these values will be reflected on everyone's wrist. As long as enough trust points are obtained, ordinary people can also have superpowers and become superheroes that save the world. However, the ever-changing trust value makes the hero's path full of unknowns...",
+                poster: "https://cdn.noitatnemucod.net/thumbnail/1366x768/100/f17dced259ed695da54399f81bf2ba8c.jpg",
+                jname: "Tu Bian Yingxiong X",
+                episodes: {
+                    sub: 4,
+                    dub: 4,
+                },
+                type: "TV",
+                otherInfo: ["TV", "24m", "Apr 6, 2025", "HD"],
+            },
+            {
+                rank: 4,
+                id: "fire-force-season-3-19540",
+                name: "Fire Force Season 3",
+                description: "Third season of .",
+                poster: "https://cdn.noitatnemucod.net/thumbnail/1366x768/100/e5dee087051734a86d59c748b6bf201a.jpg",
+                jname: "Enen no Shouboutai: San no Shou",
+                episodes: {
+                    sub: 4,
+                    dub: 2,
+                },
+                type: "TV",
+                otherInfo: ["TV", "24m", "Apr 5, 2025", "HD"],
+            },
+            {
+                rank: 5,
+                id: "the-super-cube-19624",
+                name: "The Super Cube",
+                description:
+                    'In an accident, an ordinary boy, Wang Xiaoxiu, obtains a space system called "Superpower Cube" from a high-latitude cosmic civilization and gains extraordinary powers. When the school belle, Shen Yao, Wang Xiaoxiu’s longtime crush, confesses her love to him, the delinquent Sun Jun, who also has a crush on her, is provoked.  Wang Xiaoxiu resolves the crisis with his wit and extraordinary powers, but it also brings more disasters as a result. Shen Yao is taken to the world of extraordinary beings by a mysterious person, and Wang Xiaoxiu embarks on a journey to rescue her. Fighting in the bizarre universe, he finds the meaning of fairness and justice on the path to becoming a peerless powerhouse.',
+                poster: "https://cdn.noitatnemucod.net/thumbnail/1366x768/100/71a1f086c03a5f0157834c17860e1235.jpg",
+                jname: "Chao Neng Lifang: Chaofan Pian",
+                episodes: {
+                    sub: 8,
+                    dub: 7,
+                },
+                type: "ONA",
+                otherInfo: ["ONA", "15m", "Mar 21, 2025", "HD"],
+            },
+            {
+                rank: 6,
+                id: "wind-breaker-season-2-19542",
+                name: "Wind Breaker Season 2",
+                description:
+                    "The second season of WIND BREAKER.\n\nWelcome back to Furin High School, an institution infamous for its population of brawny brutes who solve every conflict with a show of strength. Some of the students even formed a group, Bofurin, which protects the town. Haruka Sakura, a first-year student who moved in from out of town, is only interested in one thing: fighting his way to the top!",
+                poster: "https://cdn.noitatnemucod.net/thumbnail/1366x768/100/593d93c12628d998366d5cf716e5ad52.jpg",
+                jname: "Wind Breaker Season 2",
+                episodes: {
+                    sub: 4,
+                    dub: 2,
+                },
+                type: "TV",
+                otherInfo: ["TV", "24m", "Apr 4, 2025", "HD"],
+            },
+            {
+                rank: 7,
+                id: "my-hero-academia-vigilantes-19544",
+                name: "My Hero Academia: Vigilantes",
+                description:
+                    "Living in a superhuman society, it is hard to feel special. Even more so when the spotlight only shines on professional heroes, those legally authorized to use their special powers known as Quirks in public for the greater good.  Kouichi Haimawari grew up aspiring to be a hero, but with a mediocre Quirk like \"sliding\" that ties him to the ground, he soon came to the conclusion that he could only ever admire them from below. Despite this, Kouichi finds contentment in using his Quirk to carry out day-to-day good deeds, such as returning lost items and helping the elderly cross the street.  However, Kouichi's tame life takes a swing into the turbulent when he is rescued from a back alley brawl by Vigilante, or illegal hero, Knuckleduster. Seeing hero potential in Kouichi, Knuckleduster enlists his help in tracking down the source of a dangerous drug known as Trigger that boosts the user's Quirk at the expense of their rationality.  Set in a time before the events of the original story, Vigilante: Boku no Hero Academia Illegals follows Kouichi as he chooses to don the reputation of a villain and become a Vigilante, operating in the shadow of the law to prevent crimes from taking to the surface.",
+                poster: "https://cdn.noitatnemucod.net/thumbnail/1366x768/100/f8a7ec496a49b09a088d4e24f0249f32.jpg",
+                jname: "Vigilante: Boku no Hero Academia Illegals",
+                episodes: {
+                    sub: 3,
+                    dub: 3,
+                },
+                type: "TV",
+                otherInfo: ["TV", "24m", "Apr 7, 2025", "HD"],
+            },
+            {
+                rank: 8,
+                id: "solo-leveling-season-2-arise-from-the-shadow-19413",
+                name: "Solo Leveling Season 2: Arise from the Shadow",
+                description:
+                    "Sung Jin-Woo, dubbed the weakest hunter of all mankind, grows stronger by the day with the supernatural powers he has gained. However, keeping his skills hidden becomes more difficult as dungeon-related incidents pile up around him.\n\nWhen Jin-Woo and a few other low-ranked hunters are the only survivors of a dungeon that turns out to be a bigger challenge than initially expected, he draws attention once again, and hunter guilds take an increased interest in him. Meanwhile, a strange hunter who has been lost for ten years returns with a dire warning about an upcoming catastrophic event. As the calamity looms closer, Jin-Woo must continue leveling up to make sure nothing stops him from reaching his ultimate goal—saving the life of his mother.",
+                poster: "https://cdn.noitatnemucod.net/thumbnail/1366x768/100/599af186ad72e94caab6223b23fc22c6.jpg",
+                jname: "Ore dake Level Up na Ken Season 2: Arise from the Shadow",
+                episodes: {
+                    sub: 13,
+                    dub: 13,
+                },
+                type: "TV",
+                otherInfo: ["TV", "24m", "Jan 5, 2025", "HD"],
+            },
+        ],
+    },
+];
