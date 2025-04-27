@@ -132,6 +132,12 @@ main.show {
     opacity: 0;
     overflow: hidden;
     transition: max-height 1s ease-in-out, opacity 0.2s ease-in-out, padding 0.5s ease-in-out, margin 0.5s ease-in-out;
+    /* GPU‐accelerate the transition */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    will-change: max-height, opacity, padding, margin;
 }
 /* Loaded */
 .recently-watched.loaded {
@@ -153,6 +159,7 @@ main.show {
 }
 .recently-watched.loaded,
 .text-white.recently-watched-title.loaded {
+    max-height: 326px;
     animation: fade 0.5s ease-in-out 0.5s forwards;
 }
 /* #endregion */
