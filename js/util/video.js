@@ -7,15 +7,17 @@ export function setupVideoPlayer() {
         },
     };
 
-    // Add the HLS Quality Selector plugin if not Safari
-    config.plugins = {
-        hlsQualitySelector: {
-            displayCurrentQuality: true,
-            largestResolutionFirst: true,
-            disableAutoQuality: true,
-            defaultQuality: 1080,
-        },
-    };
+    if (!isSafari()) {
+        // Add the HLS Quality Selector plugin if not Safari
+        config.plugins = {
+            hlsQualitySelector: {
+                displayCurrentQuality: true,
+                largestResolutionFirst: true,
+                disableAutoQuality: true,
+                defaultQuality: 1080,
+            },
+        };
+    }
 
     // Create the video player instance with the configuration
     const player = videojs("videoplayer", config);
