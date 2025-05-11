@@ -95,7 +95,7 @@ main.show {
 .button-main-container .next,
 .button-main-container .previous {
     background-color: #222;
-    border-radius: 50%;
+    border-radius: 50px;
     box-shadow: 0 0 5px 2px #222;
     color: white;
     cursor: pointer;
