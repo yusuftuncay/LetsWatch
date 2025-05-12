@@ -210,13 +210,37 @@ async function handleEpisodeClick(player, episode) {
         );
 
         // Prepare URL and headers
-        let sourceUrl = episodeData.data.sources[0].url;
+        const sourceUrl = episodeData?.data?.sources?.[0]?.url;
         const headers = {
             Referer: "https://megacloud.club/",
         };
         const proxiedM3u8Url =
             "https://proxy.letswatch.one/proxy?" + `url=${encodeURIComponent(sourceUrl)}` + `&headers=${encodeURIComponent(JSON.stringify(headers))}`;
         player.src({ src: proxiedM3u8Url, type: "application/x-mpegURL" });
+
+        // Error handling
+        player.one("error", () => {
+            // Container
+            const videoContainer = document.getElementById("videoplayer");
+
+            // Remove loading state
+            videoContainer.classList.remove("vjs-waiting", "vjs-controls-disabled", "vjs-error");
+
+            // Enable control bar
+            const controlBar = videoContainer.querySelector(".vjs-control-bar");
+            if (controlBar) {
+                controlBar.style.display = "flex";
+            }
+
+            // Update the error message
+            const errorDisplay = videoContainer.querySelector(".vjs-modal-dialog-content");
+            if (errorDisplay) {
+                errorDisplay.innerHTML = "An error occurred while loading the video. Please try changing servers or refreshing the page.";
+            }
+
+            // Allow interactions
+            player.controls(true);
+        });
 
         // Proceed when the metadata of the video is loaded
         player.one("loadedmetadata", () => {
