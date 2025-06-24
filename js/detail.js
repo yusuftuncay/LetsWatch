@@ -374,49 +374,72 @@ function setupSubtitles(player, episode) {
         player.removeRemoteTextTrack(tracks[i]);
     }
 
-    // Filter only caption tracks from the episode data
-    const subtitleTracks = episode.tracks.filter((track) => track.kind === "captions");
+    // Check if tracks exist in the response
+    if (!episode.tracks || !Array.isArray(episode.tracks)) {
+        console.warn("No subtitle tracks found in episode data");
+        return;
+    }
+
+    // Filter out thumbnail tracks (we only want subtitle tracks)
+    const subtitleTracks = episode.tracks.filter((track) => track.lang && track.lang.toLowerCase() !== "thumbnails");
 
     let defaultTrackLabel = null;
 
     // Add all subtitle tracks to the player
     subtitleTracks.forEach((track) => {
-        // Add each VTT via the vtt‑proxy endpoint
-        player.addRemoteTextTrack(
-            {
-                kind: track.kind,
-                label: track.label,
-                srclang: track.srclang || track.label.toLowerCase(),
-                src: `https://proxy.letswatch.one/proxy?url=${encodeURIComponent(track.file)}`,
-            },
-            false
-        );
+        // Add each VTT via the vtt‑proxy endpoint if needed
+        const trackObj = {
+            kind: "captions",
+            label: track.lang || "Unknown",
+            srclang: track.lang ? track.lang.toLowerCase().substring(0, 2) : "en",
+            src: track.url,
+        };
 
-        // Save the label of the default track, if defined
-        if (track.default) {
-            defaultTrackLabel = track.label;
+        player.addRemoteTextTrack(trackObj, false);
+
+        // For debugging
+        console.log("Added subtitle track:", trackObj);
+
+        // Set English as default if available
+        if (track.lang && track.lang.toLowerCase() === "english") {
+            defaultTrackLabel = track.lang;
         }
     });
 
-    // Fallback: if no track was marked as default, try to find English
+    // Fallback: if no default track was set and there are tracks, use the first one
     if (!defaultTrackLabel && subtitleTracks.length) {
-        const fallbackTrack = subtitleTracks.find((t) => t.label.toLowerCase().includes("english") || t.srclang === "en");
-        if (fallbackTrack) {
-            defaultTrackLabel = fallbackTrack.label;
-        }
+        defaultTrackLabel = subtitleTracks[0].lang;
     }
 
     // Enable only one subtitle track after a short delay
     setTimeout(() => {
         const textTracks = player.textTracks();
+        console.log(
+            "Available text tracks:",
+            Array.from(textTracks).map((t) => t.label)
+        );
 
+        // First, disable all tracks
         for (let i = 0; i < textTracks.length; i++) {
-            if (textTracks[i].kind === "captions") {
-                // Enable only the track that matches the default label
+            textTracks[i].mode = "disabled";
+        }
+
+        // Then enable the default track if available
+        if (defaultTrackLabel) {
+            for (let i = 0; i < textTracks.length; i++) {
                 if (textTracks[i].label === defaultTrackLabel) {
+                    console.log("Enabling subtitle track:", defaultTrackLabel);
                     textTracks[i].mode = "showing";
-                } else {
-                    textTracks[i].mode = "disabled";
+                    break;
+                }
+            }
+        } else if (textTracks.length > 0) {
+            // If no default track was found, enable the first one
+            for (let i = 0; i < textTracks.length; i++) {
+                if (textTracks[i].kind === "captions") {
+                    console.log("Enabling first available subtitle track:", textTracks[i].label);
+                    textTracks[i].mode = "showing";
+                    break;
                 }
             }
         }
