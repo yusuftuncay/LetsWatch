@@ -5,19 +5,15 @@ export function setupVideoPlayer() {
         controlBar: {
             volumePanel: { inline: false },
         },
-    };
-
-    if (!isSafari()) {
-        // Add the HLS Quality Selector plugin if not Safari
-        config.plugins = {
+        plugins: {
             hlsQualitySelector: {
                 displayCurrentQuality: true,
                 largestResolutionFirst: true,
                 disableAutoQuality: true,
                 defaultQuality: 1080,
             },
-        };
-    }
+        },
+    };
 
     // Create the video player instance with the configuration
     const player = videojs("videoplayer", config);

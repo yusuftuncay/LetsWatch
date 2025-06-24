@@ -93,6 +93,9 @@ main {
 .player #videoplayer_html5_api {
     border-radius: 20px;
 }
+.video-js .vjs-modal-dialog {
+    height: 80% !important;
+}
 .video-js .vjs-control-bar {
     background-color: #222 !important;
     border-radius: 0 0 12px 12px;

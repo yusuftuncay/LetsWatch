@@ -71,7 +71,7 @@ function initNavbar() {
 //#region "DOMContentLoaded" event handler
 document.addEventListener("DOMContentLoaded", async () => {
     // Apply cache busting
-    applyCacheBusting();
+    // applyCacheBusting();
     // Fetch Firebase
     const firebase = await getFirebase();
     auth = firebase.auth;
