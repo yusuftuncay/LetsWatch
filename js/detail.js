@@ -34,16 +34,16 @@ const rateLimiter = {
     lastRequestTime: 0,
     cooldown: 1000,
     warnCooldown: function () {
-        // Alert the user when requests are made too frequently
+        // Alert user on rapid requests
         alert("Slow down! Please wait a second before trying again");
     },
     isCooldownActive: function () {
-        // Check if the minimum time interval since the last request has passed
+        // Check cooldown period
         const currentTime = Date.now();
         return currentTime - this.lastRequestTime < this.cooldown;
     },
     updateLastRequestTime: function () {
-        // Update the timestamp of the last request
+        // Update timestamp
         this.lastRequestTime = Date.now();
     },
 };
@@ -52,14 +52,14 @@ const rateLimiter = {
 //#region Generate EpisodeList
 function generateEpisodeList(player) {
     try {
-        // Show loading element while data is being fetched
+        // Show loading
         const cardItemDiv = document.querySelector(".card-item");
         cardItemDiv.innerHTML = '<div class="loading">Loading Episodes ...</div>';
 
-        // Clear the loading message
+        // Clear loading
         cardItemDiv.innerHTML = "";
 
-        // Show error if no data is available
+        // Handle no episodes
         if (animeDataAniwatch.data.anime.moreInfo.status == "Not yet aired") {
             const episodesElement = document.querySelector(".episodes");
             episodesElement.innerHTML = `<h3 class="card text-white padding-10-px" style="background-color:rgba(0, 255, 0, 0.32)">This anime has not yet aired</h3>`;
@@ -74,23 +74,23 @@ function generateEpisodeList(player) {
             return;
         }
 
-        // Check if .card h3 exists before adding
+        // Add title if missing
         const cardTitle = document.querySelector(".card h3");
         if (!cardTitle) {
-            // Get the card element
+            // Get card
             const card = document.querySelector(".card");
-            // Create a title
+            // Create title
             const cardTitle = document.createElement("h3");
             cardTitle.classList.add("text-white", "section-title", "underline");
             cardTitle.textContent = "Episodes";
-            // Insert the cardTitle before the cardItem
+            // Insert title
             card.insertBefore(cardTitle, cardItemDiv);
         }
 
-        // Create a document fragment for better performance
+        // Create fragment
         const fragment = document.createDocumentFragment();
 
-        // Create a card for each episode
+        // Add episodes
         animeEpisodes.data.episodes.forEach((episode) => {
             const episodeLink = document.createElement("a");
             episodeLink.classList.add("link", "text-white");
@@ -98,23 +98,23 @@ function generateEpisodeList(player) {
             episodeLink.dataset.episodeTitle = episode.title;
             episodeLink.dataset.episodeNumber = episode.number;
             episodeLink.textContent = episode.number;
-            // Add click event listener to each episode link
+            // Add click event
             episodeLink.addEventListener("click", async () => {
                 await handleEpisodeClick(player, episode);
             });
             fragment.appendChild(episodeLink);
         });
 
-        // Append all episode links at once
+        // Add all episodes
         cardItemDiv.appendChild(fragment);
 
-        // Open the recently watched episode
+        // Resume watched episode
         onAuthStateChanged(auth, (user) => {
             if (!user) return;
             openRecentlyWatchedEpisode();
         });
 
-        // Setup
+        // Setup UI
         updateEpisodeList();
         resizeTriggered();
     } catch (error) {
@@ -130,129 +130,123 @@ function generateEpisodeList(player) {
 
 //#region Open Recently Watched
 function openRecentlyWatchedEpisode() {
-    // Retrieve the recently watched data from local storage
+    // Get saved data
     const playRecentlyWatchedData = JSON.parse(localStorage.getItem("play-recently-watched"));
 
-    // Check if there is a recently watched episode
+    // Check data exists
     if (!playRecentlyWatchedData) return;
 
-    // Get the episode number
+    // Get episode number
     const currentEpisodeNumber = playRecentlyWatchedData["episode-number"];
 
-    // Get sub or dub value
+    // Get sub/dub setting
     let subOrDub = playRecentlyWatchedData["sub-or-dub"];
 
-    // Find and trigger a click on the corresponding episode link
+    // Find episode
     const episodeElement = document.querySelector(`[data-episode-number="${currentEpisodeNumber}"]`);
     if (episodeElement) {
-        // Check if the .value even exists before proceeding
+        // Set sub/dub option
         const subOrDubSelectElement = document.querySelector(".sub-or-dub-dropdown-select");
         if (subOrDubSelectElement && subOrDubSelectElement.value) {
             subOrDubSelectElement.value = subOrDub;
         }
-        // Click on the episode element
+        // Play episode
         episodeElement.click();
     }
 
-    // Remove the entry for this episode from local storage
+    // Clear stored data
     localStorage.removeItem("play-recently-watched");
 }
 //#endregion
 
 //#region Episode Click Handler
 async function handleEpisodeClick(player, episode) {
-    // Prevents new requests if one is in progress
+    // Prevent multiple requests
     if (isLoadingEpisode) return;
     isLoadingEpisode = true;
 
-    // Prevent spam clicking
+    // Check rate limit
     if (rateLimiter.isCooldownActive()) {
         rateLimiter.warnCooldown();
         return;
     }
-    // Record the time of the request
+    // Update rate limiter
     rateLimiter.updateLastRequestTime();
 
     try {
-        // Pause the video player
+        // Pause video
         player.pause();
-        // Show loading element
+        // Show loading
         document.getElementById("videoplayer").classList.add("vjs-waiting");
 
-        // Get the episode title element
+        // Set episode title
         const episodeTitle = document.querySelector(".main-title.episode-title");
-        // Check if episode.title starts with "EP" and avoid duplication
+        // Format title
         const titleText = episode.title && !episode.title.startsWith("EP") ? ": " + episode.title : "";
-        // Construct the full title text
+        // Create title
         let fullTitle = "EP " + episode.number + titleText;
-        // Truncate the full title if it exceeds 40 characters and add ellipsis
+        // Truncate if needed
         if (fullTitle.length > 40) {
             fullTitle = fullTitle.slice(0, 42) + "..";
         }
-        // Set episode title and number to the episodeTitle element
+        // Update title
         episodeTitle.textContent = fullTitle;
 
-        // Set data attribute
+        // Set episode number
         setEpisodeNumber(episode.number);
 
-        // Setup the available servers dropdown
+        // Setup servers
         await setupAvailableServersDropdown(player, episode.episodeId);
 
-        // Get the sub or dub element
+        // Get settings
         const subOrDubSelectElement = document.querySelector(".sub-or-dub-dropdown-select");
-
-        // Get the server element
         const serverSelectElement = document.querySelector(".server-dropdown-select");
 
-        // Fetch the episode sources data for the selected episode, sub or dub value and server name
+        // Get episode source
         const episodeData = await fetchDataWithRedBackgroundColor(
             `https://aniwatch.tuncay.be/api/v2/hianime/episode/sources?animeEpisodeId=${episode.episodeId}&category=${subOrDubSelectElement.value}&server=${serverSelectElement.value}`
         );
 
-        // Prepare URL and headers
+        // Setup video URL
         const sourceUrl = episodeData?.data?.sources?.[0]?.url;
-        const headers = {
-            Referer: "https://megacloud.club/",
-        };
-        const proxiedM3u8Url =
-            "https://proxy.letswatch.one/proxy?" + `url=${encodeURIComponent(sourceUrl)}` + `&headers=${encodeURIComponent(JSON.stringify(headers))}`;
+        const proxiedM3u8Url = "https://proxy.letswatch.one/m3u8-proxy" + `?url=${sourceUrl}`;
         player.src({ src: proxiedM3u8Url, type: "application/x-mpegURL" });
 
-        // Error handling
+        // Handle errors
         player.one("error", () => {
-            // Container
+            // Get container
             const videoContainer = document.getElementById("videoplayer");
 
             // Remove loading state
             videoContainer.classList.remove("vjs-waiting", "vjs-controls-disabled", "vjs-error");
 
-            // Enable control bar
+            // Show controls
             const controlBar = videoContainer.querySelector(".vjs-control-bar");
             if (controlBar) {
                 controlBar.style.display = "flex";
             }
 
-            // Update the error message
+            // Show error message
             const errorDisplay = videoContainer.querySelector(".vjs-modal-dialog-content");
             if (errorDisplay) {
                 errorDisplay.innerHTML = "An error occurred while loading the video. Please try changing servers or refreshing the page.";
             }
 
-            // Allow interactions
+            // Enable controls
             player.controls(true);
         });
 
-        // Proceed when the metadata of the video is loaded
+        // Setup video on load
         player.one("loadedmetadata", () => {
-            // Check authentication state
+            // Check auth
             onAuthStateChanged(auth, (user) => {
                 if (!user) return;
 
-                // Set the volume
+                // Set volume
                 setVolume(player);
-                // Resume episode from the last watched position
+                // Resume from saved position
                 resumeEpisodeProgress(player, animeDataAniwatch.data.anime.info.id);
-                // Save the episode in the recently watched list
+                // Save to history
                 saveEpisodeInRecentlyWatched({
                     animeId: getAnimeIDUsingURL(),
                     animeTitle: animeDataAniwatch.data.anime.info.name,
@@ -264,26 +258,26 @@ async function handleEpisodeClick(player, episode) {
                     episodeDuration: Math.floor(player.duration()),
                     subOrDub: subOrDubSelectElement.value,
                 });
-                // Save the episode progress
+                // Track progress
                 saveEpisodeProgress(player, episode.episodeId);
             });
 
             // Setup subtitles
             setupSubtitles(player, episodeData.data);
-            // Update the episodes list
+            // Update UI
             updateEpisodeList();
         });
 
-        // Setup AniList update
+        // Setup AniList
         setupAniListUpdate(player);
 
-        // Setup Buttons
+        // Setup controls
         setupSkipButtons(player, episodeData.data.intro, episodeData.data.outro);
         setupNextEpisodeHandler(player);
     } catch (error) {
         console.error(error.message);
     } finally {
-        // Reset once the process finishes
+        // Reset flag
         isLoadingEpisode = false;
     }
 }
@@ -292,36 +286,36 @@ async function handleEpisodeClick(player, episode) {
 //#region Episode Helpers
 // Function to resume episode from the last watched position
 function resumeEpisodeProgress(player, animeId) {
-    // Retrieve the recently watched data from local storage
+    // Get watched data
     const recentlyWatchedData = JSON.parse(localStorage.getItem("recently-watched")) || [];
 
-    // Get the episode number
+    // Get current episode
     const episodeNumber = getEpisodeNumber();
 
-    // Find the object for the current episode
+    // Find saved position
     const episodeData = recentlyWatchedData.find((item) => item["anime-id"] == animeId && item["episode-number"] == episodeNumber);
 
-    // If the object exists, resume playback from the saved position
+    // Resume if saved
     if (episodeData && episodeData["episode-progress"] != 0) {
         player.currentTime(parseFloat(episodeData["episode-progress"]));
     }
 
-    // Play the video
+    // Start playback
     player.play();
 }
 
 // Function to add/update an episode in recently watched
 function saveEpisodeInRecentlyWatched(data) {
-    // Destructure the data object
+    // Get props
     const { animeId, animeTitle, episodeTitle, episodeImage, episodeNumber, episodeTotal, episodeId, episodeDuration, subOrDub } = data;
 
-    // Retrieve the recently watched data from local storage
+    // Get history
     let recentlyWatchedData = JSON.parse(localStorage.getItem("recently-watched")) || [];
 
-    // Remove the existing entry if it exists
+    // Remove if exists
     recentlyWatchedData = recentlyWatchedData.filter((item) => item["anime-id"] != animeId);
 
-    // Prepend the new episode to the list
+    // Add to top
     recentlyWatchedData.unshift({
         "anime-id": animeId,
         "anime-title": animeTitle,
@@ -335,52 +329,52 @@ function saveEpisodeInRecentlyWatched(data) {
         "sub-or-dub": subOrDub,
     });
 
-    // Update local storage with the updated list
+    // Save history
     localStorage.setItem("recently-watched", JSON.stringify(recentlyWatchedData));
 }
 
 // Function to save the progress of an episode in local storage
 function saveEpisodeProgress(player, episodeId) {
-    // Retrieve the recently watched data from local storage
+    // Get history
     const recentlyWatchedData = JSON.parse(localStorage.getItem("recently-watched")) || [];
 
-    // Find the index for the current episode
+    // Find episode
     const animeIndex = recentlyWatchedData.findIndex((item) => item["episode-id"] == episodeId);
 
-    // Flag to indicate whether progress should be saved
+    // Track progress state
     let shouldSaveProgress = true;
 
-    // Function to update the progress of an episode in local storage
+    // Update progress handler
     const handleTimeUpdate = () => {
-        // Return if progress saving is disabled
+        // Skip if disabled
         if (!shouldSaveProgress || animeIndex == -1) return;
 
-        // Update progress
+        // Save current time
         recentlyWatchedData[animeIndex]["episode-progress"] = Math.floor(player.currentTime());
 
-        // Save the updated data to local storage
+        // Update storage
         localStorage.setItem("recently-watched", JSON.stringify(recentlyWatchedData));
     };
 
-    // Function to handle player state changes
+    // Toggle progress tracking
     const handlePlayerStateChange = () => {
         if (player.paused() || player.currentSrc() == "") {
-            // Disable progress saving when paused or during loading
+            // Disable when paused/loading
             shouldSaveProgress = false;
         } else {
-            // Enable progress saving when playing
+            // Enable when playing
             shouldSaveProgress = true;
         }
     };
 
-    // Add event listener
+    // Add listeners
     player.on("timeupdate", handleTimeUpdate);
     player.on("play", handlePlayerStateChange);
     player.on("pause", handlePlayerStateChange);
-    player.on("waiting", handlePlayerStateChange); // During loading
-    player.on("loadeddata", handlePlayerStateChange); // After loading
+    player.on("waiting", handlePlayerStateChange); // Loading
+    player.on("loadeddata", handlePlayerStateChange); // After load
 
-    // Return the cleanup function
+    // Cleanup function
     return () => {
         player.off("timeupdate", handleTimeUpdate);
         player.off("play", handlePlayerStateChange);
@@ -392,76 +386,68 @@ function saveEpisodeProgress(player, episodeId) {
 
 // Function to setup subtitles and default caption styles
 function setupSubtitles(player, episode) {
-    // Remove all existing text tracks from the player
+    // Remove existing tracks
     const tracks = player.textTracks();
     for (let i = tracks.length - 1; i >= 0; i--) {
         player.removeRemoteTextTrack(tracks[i]);
     }
 
-    // Check if tracks exist in the response
-    if (!episode.tracks || !Array.isArray(episode.tracks)) {
-        console.warn("No subtitle tracks found in episode data");
-        return;
-    }
+    // Check for tracks
+    if (!episode.tracks || !Array.isArray(episode.tracks)) return;
 
-    // Filter out thumbnail tracks (we only want subtitle tracks)
+    // Get subtitles only
     const subtitleTracks = episode.tracks.filter((track) => track.lang && track.lang.toLowerCase() !== "thumbnails");
 
     let defaultTrackLabel = null;
 
-    // Add all subtitle tracks to the player
+    // Add tracks
     subtitleTracks.forEach((track) => {
-        // Add each VTT via the vtt‑proxy endpoint if needed
+        // Proxy track URL
+        const trackUrl = track.url;
+        const proxiedTrackUrl = "https://proxy.letswatch.one/m3u8-proxy" + `?url=${trackUrl}`;
+
+        // Create track
         const trackObj = {
             kind: "captions",
             label: track.lang || "Unknown",
             srclang: track.lang ? track.lang.toLowerCase().substring(0, 2) : "en",
-            src: track.url,
+            src: proxiedTrackUrl,
         };
 
         player.addRemoteTextTrack(trackObj, false);
 
-        // For debugging
-        console.log("Added subtitle track:", trackObj);
-
-        // Set English as default if available
+        // Prefer English
         if (track.lang && track.lang.toLowerCase() === "english") {
             defaultTrackLabel = track.lang;
         }
     });
 
-    // Fallback: if no default track was set and there are tracks, use the first one
+    // Set first track as fallback
     if (!defaultTrackLabel && subtitleTracks.length) {
         defaultTrackLabel = subtitleTracks[0].lang;
     }
 
-    // Enable only one subtitle track after a short delay
+    // Enable default track
     setTimeout(() => {
         const textTracks = player.textTracks();
-        console.log(
-            "Available text tracks:",
-            Array.from(textTracks).map((t) => t.label)
-        );
 
-        // First, disable all tracks
+        // Disable all tracks first
         for (let i = 0; i < textTracks.length; i++) {
             textTracks[i].mode = "disabled";
         }
 
-        // Then enable the default track if available
+        // Enable preferred track
         if (defaultTrackLabel) {
             for (let i = 0; i < textTracks.length; i++) {
                 if (textTracks[i].label === defaultTrackLabel) {
-                    console.log("Enabling subtitle track:", defaultTrackLabel);
                     textTracks[i].mode = "showing";
                     break;
                 }
             }
         } else if (textTracks.length > 0) {
-            // If no default track was found, enable the first one
+            // Use first track
             for (let i = 0; i < textTracks.length; i++) {
                 if (textTracks[i].kind === "captions") {
-                    console.log("Enabling first available subtitle track:", textTracks[i].label);
                     textTracks[i].mode = "showing";
                     break;
                 }
@@ -474,85 +460,78 @@ function setupSubtitles(player, episode) {
 //#region Extra Card Setups
 // Function to setup the seasons or related anime card
 function setupSeasonsCard() {
-    // Get the main container element
+    // Get container
     const mainSection = document.querySelector(".main-container");
 
-    // Create a container
+    // Create elements
     const cardContainer = document.createElement("div");
     cardContainer.classList.add("seasons");
 
-    // Create a title element
     const cardTitle = document.createElement("h3");
     cardTitle.classList.add("text-white", "section-title", "underline");
 
-    // Create a div element
     const cardDiv = document.createElement("div");
     cardDiv.classList.add("card");
 
-    // Create a div element
     const cardContent = document.createElement("div");
     cardContent.classList.add("card-item");
 
-    // Check if seasons data is available
+    // Check for seasons
     if (animeDataAniwatch.data.seasons.length > 0) {
-        // Set the card title
+        // Show seasons
         cardTitle.textContent = "Seasons";
 
-        // Loop through the seasons and create a link for each
+        // Add season links
         animeDataAniwatch.data.seasons.forEach((season) => {
             const seasonLink = document.createElement("a");
             seasonLink.href = `../html/detail.html?id=${season.id}`;
             seasonLink.textContent = season.name;
             seasonLink.classList.add("link", "text-white");
-            // Add the "currently-watching" class to the currently watching season
+            // Highlight current season
             if (season.isCurrent) {
                 seasonLink.classList.add("currently-watching");
             }
 
-            // Append season links to the card content
+            // Add to card
             cardContent.appendChild(seasonLink);
         });
     } else {
-        // Set the card title
+        // Show related anime
         cardTitle.textContent = "Related";
 
-        // Loop through the related anime and create a link for each
+        // Add related links
         animeDataAniwatch.data.relatedAnimes.forEach((related) => {
             const relatedLink = document.createElement("a");
             relatedLink.href = `../html/detail.html?id=${related.id}`;
             relatedLink.textContent = related.name;
             relatedLink.classList.add("link", "text-white");
 
-            // Append related links to the card content
+            // Add to card
             cardContent.appendChild(relatedLink);
         });
     }
 
-    // Append the card elements to the card div
+    // Assemble card
     cardDiv.appendChild(cardTitle);
     cardDiv.appendChild(cardContent);
-
-    // Append the constructed card to the card container
     cardContainer.appendChild(cardDiv);
-
-    // Append the card container to the main section
     mainSection.appendChild(cardContainer);
 }
 
 // Function to setup the next airing episode information
 async function setupNextAiringEpisodeCard() {
-    // Check if the next airing episode data is available
+    // Check for airing data
     if (!animeDataConsumet.nextAiringEpisode) return;
 
-    // Create a div element for the section title
+    // Create container
     let div = document.createElement("div");
     div.classList.add("next-airing");
 
-    // Get the time until airing in seconds
+    // Get time info
     let timeUntilAiring = animeDataConsumet.nextAiringEpisode.timeUntilAiring;
     let episode = animeDataConsumet.nextAiringEpisode.episode;
 
-    // Create a div element for the airing time with appropriate classes
+    // Create airing display
     let airingTimeDiv = document.createElement("div");
     airingTimeDiv.classList.add("card", "text-white", "main-title");
     airingTimeDiv.innerHTML = `<div class="episode-info">Episode <span class="underline">${episode}</span> airing in</div>`;
@@ -561,18 +540,18 @@ async function setupNextAiringEpisodeCard() {
     airingTimeDiv.appendChild(timeInfoDiv);
     div.appendChild(airingTimeDiv);
 
-    // Insert the airing time div into the main container
+    // Add to page
     let mainContainer = document.querySelector(".main-container");
     mainContainer.appendChild(div);
 
-    // Function to format the time until airing
+    // Format time
     function formatTimeUntilAiring(seconds) {
-        // Calculate the days, hours, and minutes left until airing
+        // Calculate time units
         let days = Math.floor(seconds / (24 * 60 * 60));
         let hoursLeft = Math.floor((seconds % (24 * 60 * 60)) / (60 * 60));
         let minutesLeft = Math.floor((seconds % (60 * 60)) / 60);
 
-        // Construct the formatted time string
+        // Build string
         let formattedTime = "";
         if (days > 0) {
             formattedTime += `${days} day${days == 1 ? "" : "s"}, `;
@@ -582,21 +561,20 @@ async function setupNextAiringEpisodeCard() {
         }
         formattedTime += `${minutesLeft} minute${minutesLeft == 1 ? "" : "s"}`;
 
-        // Return
         return formattedTime;
     }
 
-    // Function to update the time info div
+    // Update timer
     function updateTimeInfo() {
         timeInfoDiv.innerText = formatTimeUntilAiring(timeUntilAiring);
         timeUntilAiring -= 60;
     }
 
-    // Initial update and setup interval to update every minute
+    // Start timer
     updateTimeInfo();
-    setInterval(updateTimeInfo, 60000); // 60000ms = 1 minute
+    setInterval(updateTimeInfo, 60000); // Every minute
 
-    // Add animation class
+    // Animate in
     setTimeout(() => {
         div.classList.add("loaded");
     }, 10);
@@ -606,18 +584,18 @@ async function setupNextAiringEpisodeCard() {
 //#region Setup Player Buttons
 // Function to setup the sub or dub dropdown
 function setupSubOrDubDropdown(player) {
-    // Check if the dropdown already exists
+    // Skip if exists
     if (document.querySelector(".sub-or-dub-dropdown")) return;
 
-    // Create the div element
+    // Create container
     const divElement = document.createElement("div");
     divElement.classList.add("sub-or-dub-dropdown");
 
-    // Create the select element
+    // Create dropdown
     const selectElement = document.createElement("select");
     selectElement.classList.add("sub-or-dub-dropdown-select");
 
-    // Create the options
+    // Create options
     const subOption = document.createElement("option");
     subOption.value = "sub";
     subOption.textContent = "Sub";
@@ -628,29 +606,28 @@ function setupSubOrDubDropdown(player) {
     rawOption.value = "raw";
     rawOption.textContent = "Raw";
 
-    // Append options to select element
+    // Build dropdown
     selectElement.appendChild(subOption);
     selectElement.appendChild(dubOption);
     selectElement.appendChild(rawOption);
-    // Append select element to div element
     divElement.appendChild(selectElement);
 
-    // Insert dropdown before target element
+    // Add to player
     const targetElement = document.querySelector(".vjs-remaining-time");
     targetElement.parentNode.insertBefore(divElement, targetElement.nextSibling);
 
-    // Handle changes in selected value
+    // Handle selection
     selectElement.addEventListener("change", function () {
-        // Pause the video player
+        // Pause video
         player.pause();
-        // Show loading element
+        // Show loading
         document.getElementById("videoplayer").classList.add("vjs-waiting");
 
-        // Get the episode id
+        // Get episode
         const episodeNumber = getEpisodeNumber();
-        // Select the element with the specified class and data attributes
+        // Find episode
         const episodeElement = document.querySelector(`a.link.text-white[data-episode-number="${episodeNumber}"]`);
-        // Check if the element exists
+        // Reload episode
         if (episodeElement) {
             episodeElement.click();
         }
@@ -659,32 +636,32 @@ function setupSubOrDubDropdown(player) {
 
 // Function to get the available servers for the selected episode
 async function setupAvailableServersDropdown(player, episodeId) {
-    // Fetch available servers
+    // Get servers
     const servers = await fetchDataWithAlert(`https://aniwatch.tuncay.be/api/v2/hianime/episode/servers?animeEpisodeId=${episodeId}`);
 
-    // Initialize variable to store the previous value of the selected server
+    // Save previous selection
     let previousValue = "";
-    // Clear the existing server dropdown
+    // Remove old dropdown
     const existingServerDropdown = document.querySelector(".server-dropdown");
     if (existingServerDropdown) {
-        // Save the previous value of the selected server
+        // Save selection
         previousValue = existingServerDropdown.querySelector(".server-dropdown-select").value || "";
-        // Remove the existing server dropdown
+        // Remove dropdown
         existingServerDropdown.parentNode.removeChild(existingServerDropdown);
     }
 
-    // Return if no servers are available
+    // Skip if no servers
     if (!servers.data.sub && !servers.data.dub && !servers.data.raw) return;
 
-    // Create select element
+    // Create dropdown
     const serverSelectElement = document.createElement("select");
     serverSelectElement.classList.add("server-dropdown-select");
 
-    // Get the sub or dub element
+    // Get current language
     const subOrDubSelectElement = document.querySelector(".sub-or-dub-dropdown-select");
-    // Save the previous value of the selected sub or dub
+    // Save selection
     const previousSubOrDubValue = subOrDubSelectElement.value;
-    // Set the default value based on the previous value based on the available servers
+    // Set best available language
     if (previousSubOrDubValue == "sub" && servers.data.sub.length > 0) {
         subOrDubSelectElement.value = "sub";
     } else if (previousSubOrDubValue == "dub" && servers.data.dub.length > 0) {
@@ -692,7 +669,7 @@ async function setupAvailableServersDropdown(player, episodeId) {
     } else if (previousSubOrDubValue == "raw" && servers.data.raw.length > 0) {
         subOrDubSelectElement.value = "raw";
     }
-    // Set sub, dub then raw as the default value if the previous value is not available
+    // Fallback priorities
     else if (servers.data.sub.length > 0) {
         subOrDubSelectElement.value = "sub";
     } else if (servers.data.dub.length > 0) {
@@ -700,16 +677,16 @@ async function setupAvailableServersDropdown(player, episodeId) {
     } else if (servers.data.raw.length > 0) {
         subOrDubSelectElement.value = "raw";
     }
-    // Get the selected sub or dub value
+    // Get selected language
     const subOrDub = subOrDubSelectElement.value;
 
-    // Populate options based on data fetched
+    // Add server options
     if (Array.isArray(servers.data[subOrDub])) {
         servers.data[subOrDub].forEach((server) => {
-            // Rename servers if necessary
+            // Get server name
             let serverName = server.serverName;
 
-            // Mapping of server names to display names
+            // Server display names
             const serverNameMapping = {
                 "hd-1": "VidStreaming",
                 megacloud: "MegaCloud",
@@ -721,27 +698,27 @@ async function setupAvailableServersDropdown(player, episodeId) {
                 mixdrop: "MixDrop",
             };
 
-            // Create option element
+            // Create option
             const option = document.createElement("option");
             option.value = serverName;
 
-            // Check if serverName exists in the mapping object and replace textContent
+            // Use friendly name
             if (serverNameMapping[serverName]) {
                 option.textContent = serverNameMapping[serverName];
             } else {
                 option.textContent = "N/A";
             }
 
-            // Append option to select element
+            // Add to dropdown
             serverSelectElement.appendChild(option);
         });
     }
 
-    // Set the initial previous value for the select element
+    // Set previous selection
     serverSelectElement.dataset.previousValue = previousValue;
-    // Get the first option value
+    // Get first option
     const firstOptionValue = serverSelectElement.options[0]?.value;
-    // Default to "hd-2" if available and user hasn't manually changed it before
+    // Select preferred server
     if (!previousValue || !serverSelectElement.querySelector(`option[value="${previousValue}"]`)) {
         if (serverSelectElement.querySelector('option[value="hd-2"]')) {
             serverSelectElement.value = "hd-2";
@@ -751,31 +728,31 @@ async function setupAvailableServersDropdown(player, episodeId) {
             serverSelectElement.value = "N/A";
         }
     } else {
-        // Preserve previously selected server
+        // Use previous selection
         serverSelectElement.value = previousValue;
     }
 
-    // Create div element for dropdown
+    // Create container
     const divElement = document.createElement("div");
     divElement.classList.add("server-dropdown");
     divElement.appendChild(serverSelectElement);
 
-    // Insert dropdown before target element
+    // Add to player
     const targetElement = document.querySelector(".vjs-remaining-time");
     targetElement.parentNode.insertBefore(divElement, targetElement.nextSibling);
 
-    // Event listener for select change
+    // Handle selection
     serverSelectElement.addEventListener("change", function () {
-        // Pause the video player
+        // Pause video
         player.pause();
-        // Show loading element
+        // Show loading
         document.getElementById("videoplayer").classList.add("vjs-waiting");
 
-        // Get the episode id
+        // Get episode
         const episodeNumber = getEpisodeNumber();
-        // Select the element with the specified class and data attributes
+        // Find episode
         const episodeElement = document.querySelector(`a.link.text-white[data-episode-number="${episodeNumber}"]`);
-        // Check if the element exists
+        // Reload episode
         if (episodeElement) {
             setTimeout(() => {
                 episodeElement.click();
@@ -786,32 +763,32 @@ async function setupAvailableServersDropdown(player, episodeId) {
 
 // Function to get the available servers for the selected episode
 /*async function getAvailableServers(episodeId) {
-    // Fetch available servers
+    // Fetch servers
     const servers = await fetchDataWithAlert(`https://aniwatch.tuncay.be/api/v2/hianime/episode/servers?animeEpisodeId=${episodeId}`);
 
-    // Initialize array to store selected servers
+    // For selected servers
     const selectedServers = [];
 
-    // Order of serverIds to select
+    // Server priority
     const serverIds = [4, 1, 2, 3, 5, 6, 7, 8];
 
-    // Get the sub or dub element
+    // Get language setting
     const subOrDubSelectElement = document.querySelector(".sub-or-dub-dropdown-select");
-    // Get the selected sub or dub value
+    // Get current language
     const subOrDub = subOrDubSelectElement.value;
 
-    // Iterate through serverIds and select corresponding servers from fetched data
+    // Select servers by priority
     for (const serverId of serverIds) {
-        // Check sub or dub value
+        // Check language
         if (subOrDub == "sub") {
-            // Find server in sub array
+            // Find in sub servers
             let subServer = servers.data.sub.find((server) => server.serverId == serverId);
             if (subServer) {
                 selectedServers.push(subServer);
                 continue;
             }
         } else if (subOrDub == "dub") {
-            // Find server in dub array
+            // Find in dub servers
             let dubServer = servers.data.dub.find((server) => server.serverId == serverId);
             if (dubServer) {
                 selectedServers.push(dubServer);
@@ -820,53 +797,51 @@ async function setupAvailableServersDropdown(player, episodeId) {
         }
     }
 
-    // Return
     return selectedServers;
 }*/
 //#endregion
 
 //#region Update EpisodeList
 function updateEpisodeList() {
-    // Check authentication state
+    // Check auth
     onAuthStateChanged(auth, (user) => {
         const isUserLoggedIn = !!user;
         const episodeNumber = isUserLoggedIn ? getEpisodeNumberFromLocalStorage() : getEpisodeNumber();
 
-        // Select all episode elements
+        // Get all episodes
         const allEpisodeElements = document.querySelectorAll(".card-item a[data-episode-number]");
 
-        // Loop over each episode element
+        // Update each episode
         allEpisodeElements.forEach((element) => {
             const elementEpisodeNumber = parseInt(element.getAttribute("data-episode-number"));
 
-            // Remove previously set classes
+            // Reset classes
             element.classList.remove("currently-watching", "watched");
 
-            // Add "currently-watching" class to the current episode
+            // Mark current episode
             if (elementEpisodeNumber == episodeNumber) {
                 element.classList.add("currently-watching");
             }
 
-            // Only when user is logged in
-            // Add "watched" class to episodes watched before the current one
+            // Mark watched episodes
             if (isUserLoggedIn && elementEpisodeNumber < episodeNumber) {
                 element.classList.add("watched");
             }
 
-            // Add "filler" class to filler episodes
+            // Mark fillers
             if (animeEpisodes.data.episodes[elementEpisodeNumber - 1].isFiller) {
                 element.classList.add("filler");
             }
         });
 
-        // Scroll to the current episode element if not Safari
+        // Auto-scroll to current
         // const episodeElement = document.querySelector(`.card-item a[data-episode-number="${episodeNumber}"]`);
         // if (episodeElement && !isSafari()) {
         //     episodeElement.scrollIntoView({ behavior: "smooth", block: "center" });
         // }
     });
 
-    // Function to get the episode number from localStorage
+    // Get episode from history
     function getEpisodeNumberFromLocalStorage() {
         const recentlyWatchedData = JSON.parse(localStorage.getItem("recently-watched")) || [];
         const animeID = getAnimeIDUsingURL();
@@ -878,34 +853,34 @@ function updateEpisodeList() {
 
 //#region AniList Update
 function setupAniListUpdate(player) {
-    // Flag to track if update has already been triggered
+    // Track update status
     let updateTriggered = false;
 
-    // Monitor playback to update AniList media entry
+    // Track progress
     function handleTimeUpdate() {
-        // Update the AniList media entry when the episode is almost finished
+        // Update near end of episode
         let currentPercentage = (player.currentTime() / player.duration()) * 100;
 
-        // Ensure update is fired only once when time reaches between 90 and 100 percent
+        // Update once at 90%
         if (!updateTriggered && currentPercentage >= 90 && currentPercentage <= 100) {
-            updateTriggered = true; // Set flag to true to prevent multiple firings
+            updateTriggered = true; // Prevent multiple updates
 
-            // Update AniList media entry
+            // Update AniList
             onAuthStateChanged(auth, async () => {
-                // Check if the token is available
+                // Check for token
                 const token = localStorage.getItem("anilist-token");
                 if (!token) return;
 
-                // Parameters: Token, AniList ID, Episode Number, Total Episodes
+                // Update progress
                 await updateAniListMediaEntry(token, getAnilistId(animeDataAniwatch), getEpisodeNumber(), getTotalEpisodes(animeDataAniwatch));
             });
         }
     }
 
-    // Add event listener to monitor time updates
+    // Add listener
     player.on("timeupdate", handleTimeUpdate);
 
-    // Return the cleanup function
+    // Cleanup function
     return () => {
         player.off("timeupdate", handleTimeUpdate);
     };
@@ -914,10 +889,10 @@ function setupAniListUpdate(player) {
 
 //#region Intro/Outro Skip Handler
 function setupSkipButtons(player, intro, outro) {
-    // Get the video player element
+    // Get player container
     const videoContainer = document.querySelector(".video-js");
 
-    // Create the skip intro button
+    // Create intro button
     let skipIntroButton = document.querySelector(".skip-intro-button");
     if (!skipIntroButton) {
         skipIntroButton = document.createElement("button");
@@ -927,7 +902,7 @@ function setupSkipButtons(player, intro, outro) {
         videoContainer.appendChild(skipIntroButton);
     }
 
-    // Create the skip outro button
+    // Create outro button
     let skipOutroButton = document.querySelector(".skip-outro-button");
     if (!skipOutroButton) {
         skipOutroButton = document.createElement("button");
@@ -937,55 +912,55 @@ function setupSkipButtons(player, intro, outro) {
         videoContainer.appendChild(skipOutroButton);
     }
 
-    // Monitor current time to show the skip intro and outro buttons at the right time
+    // Show buttons at right time
     function handleTimeUpdate() {
-        // Get the current time
+        // Get current position
         const currentTime = player.currentTime();
 
-        // Check if intro exists and handle the skip intro button
+        // Check for intro
         if (intro.start > 0 && intro.end > 0) {
-            // Show the skip intro button when the current time is within the intro interval
+            // Show during intro
             if (currentTime >= intro.start && currentTime <= intro.end) {
                 skipIntroButton.style.display = "block";
             } else {
                 skipIntroButton.style.display = "none";
             }
         } else {
-            // If intro does not exist, hide the skip intro button
+            // No intro data
             skipIntroButton.style.display = "none";
         }
 
-        // Check if outro exists and handle the skip outro button
+        // Check for outro
         if (outro.start > 0 && outro.end > 0) {
-            // Show the skip outro button when the current time is within the outro interval
+            // Show during outro
             if (currentTime >= outro.start && currentTime <= outro.end) {
                 skipOutroButton.style.display = "block";
             } else {
                 skipOutroButton.style.display = "none";
             }
         } else {
-            // If outro does not exist, hide the skip outro button
+            // No outro data
             skipOutroButton.style.display = "none";
         }
     }
 
-    // Add event listener to show the skip intro/outro buttons
+    // Add listener
     player.on("timeupdate", handleTimeUpdate);
 
-    // Handle click events on the skip intro button
+    // Skip intro handler
     skipIntroButton.addEventListener("click", () => {
         skipIntroButton.style.display = "none";
         player.currentTime(intro.end);
         player.play();
     });
-    // Handle click events on the skip outro button
+    // Skip outro handler
     skipOutroButton.addEventListener("click", () => {
         skipOutroButton.style.display = "none";
         player.currentTime(outro.end);
         player.play();
     });
 
-    // Return the cleanup function
+    // Cleanup function
     return () => {
         player.off("timeupdate", handleTimeUpdate);
         skipIntroButton.removeEventListener("click", () => {
@@ -1006,10 +981,10 @@ function setupSkipButtons(player, intro, outro) {
 
 //#region Next Episode Handler
 function setupNextEpisodeHandler(player) {
-    // Get the video player element
+    // Get player container
     const videoContainer = document.querySelector(".video-js");
 
-    // Create the next episode button
+    // Create next button
     let nextEpisodeBtn = document.querySelector(".next-episode");
     if (!nextEpisodeBtn) {
         nextEpisodeBtn = document.createElement("button");
@@ -1018,32 +993,31 @@ function setupNextEpisodeHandler(player) {
         nextEpisodeBtn.style.display = "none";
         videoContainer.appendChild(nextEpisodeBtn);
     } else {
-        // Hide the next episode button
+        // Hide button
         nextEpisodeBtn.style.display = "none";
     }
 
-    // Monitor playback to show the next episode button at the right time
+    // Show near end of episode
     function handleTimeUpdate() {
-        // Check if the current episode is the last one
+        // Check if last episode
         if (getTotalEpisodes(animeDataAniwatch) == getEpisodeNumber() || getTotalAvailableEpisodes(animeDataAniwatch) == getEpisodeNumber()) {
             nextEpisodeBtn.style.display = "none";
             return;
         }
 
-        // Show the next episode button when the current episode is almost finished
+        // Show near end
         let percentage = (player.currentTime() / player.duration()) * 100;
         nextEpisodeBtn.style.display = percentage >= 88 && percentage <= 100 ? "block" : "none";
     }
 
-    // Add event listener to show the next episode button
+    // Add listeners
     player.on("timeupdate", handleTimeUpdate);
-    // Add event listener for video end events
     player.on("ended", () => playNextEpisode(player, nextEpisodeBtn));
 
-    // Handle click events on the next episode button
+    // Click handler
     nextEpisodeBtn.addEventListener("click", () => playNextEpisode(player, nextEpisodeBtn));
 
-    // Return the cleanup function
+    // Cleanup function
     return () => {
         player.off("timeupdate", handleTimeUpdate);
         player.off("ended", () => playNextEpisode(player, nextEpisodeBtn));
@@ -1054,28 +1028,28 @@ function setupNextEpisodeHandler(player) {
 
 // Function to start playing the next episode
 export function playNextEpisode(player, nextEpisodeBtn) {
-    // Hide the next episode button
+    // Hide button
     nextEpisodeBtn.style.display = "none";
-    // Pause the video player
+    // Pause video
     player.pause();
-    // Show loading element
+    // Show loading
     document.getElementById("videoplayer").classList.add("vjs-waiting");
 
-    // Update the episodes list
+    // Update UI
     updateEpisodeList();
 
-    // Get and hide the next episode button
+    // Hide next button
     const nextEpisodeButton = document.querySelector(".next-episode");
     nextEpisodeButton.style.display = "none";
 
-    // Get the current episode number and calculate the next episode number
+    // Calculate next episode
     const currentEpisodeNumber = parseInt(getEpisodeNumber());
     const nextEpisodeNumber = currentEpisodeNumber + 1;
 
-    // Find the <a> element with the corresponding data-episode-number attribute
+    // Find episode link
     const episodeLink = document.querySelector(`a[data-episode-number="${nextEpisodeNumber}"]`);
 
-    // Check if the episode link exists and click it
+    // Play next episode
     if (episodeLink) {
         episodeLink.click();
     }
@@ -1085,7 +1059,7 @@ export function playNextEpisode(player, nextEpisodeBtn) {
 //#region Event Listener Functions
 // Function to handle window focus
 // function handleFocusChange(player) {
-//     // Pause the player when the window is unfocused
+//     // Pause on blur
 //     if (!document.hasFocus()) {
 //         player.pause();
 //     }
@@ -1097,27 +1071,27 @@ function handleKeyboardControls(event, player) {
             // Toggle play/pause
             if (player.paused()) player.play();
             else player.pause();
-            event.preventDefault(); // Prevent scrolling
+            event.preventDefault(); // Prevent scroll
             break;
         case "ArrowRight":
-            // Seek forward 10 seconds
+            // Forward 10s
             player.currentTime(player.currentTime() + 10);
-            event.preventDefault(); // Prevent scrolling
+            event.preventDefault(); // Prevent scroll
             break;
         case "ArrowLeft":
-            // Seek backward 10 seconds
+            // Back 10s
             player.currentTime(player.currentTime() - 10);
-            event.preventDefault(); // Prevent scrolling
+            event.preventDefault(); // Prevent scroll
             break;
         case "ArrowUp":
-            // Increase volume
+            // Volume up
             player.volume(player.volume() + 0.1);
-            event.preventDefault(); // Prevent scrolling
+            event.preventDefault(); // Prevent scroll
             break;
         case "ArrowDown":
-            // Decrease volume
+            // Volume down
             player.volume(player.volume() - 0.1);
-            event.preventDefault(); // Prevent scrolling
+            event.preventDefault(); // Prevent scroll
             break;
         default:
             break;
@@ -1127,61 +1101,61 @@ function handleKeyboardControls(event, player) {
 
 //#region DOMContentLoaded
 document.addEventListener("DOMContentLoaded", async function () {
-    // Fetch Firebase
+    // Init Firebase
     const firebase = await getFirebase();
     auth = firebase.auth;
 
-    // Fetch anime and episodes data
+    // Get data
     animeDataAniwatch = await fetchAnimeDataFromAniwatch();
     animeEpisodes = await fetchEpisodesData();
 
-    // Get the video player instance
+    // Setup player
     const player = setupVideoPlayer();
 
-    // Display the anime title
+    // Set title
     document.querySelector(".anime-title").textContent = animeDataAniwatch?.data.anime.info.name;
 
-    // Generate the Cards
+    // Create UI
     generateEpisodeList(player);
     updateEpisodeList();
 
-    // Setup the sub or dub dropdown
+    // Setup controls
     setupSubOrDubDropdown(player);
 
-    // Setup season card
+    // Show seasons
     setupSeasonsCard();
 
-    // Fetch the anime data from Consumet and setup the next airing episode card
+    // Show airing info
     animeDataConsumet = await fetchAnimeDataFromConsumet(animeDataAniwatch);
     await setupNextAiringEpisodeCard();
 
-    // Trigger a resize event to adjust the UI components
+    // Update layout
     window.dispatchEvent(new Event("resize"));
-    // Add event listener to handle window resizing
+    // Listen for resize
     window.addEventListener("resize", function () {
         resizeTriggered();
     });
 
-    // Event listener for window focus and blur
+    // Window focus events
     //window.addEventListener("focus", function () {
     //    handleFocusChange(player);
     //});
     //window.addEventListener("blur", function () {
     //    handleFocusChange(player);
     //});
-    // Event listener for keyboard controls
+    // Keyboard controls
     document.addEventListener("keydown", function (event) {
         handleKeyboardControls(event, player);
     });
 
-    // Event listener for beforeunload to handle cases like refreshing the page and page navigation
+    // Page unload handling
     //window.addEventListener("beforeunload", () => {
-    // Pause the video player
+    // Pause video
     //    player.pause();
     //});
-    // Event listener for pagehide to handle cases like closing the tab or switching to another app
+    // Tab/app switching
     //window.addEventListener("pagehide", () => {
-    // Pause the video player
+    // Pause video
     //    player.pause();
     //});
 });
