@@ -1237,9 +1237,8 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // Update title
     const titleElement = document.querySelector(".anime-title");
-
     // Setup info icon tooltip
-    if (animeDataConsumet?.description) {
+    if (titleElement && animeDataConsumet?.description) {
         const description = animeDataConsumet?.description;
         titleElement.innerHTML = `
             ${animeDataAniwatch?.data.anime.info.name}

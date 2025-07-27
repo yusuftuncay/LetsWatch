@@ -229,7 +229,7 @@ function displayRecentlyWatched(recentlyWatchedData) {
         cardDiv.appendChild(progressBarContainer);
         cardDiv.appendChild(animeTitleElement);
         cardDiv.appendChild(cardTitle);
-        cardDiv.appendChild(timeElement);
+        // cardDiv.appendChild(timeElement);
         watchedContainer.appendChild(cardLink);
 
         // Create the gradient overlay element
