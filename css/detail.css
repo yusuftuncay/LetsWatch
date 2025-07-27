@@ -240,11 +240,26 @@ main {
 
 /* #region Titles */
 .main-title {
-    align-items: flex-end;
+    align-items: center;
     display: flex;
     justify-content: center;
     text-align: center;
     font-size: x-large;
+}
+
+/* Anime Info Icon in Title */
+.anime-info-icon {
+    width: 24px;
+    height: 24px;
+    margin-left: 12px;
+    opacity: 0.8;
+    cursor: pointer;
+    transition: opacity 0.2s ease-in-out;
+    filter: brightness(0) saturate(100%) invert(100%);
+}
+
+.anime-info-icon:hover {
+    opacity: 1;
 }
 /* #endregion */
 

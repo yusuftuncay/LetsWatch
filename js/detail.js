@@ -1099,6 +1099,112 @@ function handleKeyboardControls(event, player) {
 }
 //#endregion
 
+//#region Info Icon Tooltip
+function setupInfoIconTooltip() {
+    const infoIcon = document.querySelector(".anime-info-icon");
+    if (!infoIcon) return;
+
+    let tooltip = null;
+    let hideTimeout = null;
+    let isVisible = false;
+
+    function showTooltip() {
+        // Clear any pending hide timeout
+        if (hideTimeout) {
+            clearTimeout(hideTimeout);
+            hideTimeout = null;
+        }
+
+        // Don't create if already visible
+        if (isVisible || tooltip) return;
+
+        const description = infoIcon.getAttribute("data-description");
+        if (!description) return;
+
+        // Create and style tooltip
+        tooltip = document.createElement("div");
+        tooltip.className = "anime-tooltip";
+
+        // Convert HTML to plain text
+        const tempDiv = document.createElement("div");
+        tempDiv.innerHTML = description.replace(/<br\s*\/?>/gi, "\n");
+        tooltip.textContent = tempDiv.textContent || tempDiv.innerText || "";
+
+        // Apply styles
+        Object.assign(tooltip.style, {
+            position: "absolute",
+            backgroundColor: "#222",
+            color: "white",
+            padding: "16px 20px",
+            borderRadius: "24px",
+            border: "10px solid #222",
+            fontSize: "14px",
+            maxWidth: "400px",
+            wordWrap: "break-word",
+            whiteSpace: "pre-wrap",
+            zIndex: "1000",
+            boxShadow: "0 0 10px 1px #222",
+            pointerEvents: "none",
+            fontFamily: "ForoSans, sans-serif",
+            lineHeight: "1.4",
+            opacity: "0",
+            transition: "opacity 0.2s ease",
+        });
+
+        document.body.appendChild(tooltip);
+
+        // Position tooltip
+        const rect = infoIcon.getBoundingClientRect();
+        const tooltipRect = tooltip.getBoundingClientRect();
+
+        let left = rect.left + rect.width / 2 - tooltipRect.width / 2;
+        let top = rect.top - tooltipRect.height - 20;
+
+        // Keep tooltip on screen
+        if (left < 10) left = 10;
+        if (left + tooltipRect.width > window.innerWidth - 10) {
+            left = window.innerWidth - tooltipRect.width - 10;
+        }
+        if (top < 10) top = rect.bottom + 20;
+
+        tooltip.style.left = left + "px";
+        tooltip.style.top = top + "px";
+
+        // Show tooltip
+        requestAnimationFrame(() => {
+            if (tooltip) {
+                tooltip.style.opacity = "1";
+                isVisible = true;
+            }
+        });
+    }
+
+    function hideTooltip() {
+        // Clear any pending hide timeout
+        if (hideTimeout) {
+            clearTimeout(hideTimeout);
+        }
+
+        hideTimeout = setTimeout(() => {
+            if (tooltip) {
+                tooltip.style.opacity = "0";
+                setTimeout(() => {
+                    if (tooltip && tooltip.parentNode) {
+                        tooltip.remove();
+                    }
+                    tooltip = null;
+                    isVisible = false;
+                }, 300);
+            }
+            hideTimeout = null;
+        }, 50); // Small delay to prevent flickering
+    }
+
+    infoIcon.addEventListener("mouseenter", showTooltip);
+    infoIcon.addEventListener("mouseleave", hideTooltip);
+}
+//#endregion
+
 //#region DOMContentLoaded
 document.addEventListener("DOMContentLoaded", async function () {
     // Init Firebase
@@ -1112,7 +1218,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Setup player
     const player = setupVideoPlayer();
 
-    // Set title
+    // Set title (initial)
     document.querySelector(".anime-title").textContent = animeDataAniwatch?.data.anime.info.name;
 
     // Create UI
@@ -1128,6 +1234,17 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Show airing info
     animeDataConsumet = await fetchAnimeDataFromConsumet(animeDataAniwatch);
     await setupNextAiringEpisodeCard();
+
+    // Update title with info icon after description is available
+    const titleElement = document.querySelector(".anime-title");
+    const description = animeDataConsumet?.description || "No description available";
+    titleElement.innerHTML = `
+        ${animeDataAniwatch?.data.anime.info.name}
+        <img src="../img/info-icon.svg" class="anime-info-icon" alt="Info" data-description="${description.replace(/"/g, "&quot;")}" />
+    `;
+
+    // Setup info icon tooltip
+    setupInfoIconTooltip();
 
     // Update layout
     window.dispatchEvent(new Event("resize"));
