@@ -115,6 +115,16 @@ main.show {
 .recently-watched .card-episode-number {
     margin-top: 50px;
 }
+/* .recently-watched .card-time {
+    position: absolute;
+    width: 100%;
+    color: #ececec;
+    z-index: 2;
+    text-shadow: 0 0 8px black;
+    margin-top: 75px;
+    font-size: 0.9em;
+    opacity: 0.8;
+} */
 /* #region Loaded */
 .recently-watched {
     padding: 0 22px;

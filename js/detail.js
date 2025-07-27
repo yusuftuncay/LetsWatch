@@ -1218,7 +1218,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Setup player
     const player = setupVideoPlayer();
 
-    // Set title (initial)
+    // Set title
     document.querySelector(".anime-title").textContent = animeDataAniwatch?.data.anime.info.name;
 
     // Create UI
@@ -1235,16 +1235,19 @@ document.addEventListener("DOMContentLoaded", async function () {
     animeDataConsumet = await fetchAnimeDataFromConsumet(animeDataAniwatch);
     await setupNextAiringEpisodeCard();
 
-    // Update title with info icon after description is available
+    // Update title
     const titleElement = document.querySelector(".anime-title");
-    const description = animeDataConsumet?.description || "No description available";
-    titleElement.innerHTML = `
-        ${animeDataAniwatch?.data.anime.info.name}
-        <img src="../img/info-icon.svg" class="anime-info-icon" alt="Info" data-description="${description.replace(/"/g, "&quot;")}" />
-    `;
 
     // Setup info icon tooltip
-    setupInfoIconTooltip();
+    if (animeDataConsumet?.description) {
+        const description = animeDataConsumet?.description;
+        titleElement.innerHTML = `
+            ${animeDataAniwatch?.data.anime.info.name}
+            <img src="../img/info-icon.svg" class="anime-info-icon" alt="Info" data-description="${description.replace(/"/g, "&quot;")}" />
+        `;
+
+        setupInfoIconTooltip();
+    }
 
     // Update layout
     window.dispatchEvent(new Event("resize"));

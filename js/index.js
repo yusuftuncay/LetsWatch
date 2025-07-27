@@ -82,182 +82,24 @@ function createCard(link, title, image, totalEpisodes) {
     // Return the constructed card
     return cardLink;
 }
-/*// Function to generate the schedule section
-async function generateSchedule() {
-    // Select the main section
-    const mainSection = document.querySelector("main");
-
-    // Create "Aired" container
-    const airedScheduleContainer = document.createElement("div");
-    airedScheduleContainer.classList.add("main-container", "schedule");
-    // Create "Airing" container
-    const airingScheduleContainer = document.createElement("div");
-    airingScheduleContainer.classList.add("main-container", "schedule");
-
-    // Create a title
-    const sectionTitle = document.createElement("h1");
-    sectionTitle.classList.add("text-white", "main-title");
-    sectionTitle.textContent = "Schedule";
-
-    try {
-        // Calculate the dates in the local time zone
-        const currentDate = new Date();
-        const yesterdayDate = new Date(new Date().setDate(currentDate.getDate() - 1));
-        const tomorrowDate = new Date(new Date().setDate(currentDate.getDate() + 1));
-        const dayAfterTomorrowDate = new Date(new Date().setDate(currentDate.getDate() + 2));
-
-        // Format dates as needed for API requests
-        const formattedYesterdayDate = yesterdayDate.toISOString().split("T")[0];
-        const formattedCurrentDate = currentDate.toISOString().split("T")[0];
-        const formattedTomorrowDate = tomorrowDate.toISOString().split("T")[0];
-        const formattedDayAfterTomorrowDate = dayAfterTomorrowDate.toISOString().split("T")[0];
-
-        // Fetch data for yesterday, today, tomorrow, and day after tomorrow
-        const [yesterdayScheduleData, todayScheduleData, tomorrowScheduleData, dayAfterTomorrowScheduleData] = await Promise.all([
-            fetchDataWithoutRedBackgroundColor(`https://aniwatch.tuncay.be/anime/schedule?date=${formattedYesterdayDate}`),
-            fetchDataWithoutRedBackgroundColor(`https://aniwatch.tuncay.be/anime/schedule?date=${formattedCurrentDate}`),
-            fetchDataWithoutRedBackgroundColor(`https://aniwatch.tuncay.be/anime/schedule?date=${formattedTomorrowDate}`),
-            fetchDataWithoutRedBackgroundColor(`https://aniwatch.tuncay.be/anime/schedule?date=${formattedDayAfterTomorrowDate}`),
-        ]);
-
-        // Initialize empty arrays for aired and airing schedules
-        const combinedAiredScheduleData = [];
-        const combinedAiringScheduleData = [];
-        // Combine and classify data from yesterdayScheduleData and todayScheduleData
-        const allScheduleData = [
-            ...yesterdayScheduleData.scheduledAnimes,
-            ...todayScheduleData.scheduledAnimes,
-            ...tomorrowScheduleData.scheduledAnimes,
-            ...dayAfterTomorrowScheduleData.scheduledAnimes,
-        ];
-        allScheduleData.forEach((item) => {
-            if (item.secondsUntilAiring > 0) {
-                combinedAiredScheduleData.push(item);
-            } else {
-                combinedAiringScheduleData.push(item);
-            }
-        });
-        // Sort most recent to largest
-        combinedAiredScheduleData.sort((a, b) => b.secondsUntilAiring - a.secondsUntilAiring);
-        combinedAiringScheduleData.sort((a, b) => a.secondsUntilAiring - b.secondsUntilAiring);
-
-        // Loop through each item in the combined first schedule data
-        combinedAiredScheduleData.forEach((item) => {
-            // Create a card for the current schedule item
-            const card = createScheduleCard(`html/detail.html?id=${item.id}`, item.name, item.secondsUntilAiring, item.episode);
-            // Append the card to the schedule container
-            airedScheduleContainer.appendChild(card);
-        });
-        // Loop through each item in the combined second schedule data
-        combinedAiringScheduleData.forEach((item) => {
-            // Create a card for the current schedule item
-            const card = createScheduleCard(`html/detail.html?id=${item.id}`, item.name, item.secondsUntilAiring, item.episode);
-            // Append the card to the schedule container
-            airingScheduleContainer.appendChild(card);
-        });
-
-        // Append the section title and schedule container to the main section
-        mainSection.appendChild(sectionTitle);
-        mainSection.appendChild(airedScheduleContainer);
-        mainSection.appendChild(airingScheduleContainer);
-    } catch (error) {
-        console.error(error.message);
-    }
-}
-// Function to create card elements
-function createScheduleCard(link, title, seconds, episodeNumber) {
-    // Create a link element
-    const cardLink = document.createElement("a");
-    cardLink.href = link;
-    cardLink.classList.add("card-link");
-
-    // Create a div element
-    const cardDiv = document.createElement("div");
-    cardDiv.classList.add("card");
-
-    // Create a div element for the timer and timestamp
-    const timerTimestampDiv = document.createElement("div");
-    timerTimestampDiv.classList.add("timestamp-div");
-
-    // Create a title element
-    const cardTitle = document.createElement("h3");
-    cardTitle.classList.add("card-title");
-    cardTitle.textContent = title;
-
-    // Create hr element
-    const hrElement = document.createElement("hr");
-
-    // Create a timer element
-    const timerElement = document.createElement("p");
-    timerElement.classList.add("card-episode-number");
-    timerElement.classList.remove("red", "green");
-
-    // Calculate the time
-    // If the show has already aired
-    if (seconds >= 0) {
-        const hours = Math.floor(seconds / 3600);
-        const minutes = Math.floor((seconds % 3600) / 60);
-
-        let timerText = "Aired ";
-        if (hours >= 24) {
-            const days = Math.floor(hours / 24);
-            const remainingHours = hours % 24;
-            if (days > 0) timerText += `${days}d `;
-            if (remainingHours > 0) timerText += `${remainingHours}h `;
-            if (minutes > 0) timerText += `${minutes}m `;
-        } else {
-            if (hours > 0) timerText += `${hours}h `;
-            if (minutes > 0) timerText += `${minutes}m `;
-        }
-
-        // Add "ago" to the timer text
-        timerText += "ago";
-        // Remove any trailing spaces
-        timerElement.textContent = timerText.trim();
-        timerElement.classList.add("green");
-    }
-    // If the show is yet to air
-    else {
-        const airedSeconds = Math.abs(seconds);
-        const hours = Math.floor(airedSeconds / 3600);
-        const minutes = Math.floor((airedSeconds % 3600) / 60);
-
-        let timerText = "Airing in ";
-        if (hours >= 24) {
-            const days = Math.floor(hours / 24);
-            const remainingHours = hours % 24;
-            if (days > 0) timerText += `${days}d `;
-            if (remainingHours > 0) timerText += `${remainingHours}h `;
-            if (minutes > 0) timerText += `${minutes}m`;
-        } else {
-            if (hours > 0) timerText += `${hours}h `;
-            if (minutes > 0) timerText += `${minutes}m`;
-        }
-
-        // Remove any trailing spaces
-        timerElement.textContent = timerText.trim();
-        timerElement.classList.add("red");
-    }
-
-    // Create episode number element
-    const episodeNumberElement = document.createElement("p");
-    episodeNumberElement.classList.add("card-episode-number");
-    episodeNumberElement.innerHTML = `EP ${episodeNumber}`;
-
-    // Append elements to construct the card
-    cardLink.appendChild(cardDiv);
-    cardDiv.appendChild(cardTitle);
-    cardDiv.appendChild(hrElement);
-    cardDiv.appendChild(timerTimestampDiv);
-    timerTimestampDiv.appendChild(timerElement);
-    timerTimestampDiv.appendChild(episodeNumberElement);
-
-    // Return the constructed card
-    return cardLink;
-}*/
 //#endregion
 
 //#region Recently Watched
+// Function to format seconds into a readable time format (HH:MM:SS or MM:SS)
+// function formatTime(seconds) {
+//     if (!seconds || seconds <= 0) return null;
+
+//     const hours = Math.floor(seconds / 3600);
+//     const minutes = Math.floor((seconds % 3600) / 60);
+//     const remainingSeconds = Math.floor(seconds % 60);
+
+//     if (hours > 0) {
+//         return `${hours}:${minutes.toString().padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`;
+//     } else {
+//         return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
+//     }
+// }
+
 // Function to try displaying the recently watched section
 function tryDisplayRecentlyWatched() {
     const maxDuration = 5000; // 5 seconds
@@ -362,6 +204,19 @@ function displayRecentlyWatched(recentlyWatchedData) {
         const total = item["episode-total"];
         cardTitle.textContent = `EP ${item["episode-number"]}` + (Number.isInteger(total) && total !== 0 ? ` / ${total}` : "");
 
+        // // Create a time element
+        // const timeElement = document.createElement("p");
+        // timeElement.classList.add("card-time");
+        // const currentTime = formatTime(item["episode-progress"]);
+        // const totalTime = formatTime(item["episode-duration"]);
+
+        // // Show time if there's progress
+        // if (currentTime) {
+        //     timeElement.textContent = `${currentTime} / ${totalTime || "0:00"}`;
+        // } else {
+        //     timeElement.style.display = "none";
+        // }
+
         // Create a title element
         const animeTitleElement = document.createElement("h3");
         animeTitleElement.classList.add("card-anime-title");
@@ -374,6 +229,7 @@ function displayRecentlyWatched(recentlyWatchedData) {
         cardDiv.appendChild(progressBarContainer);
         cardDiv.appendChild(animeTitleElement);
         cardDiv.appendChild(cardTitle);
+        cardDiv.appendChild(timeElement);
         watchedContainer.appendChild(cardLink);
 
         // Create the gradient overlay element
@@ -416,9 +272,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Recently watched section
     tryDisplayRecentlyWatched();
-
-    // Generate "Schedule" section
-    // await generateSchedule();
 
     // Fetch data from the API
     const animeData = await fetchDataWithoutRedBackgroundColor("https://aniwatch.tuncay.be/api/v2/hianime/home");
