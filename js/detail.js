@@ -688,11 +688,12 @@ async function setupAvailableServersDropdown(player, episodeId) {
 
             // Server display names
             const serverNameMapping = {
-                "hd-1": "VidStreaming",
+                "hd-1": "HD-1",
                 megacloud: "MegaCloud",
                 streamsb: "StreamSB",
                 streamtape: "StreamTape",
-                "hd-2": "VidCloud",
+                "hd-2": "HD-2",
+                "hd-3": "HD-3",
                 asianload: "AsianLoad",
                 gogocdn: "GogoCDN",
                 mixdrop: "MixDrop",
@@ -706,7 +707,7 @@ async function setupAvailableServersDropdown(player, episodeId) {
             if (serverNameMapping[serverName]) {
                 option.textContent = serverNameMapping[serverName];
             } else {
-                option.textContent = "N/A";
+                option.textContent = serverName;
             }
 
             // Add to dropdown
